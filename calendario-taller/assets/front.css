@@ -1,0 +1,40 @@
+/* Front-end tweaks */
+.acal-frontend { max-width: 100%; }
+.acal-frontend .acal-grid { grid-template-columns: 200px repeat(5, 1fr); }
+.acal-frontend .acal-cell { padding:8px; }
+.acal-frontend .acal-head { min-height: 28px; padding: 4px 6px; font-size: 12.5px; line-height: 1.1; }
+.acal-frontend.sticky-header .acal-head { position: sticky; top: 0; z-index: 5; }
+.acal-frontend.sticky-both .acal-head { position: sticky; top: 0; z-index: 5; }
+.acal-frontend.sticky-both .acal-tech-col { position: sticky; left: 0; z-index: 6; }
+
+/* ===== HOTFIX grid & layout (integrado) ===== */
+.acal-grid{
+  display:grid !important;
+  grid-template-columns: 200px repeat(5, 1fr) !important;
+  grid-auto-flow: row;
+  align-items: start;
+  box-sizing: border-box;
+}
+.acal-grid .acal-cell{
+  position: relative;
+  box-sizing: border-box;
+  min-height: 90px;
+  background: #fff;
+  border-right: 1px solid #eef1f5;
+  border-bottom: 1px solid #eef1f5;
+}
+.acal-tech-col{
+  background: #f7f8fa !important;
+}
+.acal-tech-col .acal-techname{
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.acal-grid .acal-cell .acal-add{
+  position: absolute;
+  top: 6px; right: 6px;
+}
