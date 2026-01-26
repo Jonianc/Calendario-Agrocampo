@@ -30,6 +30,8 @@ class ACAL_Calendario_Taller {
         add_action('admin_post_acal_update_tech', [$this, 'handle_update_tech']);
         add_action('admin_post_acal_delete_tech', [$this, 'handle_delete_tech']);
         add_action('admin_post_acal_export_day_png', [$this, 'handle_export_day_png']);
+        add_action('admin_post_acal_export_data', [$this, 'handle_export_data']);
+        add_action('admin_post_acal_import_data', [$this, 'handle_import_data']);
         add_action('wp_ajax_acal_move_task', [$this, 'ajax_move_task']);
         add_action('wp_ajax_acal_save_tecnicos_order', [$this, 'ajax_save_tecnicos_order']);
         add_action('wp_ajax_acal_paste_task', [$this, 'ajax_paste_task']);
@@ -62,6 +64,7 @@ public function ajax_save_tecnicos_order(){
     public function register_admin_pages() {
         add_menu_page('Calendario Taller','Calendario Taller','read','acal_calendario',[$this,'render_calendar_page'],'dashicons-calendar-alt',25);
         add_submenu_page('acal_calendario','Técnicos','Técnicos','read','acal_tecnicos',[$this,'render_tecnicos_page']);
+        add_submenu_page('acal_calendario','Importar/Exportar','Importar/Exportar','read','acal_import_export',[$this,'render_import_export_page']);
     }
 
     function enqueue_assets($hook){
@@ -585,6 +588,40 @@ echo '</div>';   // .acal-tech-item
             }
         }
         echo '</tbody></table></div>';
+    }
+
+    public function render_import_export_page(){
+        if (!current_user_can('read')) wp_die('No tienes permisos.');
+        $can_edit = $this->can_edit();
+        $nonce = wp_create_nonce(self::NONCE_KEY);
+
+        echo '<div class="wrap"><h1>Importar / Exportar</h1>';
+        echo '<p>Exporta o importa datos del calendario (tareas y técnicos).</p>';
+
+        echo '<h2>Exportar</h2>';
+        if ($can_edit){
+            echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
+            echo '<input type="hidden" name="action" value="acal_export_data" />';
+            echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
+            echo '<button class="button button-primary">Descargar exportación</button>';
+            echo '</form>';
+        } else {
+            echo '<p><em>Solo lectura</em></p>';
+        }
+
+        echo '<h2>Importar</h2>';
+        if ($can_edit){
+            echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" enctype="multipart/form-data">';
+            echo '<input type="hidden" name="action" value="acal_import_data" />';
+            echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
+            echo '<p><input type="file" name="acal_import_file" accept="application/json" required /></p>';
+            echo '<label><input type="checkbox" name="acal_replace" value="1" /> Reemplazar tareas existentes</label>';
+            echo '<p><button class="button button-primary">Importar</button></p>';
+            echo '</form>';
+        } else {
+            echo '<p><em>Solo lectura</em></p>';
+        }
+        echo '</div>';
     }
 
     /* Crear / actualizar / eliminar tareas */
@@ -1113,6 +1150,114 @@ ACALJS;
         $list=array_values(array_filter($list, function($t)use($id){ return $t['id']!==$id; }));
         $this->save_tecnicos($list);
         wp_safe_redirect(admin_url('admin.php?page=acal_tecnicos')); exit;
+    }
+
+    public function handle_export_data(){
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
+        if (!$this->can_edit()) wp_die('Permisos insuficientes');
+
+        $tasks = [];
+        $q = new WP_Query([
+            'post_type'      => self::CPT_TASK,
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+        ]);
+
+        if ($q->have_posts()){
+            while($q->have_posts()){
+                $q->the_post();
+                $tasks[] = [
+                    'post' => [
+                        'ID'           => get_the_ID(),
+                        'post_title'   => get_the_title(),
+                        'post_status'  => get_post_status(),
+                        'post_date'    => get_the_date('c'),
+                    ],
+                    'meta' => get_post_meta(get_the_ID()),
+                ];
+            }
+            wp_reset_postdata();
+        }
+
+        $payload = [
+            'version'         => '1.0',
+            'exported_at'     => current_time('c'),
+            'tecnicos'        => get_option(self::OPT_TECHS, []),
+            'tecnicos_order'  => get_option('acal_tecnicos_order', []),
+            'tasks'           => $tasks,
+        ];
+
+        $filename = 'acal-export-'.date('Ymd-His').'.json';
+        header('Content-Type: application/json; charset=utf-8');
+        header('Content-Disposition: attachment; filename='.$filename);
+        echo wp_json_encode($payload);
+        exit;
+    }
+
+    public function handle_import_data(){
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
+        if (!$this->can_edit()) wp_die('Permisos insuficientes');
+
+        if (empty($_FILES['acal_import_file']['tmp_name'])){
+            wp_die('Archivo requerido');
+        }
+
+        $raw = file_get_contents($_FILES['acal_import_file']['tmp_name']);
+        if (!$raw){
+            wp_die('No se pudo leer el archivo');
+        }
+
+        $data = json_decode($raw, true);
+        if (!is_array($data)){
+            wp_die('Archivo inválido');
+        }
+
+        $replace = !empty($_POST['acal_replace']);
+        if ($replace){
+            $q = new WP_Query([
+                'post_type'      => self::CPT_TASK,
+                'post_status'    => 'any',
+                'posts_per_page' => -1,
+                'fields'         => 'ids',
+            ]);
+            if (!empty($q->posts)){
+                foreach ($q->posts as $id){
+                    wp_delete_post($id, true);
+                }
+            }
+        }
+
+        if (isset($data['tecnicos']) && is_array($data['tecnicos'])){
+            update_option(self::OPT_TECHS, $data['tecnicos'], false);
+        }
+        if (isset($data['tecnicos_order']) && is_array($data['tecnicos_order'])){
+            update_option('acal_tecnicos_order', $data['tecnicos_order'], false);
+        }
+
+        $tasks = isset($data['tasks']) && is_array($data['tasks']) ? $data['tasks'] : [];
+        foreach ($tasks as $task){
+            $post_data = $task['post'] ?? [];
+            $meta_data = $task['meta'] ?? [];
+
+            $post_id = wp_insert_post([
+                'post_type'   => self::CPT_TASK,
+                'post_status' => $post_data['post_status'] ?? 'publish',
+                'post_title'  => $post_data['post_title'] ?? 'Tarea',
+            ]);
+            if (is_wp_error($post_id)) {
+                continue;
+            }
+
+            foreach ($meta_data as $key => $values){
+                if (!is_array($values)) { $values = [$values]; }
+                foreach ($values as $value){
+                    update_post_meta($post_id, sanitize_key($key), maybe_unserialize($value));
+                }
+            }
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=acal_import_export&import=1'));
+        exit;
     }
 
     public function shortcode_calendar($atts){

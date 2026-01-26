@@ -163,6 +163,13 @@ Para migrar el plugin con sus datos, asegúrate de exportar e importar lo siguie
 
 Con esto se conservan todas las tareas, técnicos y su orden en la grilla.
 
+### Opción integrada en el plugin
+
+El plugin incluye una pantalla **Importar/Exportar** en el menú de Calendario Taller:
+
+- **Exportar**: descarga un archivo JSON con tareas, metadatos, técnicos y orden.
+- **Importar**: permite cargar ese JSON y recrear las tareas. Incluye opción para reemplazar las tareas existentes.
+
 ## Permisos
 
 - **Ver calendario admin**: usuarios con `read`.
