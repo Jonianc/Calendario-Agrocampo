@@ -49,6 +49,8 @@ Plugin de WordPress para planificar tareas semanales de técnicos en una grilla 
 
 ## Funcionalidades principales
 
+Las funcionalidades principales también están disponibles en el frontend (vista de solo lectura de **Calendario Taller**), salvo aquellas que requieren edición de datos.
+
 ### Calendario semanal
 
 - Vista semanal iniciando en lunes, por defecto se muestran solo L–V.
