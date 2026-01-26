@@ -127,7 +127,7 @@ https://tu-sitio.com/?acal_standalone=1
 
 Desde la vista admin del calendario también existe un botón **“Abrir vista standalone”** que genera este link automáticamente.
 
-También puedes abrir las pantallas de **Calendario Taller** y **Técnicos** desde **Ajustes** (menú del plugin) para acceder a una vista standalone sin theme.
+También puedes abrir **Calendario Taller** desde **Ajustes** (menú del plugin) para acceder a una vista standalone sin theme en modo solo lectura.
 
 ## Shortcode y parámetros
 
