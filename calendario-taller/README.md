@@ -19,6 +19,7 @@ Plugin de WordPress para planificar tareas semanales de técnicos en una grilla 
   - [Modo pantalla completa](#modo-pantalla-completa)
 - [Shortcode y parámetros](#shortcode-y-parámetros)
 - [Datos y metadatos](#datos-y-metadatos)
+- [Exportación e importación de datos](#exportación-e-importación-de-datos)
 - [Permisos](#permisos)
 - [Seguridad](#seguridad)
 - [Assets](#assets)
@@ -152,6 +153,15 @@ Metadatos usados por tarea:
 - `_acal_turno` (am | pm)
 
 El título del post se deriva de **Cliente** o un resumen de la descripción.
+
+## Exportación e importación de datos
+
+Para migrar el plugin con sus datos, asegúrate de exportar e importar lo siguiente:
+
+- `wp_posts` y `wp_postmeta` correspondientes al post type **`acal_tarea`**.
+- Las opciones **`acal_tecnicos`** y **`acal_tecnicos_order`** (tabla `wp_options`).
+
+Con esto se conservan todas las tareas, técnicos y su orden en la grilla.
 
 ## Permisos
 
