@@ -21,6 +21,7 @@ class ACAL_Calendario_Taller {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets_frontend']);
         add_shortcode('calendario_taller', [$this, 'shortcode_calendar']);
         add_action('template_redirect', [$this,'maybe_fullscreen']);
+        add_action('template_redirect', [$this,'maybe_standalone']);
 
         // Admin-post actions
         add_action('admin_post_acal_create_task', [$this, 'handle_create_task']);
@@ -378,8 +379,17 @@ public function render_calendar_page(){
     $prev = date('Y-m-d', strtotime($days[0].' -7 days'));
     $next = date('Y-m-d', strtotime($days[0].' +7 days'));
 
+    $standalone_url = add_query_arg(
+        [
+            'acal_standalone' => '1',
+            'date' => $days[0],
+        ],
+        home_url('/')
+    );
+
     echo '<div class="wrap acal-wrap">';
     echo '<h1>Calendario Taller — Vista Semanal (L-V)</h1>';
+    echo '<p><a class="button" href="'.esc_url($standalone_url).'" target="_blank" rel="noopener noreferrer">Abrir vista standalone</a></p>';
 
     echo '<form method="get" class="acal-topbar">';
     echo '<input type="hidden" name="page" value="acal_calendario" />';
@@ -1279,6 +1289,7 @@ ACALJS;
 $tecnicos = $this->order_tecnicos_array($tecnicos_raw); // o la versión con method_exists del Paso 0
 
     $tasks      = $this->get_tasks_for_week($days);
+    $can_edit = is_admin() ? $this->can_edit() : false;
     $show_actions = false; // <- forzado a false en frontend
 
     ob_start();
@@ -1381,6 +1392,22 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         echo '<style>html,body{margin:0;padding:0;background:#fff} .admin-bar .acal-wrap{margin-top:32px} .print-area{display:none!important} .acal-wrap{padding:16px}</style>';
         echo '</head><body class="acal-fullscreen">';
         echo do_shortcode($shortcode);
+        wp_footer();
+        echo '</body></html>';
+        exit;
+    }
+
+    public function maybe_standalone(){
+        if ($this->is_restricted_context()) { return; }
+        if (is_admin() || !isset($_GET['acal_standalone']) || $_GET['acal_standalone'] !== '1') return;
+
+        status_header(200);
+        nocache_headers();
+        echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
+        wp_head();
+        echo '<style>html,body{margin:0;padding:0;background:#fff} .acal-wrap{padding:16px}</style>';
+        echo '</head><body class="acal-standalone">';
+        echo $this->shortcode_calendar([]);
         wp_footer();
         echo '</body></html>';
         exit;

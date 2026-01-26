@@ -17,6 +17,7 @@ Plugin de WordPress para planificar tareas semanales de técnicos en una grilla 
   - [Copiar y pegar tareas](#copiar-y-pegar-tareas)
   - [Arrastrar tareas entre días](#arrastrar-tareas-entre-días)
   - [Modo pantalla completa](#modo-pantalla-completa)
+- [Vista standalone](#vista-standalone)
 - [Shortcode y parámetros](#shortcode-y-parámetros)
 - [Datos y metadatos](#datos-y-metadatos)
 - [Exportación e importación de datos](#exportación-e-importación-de-datos)
@@ -113,6 +114,16 @@ En admin:
 ### Modo pantalla completa
 
 - `?acal_full=1` en un post/página con el shortcode activa una vista limpia a pantalla completa.
+
+## Vista standalone
+
+Para mostrar el calendario en frontend sin theme ni shortcode, usa el enlace directo:
+
+```
+https://tu-sitio.com/?acal_standalone=1
+```
+
+Desde la vista admin del calendario también existe un botón **“Abrir vista standalone”** que genera este link automáticamente.
 
 ## Shortcode y parámetros
 
