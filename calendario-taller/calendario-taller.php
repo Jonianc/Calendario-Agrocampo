@@ -1401,6 +1401,11 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         if ($this->is_restricted_context()) { return; }
         if (is_admin() || !isset($_GET['acal_standalone']) || $_GET['acal_standalone'] !== '1') return;
 
+        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], '1.9.5');
+        wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], '1.9.5');
+        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], '1.9.7');
+        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], '1.9.5', true);
+
         status_header(200);
         nocache_headers();
         echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
