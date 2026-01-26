@@ -66,6 +66,7 @@ public function ajax_save_tecnicos_order(){
         add_menu_page('Calendario Taller','Calendario Taller','read','acal_calendario',[$this,'render_calendar_page'],'dashicons-calendar-alt',25);
         add_submenu_page('acal_calendario','Técnicos','Técnicos','read','acal_tecnicos',[$this,'render_tecnicos_page']);
         add_submenu_page('acal_calendario','Importar/Exportar','Importar/Exportar','read','acal_import_export',[$this,'render_import_export_page']);
+        add_submenu_page('acal_calendario','Ajustes','Ajustes','read','acal_ajustes',[$this,'render_ajustes_page']);
     }
 
     function enqueue_assets($hook){
@@ -631,6 +632,35 @@ echo '</div>';   // .acal-tech-item
         } else {
             echo '<p><em>Solo lectura</em></p>';
         }
+        echo '</div>';
+    }
+
+    public function render_ajustes_page(){
+        if (!current_user_can('read')) wp_die('No tienes permisos.');
+        $days = $this->week_range_from_query();
+        $standalone_calendar = add_query_arg(
+            [
+                'acal_standalone' => '1',
+                'view' => 'calendario',
+                'date' => $days[0],
+            ],
+            home_url('/')
+        );
+        $standalone_tecnicos = add_query_arg(
+            [
+                'acal_standalone' => '1',
+                'view' => 'tecnicos',
+            ],
+            home_url('/')
+        );
+
+        echo '<div class="wrap"><h1>Ajustes</h1>';
+        echo '<h2>Vista standalone</h2>';
+        echo '<p>Abre las pantallas del plugin en frontend sin theme.</p>';
+        echo '<ul>';
+        echo '<li><a class="button" href="'.esc_url($standalone_calendar).'" target="_blank" rel="noopener noreferrer">Abrir Calendario Taller</a></li>';
+        echo '<li><a class="button" href="'.esc_url($standalone_tecnicos).'" target="_blank" rel="noopener noreferrer">Abrir Técnicos</a></li>';
+        echo '</ul>';
         echo '</div>';
     }
 
@@ -1406,13 +1436,22 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], '1.9.7');
         wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], '1.9.5', true);
 
+        $view = isset($_GET['view']) ? $this->sanitize_text($_GET['view']) : 'calendario';
+
         status_header(200);
         nocache_headers();
         echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
         wp_head();
         echo '<style>html,body{margin:0;padding:0;background:#fff} .acal-wrap{padding:16px}</style>';
         echo '</head><body class="acal-standalone">';
-        echo $this->shortcode_calendar([]);
+        if (!current_user_can('read')) {
+            wp_die('No tienes permisos.');
+        }
+        if ($view === 'tecnicos'){
+            $this->render_tecnicos_page();
+        } else {
+            $this->render_calendar_page();
+        }
         wp_footer();
         echo '</body></html>';
         exit;
