@@ -87,7 +87,7 @@ $(document).on('acal:clipboard-clear', function(){
   // Obtiene el ID de la tarea desde el menú
   function getTaskIdFromMenu($menu){
     // a) hidden del form de Eliminar (el más estable)
-    var tid = $menu.find('input[name="post_id"]').val();
+    var tid = $menu.find('input[name="task_id"]').val();
     if (tid) return parseInt(tid, 10);
 
     // b) data-json del enlace Editar
@@ -159,7 +159,7 @@ $(document).on('acal:clipboard-clear', function(){
   function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
 
   function getTaskIdFromMenu($menu){
-    var tid = $menu.find('input[name="post_id"]').val();
+    var tid = $menu.find('input[name="task_id"]').val();
     if (tid) return parseInt(tid,10);
     var payload = $menu.find('.acal-edit').data('json');
     try{ if(typeof payload==='string') payload=JSON.parse(payload); }catch(e){ payload=null; }

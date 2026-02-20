@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.5
+ * Version: 1.9.6
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,6 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
+    const VERSION   = '1.9.6';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -74,12 +75,12 @@ public function ajax_save_tecnicos_order(){
         if (strpos($hook,'acal_')===false) return;
 
         // Base admin assets
-        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], '1.9.5');
-        wp_enqueue_script('acal_admin_js', plugins_url('assets/admin.js', __FILE__), ['jquery'], '1.9.5', true);
+        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
+        wp_enqueue_script('acal_admin_js', plugins_url('assets/admin.js', __FILE__), ['jquery'], self::VERSION, true);
 
         // Rocket Solutions: upgrades UI/UX y parches de modal/filtros
-        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], '1.9.5');
-        wp_enqueue_script('acal_rs_upgrade_js', plugins_url('assets/rs-upgrade.js', __FILE__), ['jquery','acal_admin_js'], '1.9.5', true);
+        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
+        wp_enqueue_script('acal_rs_upgrade_js', plugins_url('assets/rs-upgrade.js', __FILE__), ['jquery','acal_admin_js'], self::VERSION, true);
         wp_localize_script('acal_rs_upgrade_js', 'ACAL_ORDER', [
   'ajax'  => admin_url('admin-ajax.php'),
   'nonce' => wp_create_nonce(self::NONCE_KEY),
@@ -103,7 +104,7 @@ public function ajax_paste_task(){
 
   $src_id = isset($_POST['src_id']) ? absint($_POST['src_id']) : 0;
   $target_tecnico = isset($_POST['tecnico_id']) ? $this->sanitize_text($_POST['tecnico_id']) : '';
-  $target_fecha   = isset($_POST['fecha']) ? $this->sanitize_text($_POST['fecha']) : '';
+  $target_fecha   = $this->normalize_date($_POST['fecha'] ?? '', false);
   if (!$src_id || !$target_tecnico || !$target_fecha) wp_send_json_error(['msg'=>'Datos incompletos'], 400);
   if (get_post_type($src_id) !== self::CPT_TASK) wp_send_json_error(['msg'=>'Origen inválido'], 400);
 
@@ -139,7 +140,7 @@ public function ajax_move_task(){
 
     $task_id    = isset($_POST['task_id']) ? absint($_POST['task_id']) : 0;
     $tecnico_id = isset($_POST['tecnico_id']) ? $this->sanitize_text($_POST['tecnico_id']) : '';
-    $fecha      = isset($_POST['fecha']) ? $this->sanitize_text($_POST['fecha']) : '';
+    $fecha      = $this->normalize_date($_POST['fecha'] ?? '', false);
 
     if (!$task_id || !$fecha || !$tecnico_id) wp_send_json_error(['msg'=>'Datos incompletos'], 400);
     if (get_post_type($task_id) !== self::CPT_TASK) wp_send_json_error(['msg'=>'Tarea inválida'], 404);
@@ -163,13 +164,13 @@ public function enqueue_assets_frontend(){
     if (!$post) return;
     if (!has_shortcode($post->post_content, 'calendario_taller')) return;
 
-    wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], '1.9.5');
-    wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], '1.9.5');
+    wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
+    wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], self::VERSION);
 
     // Añadido: CSS de mejoras para que también aplique en frontend
-    wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], '1.9.7');
+    wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
 
-    wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], '1.9.5', true);
+    wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
 }
 
 
@@ -204,6 +205,23 @@ public function enqueue_assets_frontend(){
         update_option(self::OPT_TECHS, $arr, false);
     }
     private function sanitize_text($s){ return sanitize_text_field($s); }
+    private function normalize_date($value, $allow_fallback = true) {
+        $value = sanitize_text_field((string) $value);
+        if ($value === '') {
+            return $allow_fallback ? current_time('Y-m-d') : '';
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return $value;
+        }
+
+        $ts = strtotime($value);
+        if ($ts === false) {
+            return $allow_fallback ? current_time('Y-m-d') : '';
+        }
+
+        return date('Y-m-d', $ts);
+    }
     private function best_text_color($bg){
         $hex = ltrim($bg,'#'); if(strlen($hex)==3){ $hex=$hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
         $r=hexdec(substr($hex,0,2)); $g=hexdec(substr($hex,2,2)); $b=hexdec(substr($hex,4,2));
@@ -285,7 +303,7 @@ private function order_tecnicos_array(array $tecs): array{
 
     /* Fechas / Semana */
     private function week_range_from_query(){
-        $date = isset($_GET['date']) ? sanitize_text_field($_GET['date']) : current_time('Y-m-d');
+        $date = $this->normalize_date($_GET['date'] ?? '', true);
         $ts = strtotime($date);
         $dow = (int)date('N',$ts); // 1..7
         $monday = strtotime("-".($dow-1)." days", $ts);
@@ -660,7 +678,7 @@ echo '</div>';   // .acal-tech-item
         if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
         if (!$this->can_edit()) wp_die('Permisos insuficientes');
         $tecnico_id = $this->sanitize_text($_POST['tecnico_id'] ?? '');
-        $fecha = $this->sanitize_text($_POST['fecha'] ?? current_time('Y-m-d'));
+        $fecha = $this->normalize_date($_POST['fecha'] ?? '', true);
         $estado = $this->sanitize_text($_POST['estado'] ?? 'programado');
         $sucursal = $this->sanitize_text($_POST['sucursal'] ?? '');
         $cliente = $this->sanitize_text($_POST['cliente'] ?? '');
@@ -688,7 +706,7 @@ public function handle_update_task(){
     if (!$post_id) wp_die('ID inválido');
 
     $tecnico_id = $this->sanitize_text($_POST['tecnico_id'] ?? '');
-    $fecha      = $this->sanitize_text($_POST['fecha'] ?? current_time('Y-m-d'));
+    $fecha      = $this->normalize_date($_POST['fecha'] ?? '', true);
     $estado     = $this->sanitize_text($_POST['estado'] ?? 'programado');
     $sucursal   = $this->sanitize_text($_POST['sucursal'] ?? '');
     $cliente    = $this->sanitize_text($_POST['cliente'] ?? '');
@@ -1034,7 +1052,7 @@ public function handle_export_day_png(){
 
     // JS: html2canvas export
     $fname_js = esc_js($fname);
-    $h2c = esc_url( plugins_url('assets/html2canvas.min.js', __FILE__) . '?ver=1.9.7' );
+    $h2c = esc_url( plugins_url('assets/html2canvas.min.js', __FILE__) . '?ver=' . self::VERSION );
     echo <<<ACALJS
 <script src="$h2c"></script>
 <script>
@@ -1422,10 +1440,10 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         if ($this->is_restricted_context()) { return; }
         if (is_admin() || !isset($_GET['acal_standalone']) || $_GET['acal_standalone'] !== '1') return;
 
-        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], '1.9.5');
-        wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], '1.9.5');
-        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], '1.9.7');
-        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], '1.9.5', true);
+        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
+        wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], self::VERSION);
+        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
+        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
 
         status_header(200);
         nocache_headers();
