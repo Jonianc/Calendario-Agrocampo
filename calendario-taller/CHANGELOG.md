@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.11
+- Durante la importación ahora se registran motivos de tareas omitidas (`duplicada`, `fecha_invalida`, `meta_invalida`).
+- Se muestra en la UI de Importar/Exportar un resumen por motivo y una muestra de tareas omitidas con razón.
+- El detalle de omisiones se transporta de forma temporal y segura usando transients para evitar URLs extensas.
+
 ## 1.9.10
 - Se agrega opción de **sanitizar**: eliminar todas las tareas desde Importar/Exportar.
 - Nueva acción protegida por nonce/permisos para purgar el CPT `acal_tarea` y reportar cantidad eliminada.

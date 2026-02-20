@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.10
+ * Version: 1.9.11
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.10';
+    const VERSION   = '1.9.11';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -695,6 +695,29 @@ echo '</div>';   // .acal-tech-item
                 .'. Técnicos archivo: '.esc_html((string)$stats['tecs_total'])
                 .', agregados: '.esc_html((string)$stats['tecs_added'])
                 .', omitidos: '.esc_html((string)$stats['tecs_skipped']).'.</p></div>';
+
+            $log_key = isset($_GET['import_log']) ? sanitize_text_field($_GET['import_log']) : '';
+            $log = $log_key ? get_transient('acal_import_log_'.$log_key) : [];
+            if (is_array($log) && !empty($log['reasons'])){
+                echo '<div class="notice notice-info"><p><strong>Motivos de tareas omitidas:</strong> ';
+                $parts = [];
+                foreach ($log['reasons'] as $rk => $rv){
+                    $parts[] = esc_html($rk).': '.esc_html((string)absint($rv));
+                }
+                echo implode(' · ', $parts).'</p>';
+                if (!empty($log['samples']) && is_array($log['samples'])){
+                    echo '<ul style="margin:6px 0 0 18px;list-style:disc;">';
+                    foreach ($log['samples'] as $item){
+                        $t = isset($item['title']) ? (string)$item['title'] : '(Sin título)';
+                        $r = isset($item['reason']) ? (string)$item['reason'] : 'omitida';
+                        $f = isset($item['fecha']) ? (string)$item['fecha'] : '';
+                        echo '<li><strong>'.esc_html($t).'</strong> — '.esc_html($r).($f!=='' ? ' ('.esc_html($f).')' : '').'</li>';
+                    }
+                    echo '</ul>';
+                }
+                echo '</div>';
+                delete_transient('acal_import_log_'.$log_key);
+            }
         }
 
         if (isset($_GET['purge']) && $_GET['purge'] === '1'){
@@ -1356,6 +1379,8 @@ ACALJS;
             'tecs_total'    => 0,
             'tecs_added'    => 0,
             'tecs_skipped'  => 0,
+            'tasks_skipped_duplicate' => 0,
+            'tasks_skipped_invalid'   => 0,
         ];
         if ($replace){
             $q = new WP_Query([
@@ -1434,15 +1459,38 @@ ACALJS;
             }
         }
 
+        $skip_reasons = ['duplicada'=>0,'fecha_invalida'=>0,'meta_invalida'=>0];
+        $skip_samples = [];
+
         foreach ($tasks as $task){
             $post_data = $task['post'] ?? [];
             $meta_data = $task['meta'] ?? [];
             $post_title = $post_data['post_title'] ?? 'Tarea';
 
             if (!$replace){
-                $fp = $this->build_task_fingerprint($post_title, is_array($meta_data) ? $meta_data : []);
+                if (!is_array($meta_data)) {
+                    $stats['tasks_skipped']++;
+                    $stats['tasks_skipped_invalid']++;
+                    $skip_reasons['meta_invalida']++;
+                    if (count($skip_samples) < 10) $skip_samples[] = ['title'=>$post_title,'reason'=>'meta_invalida','fecha'=>''];
+                    continue;
+                }
+
+                $fecha_raw = $this->extract_meta_scalar($meta_data, '_acal_fecha');
+                if ($fecha_raw !== '' && $this->normalize_date($fecha_raw, false) === '') {
+                    $stats['tasks_skipped']++;
+                    $stats['tasks_skipped_invalid']++;
+                    $skip_reasons['fecha_invalida']++;
+                    if (count($skip_samples) < 10) $skip_samples[] = ['title'=>$post_title,'reason'=>'fecha_invalida','fecha'=>$fecha_raw];
+                    continue;
+                }
+
+                $fp = $this->build_task_fingerprint($post_title, $meta_data);
                 if (isset($existing_fingerprints[$fp])) {
                     $stats['tasks_skipped']++;
+                    $stats['tasks_skipped_duplicate']++;
+                    $skip_reasons['duplicada']++;
+                    if (count($skip_samples) < 10) $skip_samples[] = ['title'=>$post_title,'reason'=>'duplicada','fecha'=>$fecha_raw];
                     continue;
                 }
                 $existing_fingerprints[$fp] = true;
@@ -1467,9 +1515,16 @@ ACALJS;
             }
         }
 
+        $import_log_key = wp_generate_password(12, false, false);
+        set_transient('acal_import_log_'.$import_log_key, [
+            'reasons' => array_filter($skip_reasons),
+            'samples' => $skip_samples,
+        ], 10 * MINUTE_IN_SECONDS);
+
         wp_safe_redirect(add_query_arg([
             'page' => 'acal_import_export',
             'import' => 1,
+            'import_log' => $import_log_key,
             'tasks_total' => $stats['tasks_total'],
             'tasks_added' => $stats['tasks_added'],
             'tasks_skipped' => $stats['tasks_skipped'],
