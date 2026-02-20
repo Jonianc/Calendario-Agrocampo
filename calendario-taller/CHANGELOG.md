@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.16
+- La acción **Pegar en otra fecha…** (solo en tarea origen copiada) ahora usa selector de fecha (`input type="date"`) en lugar de `prompt()`.
+- Se agrega mini modal con botones **Confirmar/Cancelar**, validación de formato y selección más intuitiva.
+- Se mantiene sin cambios el flujo de **Pegar** rápido por celda en la semana visible.
+
 ## 1.9.15
 - Se corrige UX: **Pegar en otra fecha…** ya no aparece en todas las celdas.
 - La acción **Pegar en otra fecha…** se muestra solo en la tarea origen copiada para evitar confusión.

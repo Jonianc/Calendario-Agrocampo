@@ -305,6 +305,7 @@ $(document).on('acal:clipboard-clear', function(){
 /* ===== Pegar en otra fecha SOLO desde tarea origen copiada ===== */
 (function($){
   var SRC = { id:null, tecnico:'' };
+  var DATE_MODAL_ID = 'acal-date-picker-modal';
 
   function parseTaskPayloadFromElement(el){
     var $task = $(el).closest('.acal-task');
@@ -316,6 +317,54 @@ $(document).on('acal:clipboard-clear', function(){
   function clearSourceAction(){
     $('.acal-source-task').removeClass('acal-source-task');
     $('.acal-paste-other-source').remove();
+  }
+
+  function ensureDateModal(){
+    var $modal = $('#'+DATE_MODAL_ID);
+    if($modal.length) return $modal;
+
+    $modal = $(
+      '<div id="'+DATE_MODAL_ID+'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100000">'+
+        '<div style="max-width:340px;margin:12vh auto;background:#fff;border-radius:8px;padding:14px;box-shadow:0 8px 28px rgba(0,0,0,.25)">'+
+          '<h3 style="margin:0 0 10px;font-size:15px">Selecciona fecha destino</h3>'+
+          '<input type="date" class="acal-target-date" style="width:100%;margin-bottom:10px" />'+
+          '<div style="display:flex;gap:8px;justify-content:flex-end">'+
+            '<button type="button" class="button acal-date-cancel">Cancelar</button>'+
+            '<button type="button" class="button button-primary acal-date-confirm">Confirmar</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
+    );
+
+    $('body').append($modal);
+    return $modal;
+  }
+
+  function openDateModal(onConfirm){
+    var $modal = ensureDateModal();
+    var $input = $modal.find('.acal-target-date');
+    var today = new Date().toISOString().slice(0,10);
+
+    $input.val(today);
+    $modal.show();
+    setTimeout(function(){ $input.trigger('focus'); }, 10);
+
+    function close(){
+      $modal.hide();
+      $modal.off('.acalDatePicker');
+    }
+
+    $modal.on('click.acalDatePicker', '.acal-date-cancel', function(){ close(); });
+    $modal.on('click.acalDatePicker', function(e){ if(e.target === this) close(); });
+    $modal.on('click.acalDatePicker', '.acal-date-confirm', function(){
+      var v = String($input.val() || '').trim();
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){
+        alert('Fecha inválida. Usa formato YYYY-MM-DD.');
+        return;
+      }
+      close();
+      if(typeof onConfirm === 'function') onConfirm(v);
+    });
   }
 
   function renderSourceAction(){
@@ -349,35 +398,30 @@ $(document).on('acal:clipboard-clear', function(){
 
   $(document).on('click', '.acal-paste-other-source', function(e){
     e.preventDefault();
-    var srcId = $(this).data('task-id');
-    var tecnico = $(this).data('tecnico') || SRC.tecnico || '';
+    var $btn = $(this);
+    var srcId = $btn.data('task-id');
+    var tecnico = $btn.data('tecnico') || SRC.tecnico || '';
     if(!srcId || !tecnico){
       alert('No se pudo identificar la tarea origen.');
       return;
     }
 
-    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', '');
-    if (targetDate === null) return;
-    targetDate = String(targetDate).trim();
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
-      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
-      return;
-    }
-
-    var $b = $(this).prop('disabled', true);
-    $.post(ajaxurl, {
-      action:'acal_paste_task',
-      nonce:(window.ACAL_NONCE||''),
-      src_id: srcId,
-      tecnico_id: tecnico,
-      fecha: targetDate
-    }).done(function(r){
-      if(r && r.success){
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
-      } else {
-        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
-      }
-    }).fail(function(){ alert('Error pegando'); })
-      .always(function(){ $b.prop('disabled', false); });
+    openDateModal(function(targetDate){
+      $btn.prop('disabled', true);
+      $.post(ajaxurl, {
+        action:'acal_paste_task',
+        nonce:(window.ACAL_NONCE||''),
+        src_id: srcId,
+        tecnico_id: tecnico,
+        fecha: targetDate
+      }).done(function(r){
+        if(r && r.success){
+          window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
+        } else {
+          alert((r && r.data && r.data.msg) || 'No se pudo pegar');
+        }
+      }).fail(function(){ alert('Error pegando'); })
+        .always(function(){ $btn.prop('disabled', false); });
+    });
   });
 })(jQuery);
