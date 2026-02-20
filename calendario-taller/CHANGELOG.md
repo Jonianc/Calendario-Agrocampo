@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.10
+- Se agrega opción de **sanitizar**: eliminar todas las tareas desde Importar/Exportar.
+- Nueva acción protegida por nonce/permisos para purgar el CPT `acal_tarea` y reportar cantidad eliminada.
+- La UI muestra confirmación y aviso de resultado de la sanitización.
+
 ## 1.9.9
 - Se muestra la cantidad actual de tareas y técnicos en la pantalla de Importar/Exportar.
 - Se agrega detalle visual del resultado de importación (tareas totales, agregadas, omitidas, errores; técnicos totales/agregados/omitidos).

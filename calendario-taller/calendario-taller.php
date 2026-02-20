@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.9
+ * Version: 1.9.10
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.9';
+    const VERSION   = '1.9.10';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -34,6 +34,7 @@ class ACAL_Calendario_Taller {
         add_action('admin_post_acal_export_day_png', [$this, 'handle_export_day_png']);
         add_action('admin_post_acal_export_data', [$this, 'handle_export_data']);
         add_action('admin_post_acal_import_data', [$this, 'handle_import_data']);
+        add_action('admin_post_acal_purge_tasks', [$this, 'handle_purge_tasks']);
         add_action('wp_ajax_acal_move_task', [$this, 'ajax_move_task']);
         add_action('wp_ajax_acal_save_tecnicos_order', [$this, 'ajax_save_tecnicos_order']);
         add_action('wp_ajax_acal_paste_task', [$this, 'ajax_paste_task']);
@@ -696,6 +697,12 @@ echo '</div>';   // .acal-tech-item
                 .', omitidos: '.esc_html((string)$stats['tecs_skipped']).'.</p></div>';
         }
 
+        if (isset($_GET['purge']) && $_GET['purge'] === '1'){
+            $deleted = isset($_GET['deleted']) ? absint($_GET['deleted']) : 0;
+            echo '<div class="notice notice-warning"><p><strong>Sanitización completada.</strong> '
+                .'Tareas eliminadas: '.esc_html((string)$deleted).'.</p></div>';
+        }
+
         echo '<h2>Exportar</h2>';
         echo '<p>La exportación incluye un bloque <code>summary</code> con conteos y metadatos del proceso.</p>';
         if ($can_edit){
@@ -703,6 +710,18 @@ echo '</div>';   // .acal-tech-item
             echo '<input type="hidden" name="action" value="acal_export_data" />';
             echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
             echo '<button class="button button-primary">Descargar exportación</button>';
+            echo '</form>';
+        } else {
+            echo '<p><em>Solo lectura</em></p>';
+        }
+
+        echo '<h2>Sanitizar</h2>';
+        echo '<p>Elimina todas las tareas del calendario para iniciar desde cero.</p>';
+        if ($can_edit){
+            echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" onsubmit="return confirm(&quot;¿Eliminar TODAS las tareas? Esta acción no se puede deshacer.&quot;)">';
+            echo '<input type="hidden" name="action" value="acal_purge_tasks" />';
+            echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
+            echo '<p><button class="button button-secondary">Eliminar todas las tareas</button></p>';
             echo '</form>';
         } else {
             echo '<p><em>Solo lectura</em></p>';
@@ -1458,6 +1477,35 @@ ACALJS;
             'tecs_total' => $stats['tecs_total'],
             'tecs_added' => $stats['tecs_added'],
             'tecs_skipped' => $stats['tecs_skipped'],
+        ], admin_url('admin.php')));
+        exit;
+    }
+
+
+    public function handle_purge_tasks(){
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
+        if (!$this->can_edit()) wp_die('Permisos insuficientes');
+
+        $deleted = 0;
+        $q = new WP_Query([
+            'post_type'      => self::CPT_TASK,
+            'post_status'    => 'any',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ]);
+
+        if (!empty($q->posts)){
+            foreach ($q->posts as $id){
+                if (wp_delete_post($id, true)) {
+                    $deleted++;
+                }
+            }
+        }
+
+        wp_safe_redirect(add_query_arg([
+            'page'    => 'acal_import_export',
+            'purge'   => 1,
+            'deleted' => $deleted,
         ], admin_url('admin.php')));
         exit;
     }
