@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.6
+ * Version: 1.9.7
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.6';
+    const VERSION   = '1.9.7';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -211,16 +211,21 @@ public function enqueue_assets_frontend(){
             return $allow_fallback ? current_time('Y-m-d') : '';
         }
 
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-            return $value;
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $m)) {
+            $y = (int) $m[1];
+            $mo = (int) $m[2];
+            $d = (int) $m[3];
+            return checkdate($mo, $d, $y) ? sprintf('%04d-%02d-%02d', $y, $mo, $d) : ($allow_fallback ? current_time('Y-m-d') : '');
         }
 
-        $ts = strtotime($value);
-        if ($ts === false) {
-            return $allow_fallback ? current_time('Y-m-d') : '';
+        if (preg_match('/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/', $value, $m)) {
+            $d = (int) $m[1];
+            $mo = (int) $m[2];
+            $y = (int) $m[3];
+            return checkdate($mo, $d, $y) ? sprintf('%04d-%02d-%02d', $y, $mo, $d) : ($allow_fallback ? current_time('Y-m-d') : '');
         }
 
-        return date('Y-m-d', $ts);
+        return $allow_fallback ? current_time('Y-m-d') : '';
     }
     private function best_text_color($bg){
         $hex = ltrim($bg,'#'); if(strlen($hex)==3){ $hex=$hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
@@ -745,7 +750,7 @@ public function handle_update_task(){
         if (!$this->can_edit()) wp_die('Permisos insuficientes');
         $task_id = intval($_POST['task_id'] ?? 0);
         if ($task_id) wp_delete_post($task_id, true);
-        $fecha = isset($_GET['date']) ? sanitize_text_field($_GET['date']) : current_time('Y-m-d');
+        $fecha = $this->normalize_date($_GET['date'] ?? '', true);
         wp_safe_redirect(admin_url('admin.php?page=acal_calendario&date='.urlencode($fecha))); exit;
     }
 
@@ -755,21 +760,7 @@ public function handle_export_day_png(){
     if (!current_user_can('read')) wp_die('Sin permisos');
     if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
 
-    $date_raw = isset($_GET['date']) ? sanitize_text_field($_GET['date']) : current_time('Y-m-d');
-    $date = $date_raw;
-
-    // Normaliza fecha para consultas (acepta Y-m-d, d/m/Y, d-m-Y o strings parseables)
-    if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date_raw)) {
-        list($d,$m,$y) = array_map('intval', explode('/', $date_raw));
-        $date = sprintf('%04d-%02d-%02d', $y, $m, $d);
-    } elseif (preg_match('/^\d{2}\-\d{2}\-\d{4}$/', $date_raw)) {
-        list($d,$m,$y) = array_map('intval', explode('-', $date_raw));
-        $date = sprintf('%04d-%02d-%02d', $y, $m, $d);
-    } elseif (!preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $date_raw)) {
-        $ts = strtotime($date_raw);
-        if ($ts) $date = date('Y-m-d', $ts);
-        else $date = current_time('Y-m-d');
-    }
+    $date = $this->normalize_date($_GET['date'] ?? '', true);
     $filters   = $this->get_filters();
     $tecnicos_raw = array_values(array_filter($this->get_tecnicos(), function($t){
         return !isset($t['activo']) || $t['activo'];
