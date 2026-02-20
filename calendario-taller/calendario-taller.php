@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.11
+ * Version: 1.9.12
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.11';
+    const VERSION   = '1.9.12';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -698,6 +698,10 @@ echo '</div>';   // .acal-tech-item
 
             $log_key = isset($_GET['import_log']) ? sanitize_text_field($_GET['import_log']) : '';
             $log = $log_key ? get_transient('acal_import_log_'.$log_key) : [];
+            if (is_array($log) && !empty($log['allow_duplicates'])){
+                echo '<div class="notice notice-info"><p>Importación ejecutada con opción: <strong>Permitir duplicadas</strong>.</p></div>';
+            }
+
             if (is_array($log) && !empty($log['reasons'])){
                 echo '<div class="notice notice-info"><p><strong>Motivos de tareas omitidas:</strong> ';
                 $parts = [];
@@ -757,7 +761,8 @@ echo '</div>';   // .acal-tech-item
             echo '<input type="hidden" name="action" value="acal_import_data" />';
             echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
             echo '<p><input type="file" name="acal_import_file" accept="application/json" required /></p>';
-            echo '<label><input type="checkbox" name="acal_replace" value="1" /> Reemplazar tareas existentes</label>';
+            echo '<label><input type="checkbox" name="acal_replace" value="1" /> Reemplazar tareas existentes</label><br>';
+            echo '<label><input type="checkbox" name="acal_allow_duplicates" value="1" /> Permitir importar tareas duplicadas</label>';
             echo '<p><button class="button button-primary">Importar</button></p>';
             echo '</form>';
         } else {
@@ -1371,6 +1376,7 @@ ACALJS;
         }
 
         $replace = !empty($_POST['acal_replace']);
+        $allow_duplicates = !empty($_POST['acal_allow_duplicates']);
         $stats = [
             'tasks_total'   => 0,
             'tasks_added'   => 0,
@@ -1487,11 +1493,13 @@ ACALJS;
 
                 $fp = $this->build_task_fingerprint($post_title, $meta_data);
                 if (isset($existing_fingerprints[$fp])) {
-                    $stats['tasks_skipped']++;
-                    $stats['tasks_skipped_duplicate']++;
-                    $skip_reasons['duplicada']++;
-                    if (count($skip_samples) < 10) $skip_samples[] = ['title'=>$post_title,'reason'=>'duplicada','fecha'=>$fecha_raw];
-                    continue;
+                    if (!$allow_duplicates) {
+                        $stats['tasks_skipped']++;
+                        $stats['tasks_skipped_duplicate']++;
+                        $skip_reasons['duplicada']++;
+                        if (count($skip_samples) < 10) $skip_samples[] = ['title'=>$post_title,'reason'=>'duplicada','fecha'=>$fecha_raw];
+                        continue;
+                    }
                 }
                 $existing_fingerprints[$fp] = true;
             }
@@ -1517,6 +1525,7 @@ ACALJS;
 
         $import_log_key = wp_generate_password(12, false, false);
         set_transient('acal_import_log_'.$import_log_key, [
+            'allow_duplicates' => $allow_duplicates ? 1 : 0,
             'reasons' => array_filter($skip_reasons),
             'samples' => $skip_samples,
         ], 10 * MINUTE_IN_SECONDS);

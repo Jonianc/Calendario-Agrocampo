@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.12
+- Se agrega opción en importación para **permitir tareas duplicadas**.
+- Si la opción está activa, las tareas con motivo `duplicada` dejan de omitirse y se importan.
+- Se muestra en resultados cuando la importación se ejecutó con duplicadas permitidas.
+
 ## 1.9.11
 - Durante la importación ahora se registran motivos de tareas omitidas (`duplicada`, `fecha_invalida`, `meta_invalida`).
 - Se muestra en la UI de Importar/Exportar un resumen por motivo y una muestra de tareas omitidas con razón.
