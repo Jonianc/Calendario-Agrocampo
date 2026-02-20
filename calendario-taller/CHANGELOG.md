@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.15
+- Se corrige UX: **Pegar en otra fecha…** ya no aparece en todas las celdas.
+- La acción **Pegar en otra fecha…** se muestra solo en la tarea origen copiada para evitar confusión.
+- Se mantiene **Pegar** rápido por celda en la semana visible actual.
+
 ## 1.9.14
 - Se mejora la UX de pegado: el botón **Pegar** vuelve a ser de un clic en la semana visible actual.
 - Se agrega botón adicional **Pegar en otra fecha…** para copiar una tarea de a una hacia otra semana cuando se necesite.

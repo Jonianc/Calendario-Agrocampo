@@ -37,7 +37,7 @@
 /* ===== Copiar / Pegar por ID (robusto) ===== */
 (function($){
   var CLIP_ID = null;
-  function refreshPaste(){ if(CLIP_ID){ $('.acal-paste, .acal-paste-other').show(); } else { $('.acal-paste, .acal-paste-other').hide(); } }
+  function refreshPaste(){ if(CLIP_ID){ $('.acal-paste').show(); } else { $('.acal-paste').hide(); } }
 
   $(document).on('click', '.acal-copy', function(e){
     e.preventDefault();
@@ -74,37 +74,6 @@ $(document).on('acal:clipboard-clear', function(){
       .always(function(){ $b.prop('disabled', false); });
   });
 
-  $(document).on('click', '.acal-paste-other', function(e){
-    e.preventDefault();
-    if(!CLIP_ID) return;
-
-    var $b = $(this);
-    var defaultDate = String($b.data('date') || '');
-    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', defaultDate);
-    if (targetDate === null) return;
-    targetDate = String(targetDate).trim();
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
-      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
-      return;
-    }
-
-    $b.prop('disabled', true);
-    $.post(ajaxurl, {
-      action: 'acal_paste_task',
-      nonce: (window.ACAL_NONCE || ''),
-      src_id: CLIP_ID,
-      tecnico_id: $b.data('tecnico'),
-      fecha: targetDate
-    }).done(function(r){
-      if(r && r.success){
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
-      } else {
-        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
-      }
-    }).fail(function(){ alert('Error pegando'); })
-      .always(function(){ $b.prop('disabled', false); });
-  });
-
   $(function(){ refreshPaste(); });
 })(jQuery);
 
@@ -113,7 +82,7 @@ $(document).on('acal:clipboard-clear', function(){
 (function($){
   var CLIP_ID = null;
 
-  function refreshPaste(){ $('.acal-paste, .acal-paste-other')[CLIP_ID ? 'show' : 'hide'](); }
+  function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
 
   // Obtiene el ID de la tarea desde el menú
   function getTaskIdFromMenu($menu){
@@ -187,7 +156,7 @@ $(document).on('acal:clipboard-clear', function(){
 /* ===== Copiar/Pegar robusto (menu + botón inline) ===== */
 (function($){
   var CLIP_ID = null;
-  function refreshPaste(){ $('.acal-paste, .acal-paste-other')[CLIP_ID ? 'show' : 'hide'](); }
+  function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
 
   function getTaskIdFromMenu($menu){
     var tid = $menu.find('input[name="task_id"]').val();
@@ -330,4 +299,85 @@ $(document).on('acal:clipboard-clear', function(){
 
   // Al cargar, asegúrate de estar fuera de modo copiar
   $(function(){ exitCopyMode(); });
+})(jQuery);
+
+
+/* ===== Pegar en otra fecha SOLO desde tarea origen copiada ===== */
+(function($){
+  var SRC = { id:null, tecnico:'' };
+
+  function parseTaskPayloadFromElement(el){
+    var $task = $(el).closest('.acal-task');
+    var payload = $task.find('.acal-edit').first().data('task');
+    if (typeof payload === 'string') { try { payload = JSON.parse(payload); } catch(e){ payload = null; } }
+    return payload && typeof payload === 'object' ? payload : null;
+  }
+
+  function clearSourceAction(){
+    $('.acal-source-task').removeClass('acal-source-task');
+    $('.acal-paste-other-source').remove();
+  }
+
+  function renderSourceAction(){
+    clearSourceAction();
+    if(!SRC.id) return;
+    var $task = $('.acal-task[data-task-id="'+SRC.id+'"]').first();
+    if(!$task.length) return;
+    $task.addClass('acal-source-task');
+
+    var $btn = $('<button type="button" class="button button-small acal-paste-other-source" style="margin-top:6px">Pegar en otra fecha…</button>')
+      .attr('data-task-id', SRC.id)
+      .attr('data-tecnico', SRC.tecnico || '');
+
+    var $anchor = $task.find('.acal-kebab-wrap').first();
+    if($anchor.length){ $btn.insertAfter($anchor); }
+    else { $task.append($btn); }
+  }
+
+  $(document).on('click', '.acal-copy, .acal-copy-inline', function(){
+    var tid = $(this).data('task-id');
+    SRC.id = tid ? parseInt(tid, 10) : null;
+    var payload = parseTaskPayloadFromElement(this);
+    SRC.tecnico = payload && payload.tecnico_id ? String(payload.tecnico_id) : '';
+    renderSourceAction();
+  });
+
+  $(document).on('acal:clipboard-clear', function(){
+    SRC = { id:null, tecnico:'' };
+    clearSourceAction();
+  });
+
+  $(document).on('click', '.acal-paste-other-source', function(e){
+    e.preventDefault();
+    var srcId = $(this).data('task-id');
+    var tecnico = $(this).data('tecnico') || SRC.tecnico || '';
+    if(!srcId || !tecnico){
+      alert('No se pudo identificar la tarea origen.');
+      return;
+    }
+
+    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', '');
+    if (targetDate === null) return;
+    targetDate = String(targetDate).trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
+      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
+      return;
+    }
+
+    var $b = $(this).prop('disabled', true);
+    $.post(ajaxurl, {
+      action:'acal_paste_task',
+      nonce:(window.ACAL_NONCE||''),
+      src_id: srcId,
+      tecnico_id: tecnico,
+      fecha: targetDate
+    }).done(function(r){
+      if(r && r.success){
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
+      } else {
+        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
+      }
+    }).fail(function(){ alert('Error pegando'); })
+      .always(function(){ $b.prop('disabled', false); });
+  });
 })(jQuery);

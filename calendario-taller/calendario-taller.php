@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.14
+ * Version: 1.9.15
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.14';
+    const VERSION   = '1.9.15';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -542,7 +542,6 @@ echo '</div>';   // .acal-tech-item
             if ($can_edit){
                 echo '<button class="button acal-add acal-hide-on-print" data-tecnico="'.esc_attr($tecId).'" data-date="'.esc_attr($d).'" data-tecnico-name="'.esc_attr($t['nombre']).'">+ Agregar</button>'; 
                 echo '<button class="button acal-paste" data-date="'.esc_attr($d).'" data-tecnico="'.esc_attr($tecId).'" style="margin-left:6px;display:none">Pegar</button>';
-                echo '<button class="button acal-paste-other" data-date="'.esc_attr($d).'" data-tecnico="'.esc_attr($tecId).'" style="margin-left:6px;display:none">Pegar en otra fecha…</button>';
             }
             if (!empty($cellTasks)){
                 foreach($cellTasks as $task){
