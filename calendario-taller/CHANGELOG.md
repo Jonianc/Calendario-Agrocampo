@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.14
+- Se mejora la UX de pegado: el botón **Pegar** vuelve a ser de un clic en la semana visible actual.
+- Se agrega botón adicional **Pegar en otra fecha…** para copiar una tarea de a una hacia otra semana cuando se necesite.
+- Se mantiene validación de fecha (`YYYY-MM-DD`) solo en el flujo de “otra fecha”.
+
 ## 1.9.13
 - Se mejora el pegado de tareas (copiado de a una): ahora permite indicar fecha destino manual (`YYYY-MM-DD`).
 - Esto habilita copiar una tarea hacia otra semana sin depender solo de celdas visibles en la semana actual.

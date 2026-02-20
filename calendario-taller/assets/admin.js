@@ -37,7 +37,7 @@
 /* ===== Copiar / Pegar por ID (robusto) ===== */
 (function($){
   var CLIP_ID = null;
-  function refreshPaste(){ if(CLIP_ID){ $('.acal-paste').show(); } else { $('.acal-paste').hide(); } }
+  function refreshPaste(){ if(CLIP_ID){ $('.acal-paste, .acal-paste-other').show(); } else { $('.acal-paste, .acal-paste-other').hide(); } }
 
   $(document).on('click', '.acal-copy', function(e){
     e.preventDefault();
@@ -54,6 +54,27 @@ $(document).on('acal:clipboard-clear', function(){
 
 
   $(document).on('click', '.acal-paste', function(e){
+    e.preventDefault();
+    if(!CLIP_ID) return;
+    var $b = $(this); $b.prop('disabled', true);
+    $.post(ajaxurl, {
+      action: 'acal_paste_task',
+      nonce: (window.ACAL_NONCE || ''),
+      src_id: CLIP_ID,
+      tecnico_id: $b.data('tecnico'),
+      fecha: $b.data('date')
+    }).done(function(r){
+      if(r && r.success){
+        var d = String($b.data('date'));
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
+      } else {
+        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
+      }
+    }).fail(function(){ alert('Error pegando'); })
+      .always(function(){ $b.prop('disabled', false); });
+  });
+
+  $(document).on('click', '.acal-paste-other', function(e){
     e.preventDefault();
     if(!CLIP_ID) return;
 
@@ -92,7 +113,7 @@ $(document).on('acal:clipboard-clear', function(){
 (function($){
   var CLIP_ID = null;
 
-  function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
+  function refreshPaste(){ $('.acal-paste, .acal-paste-other')[CLIP_ID ? 'show' : 'hide'](); }
 
   // Obtiene el ID de la tarea desde el menú
   function getTaskIdFromMenu($menu){
@@ -141,27 +162,17 @@ $(document).on('acal:clipboard-clear', function(){
   $(document).on('click', '.acal-paste', function(e){
     e.preventDefault();
     if (!CLIP_ID) return;
-
-    var $b = $(this);
-    var defaultDate = String($b.data('date') || '');
-    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', defaultDate);
-    if (targetDate === null) return;
-    targetDate = String(targetDate).trim();
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
-      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
-      return;
-    }
-
-    $b.prop('disabled', true);
+    var $b = $(this).prop('disabled', true);
     $.post(ajaxurl, {
       action: 'acal_paste_task',
       nonce: (window.ACAL_NONCE || ''),
       src_id: CLIP_ID,
       tecnico_id: $b.data('tecnico'),
-      fecha: targetDate
+      fecha: $b.data('date')
     }).done(function(r){
       if (r && r.success) {
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
+        var d = String($b.data('date'));
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
       } else {
         alert((r && r.data && r.data.msg) || 'No se pudo pegar');
       }
@@ -176,7 +187,7 @@ $(document).on('acal:clipboard-clear', function(){
 /* ===== Copiar/Pegar robusto (menu + botón inline) ===== */
 (function($){
   var CLIP_ID = null;
-  function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
+  function refreshPaste(){ $('.acal-paste, .acal-paste-other')[CLIP_ID ? 'show' : 'hide'](); }
 
   function getTaskIdFromMenu($menu){
     var tid = $menu.find('input[name="task_id"]').val();
@@ -231,27 +242,17 @@ $(document).on('acal:clipboard-clear', function(){
   $(document).on('click', '.acal-paste', function(e){
     e.preventDefault();
     if(!CLIP_ID) return;
-
-    var $b = $(this);
-    var defaultDate = String($b.data('date') || '');
-    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', defaultDate);
-    if (targetDate === null) return;
-    targetDate = String(targetDate).trim();
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
-      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
-      return;
-    }
-
-    $b.prop('disabled', true);
+    var $b=$(this).prop('disabled', true);
     $.post(ajaxurl, {
       action:'acal_paste_task',
       nonce:(window.ACAL_NONCE||''),
       src_id: CLIP_ID,
       tecnico_id: $b.data('tecnico'),
-      fecha: targetDate
+      fecha: $b.data('date')
     }).done(function(r){
       if(r && r.success){
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
+        var d=String($b.data('date'));
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
       }else{
         alert((r && r.data && r.data.msg)||'No se pudo pegar');
       }
