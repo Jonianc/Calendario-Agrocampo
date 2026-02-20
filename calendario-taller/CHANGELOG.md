@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.8
+- El importador en modo normal ahora compara contra datos existentes y agrega solo faltantes (evita duplicados exactos de tareas).
+- Merge de técnicos por `id`: conserva los existentes y añade solo técnicos nuevos del archivo importado.
+- Merge de `acal_tecnicos_order`: mantiene el orden actual y agrega IDs nuevos al final.
+- Se sube versión del plugin a `1.9.8`.
+
 ## 1.9.7
 - Se endurece `normalize_date()` para aceptar solo formatos explícitos válidos (`Y-m-d`, `d/m/Y`, `d-m-Y`) y validar calendario con `checkdate`.
 - Se elimina el `strtotime` genérico para evitar interpretaciones ambiguas de fecha.

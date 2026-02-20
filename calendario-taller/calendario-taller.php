@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.7
+ * Version: 1.9.8
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.7';
+    const VERSION   = '1.9.8';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -226,6 +226,34 @@ public function enqueue_assets_frontend(){
         }
 
         return $allow_fallback ? current_time('Y-m-d') : '';
+    }
+
+    private function extract_meta_scalar(array $meta_data, $key){
+        if (!isset($meta_data[$key])) return '';
+        $value = $meta_data[$key];
+        if (is_array($value)) {
+            $value = reset($value);
+        }
+        if (is_array($value) || is_object($value)) {
+            $value = wp_json_encode($value);
+        }
+        return sanitize_text_field((string) $value);
+    }
+
+    private function build_task_fingerprint($post_title, array $meta_data){
+        $fecha = $this->normalize_date($this->extract_meta_scalar($meta_data, '_acal_fecha'), false);
+        $payload = [
+            'post_title'    => sanitize_text_field((string) $post_title),
+            'tecnico_id'    => $this->extract_meta_scalar($meta_data, '_acal_tecnico_id'),
+            'fecha'         => $fecha,
+            'estado'        => $this->extract_meta_scalar($meta_data, '_acal_estado'),
+            'sucursal'      => $this->extract_meta_scalar($meta_data, '_acal_sucursal'),
+            'cliente'       => $this->extract_meta_scalar($meta_data, '_acal_cliente'),
+            'equipo'        => $this->extract_meta_scalar($meta_data, '_acal_equipo'),
+            'descripcion'   => $this->extract_meta_scalar($meta_data, '_acal_descripcion'),
+            'turno'         => strtolower($this->extract_meta_scalar($meta_data, '_acal_turno')),
+        ];
+        return md5(wp_json_encode($payload));
     }
     private function best_text_color($bg){
         $hex = ltrim($bg,'#'); if(strlen($hex)==3){ $hex=$hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
@@ -1267,22 +1295,82 @@ ACALJS;
             }
         }
 
+        // Técnicos: si no es reemplazo, agrega solo faltantes por ID.
         if (isset($data['tecnicos']) && is_array($data['tecnicos'])){
-            update_option(self::OPT_TECHS, $data['tecnicos'], false);
+            if ($replace){
+                update_option(self::OPT_TECHS, $data['tecnicos'], false);
+            } else {
+                $existing_tecs = get_option(self::OPT_TECHS, []);
+                if (!is_array($existing_tecs)) $existing_tecs = [];
+                $by_id = [];
+                foreach ($existing_tecs as $t){
+                    if (!empty($t['id'])) $by_id[$t['id']] = $t;
+                }
+                foreach ($data['tecnicos'] as $t){
+                    if (empty($t['id']) || isset($by_id[$t['id']])) continue;
+                    $existing_tecs[] = $t;
+                    $by_id[$t['id']] = $t;
+                }
+                update_option(self::OPT_TECHS, $existing_tecs, false);
+            }
         }
+
+        // Orden de técnicos: en merge, preserva existente y agrega IDs nuevos al final.
         if (isset($data['tecnicos_order']) && is_array($data['tecnicos_order'])){
-            update_option('acal_tecnicos_order', $data['tecnicos_order'], false);
+            if ($replace){
+                update_option('acal_tecnicos_order', $data['tecnicos_order'], false);
+            } else {
+                $current_order = get_option('acal_tecnicos_order', []);
+                if (!is_array($current_order)) $current_order = [];
+                $seen = array_fill_keys($current_order, true);
+                foreach ($data['tecnicos_order'] as $id){
+                    $id = sanitize_text_field((string) $id);
+                    if ($id === '' || isset($seen[$id])) continue;
+                    $current_order[] = $id;
+                    $seen[$id] = true;
+                }
+                update_option('acal_tecnicos_order', $current_order, false);
+            }
         }
 
         $tasks = isset($data['tasks']) && is_array($data['tasks']) ? $data['tasks'] : [];
+
+        // Si no es reemplazo, indexa tareas existentes para importar solo faltantes.
+        $existing_fingerprints = [];
+        if (!$replace){
+            $existing_q = new WP_Query([
+                'post_type'      => self::CPT_TASK,
+                'post_status'    => 'any',
+                'posts_per_page' => -1,
+                'fields'         => 'ids',
+            ]);
+            if (!empty($existing_q->posts)){
+                foreach ($existing_q->posts as $existing_id){
+                    $existing_post = get_post($existing_id);
+                    if (!$existing_post) continue;
+                    $fp = $this->build_task_fingerprint($existing_post->post_title, get_post_meta($existing_id));
+                    $existing_fingerprints[$fp] = true;
+                }
+            }
+        }
+
         foreach ($tasks as $task){
             $post_data = $task['post'] ?? [];
             $meta_data = $task['meta'] ?? [];
+            $post_title = $post_data['post_title'] ?? 'Tarea';
+
+            if (!$replace){
+                $fp = $this->build_task_fingerprint($post_title, is_array($meta_data) ? $meta_data : []);
+                if (isset($existing_fingerprints[$fp])) {
+                    continue;
+                }
+                $existing_fingerprints[$fp] = true;
+            }
 
             $post_id = wp_insert_post([
                 'post_type'   => self::CPT_TASK,
                 'post_status' => $post_data['post_status'] ?? 'publish',
-                'post_title'  => $post_data['post_title'] ?? 'Tarea',
+                'post_title'  => $post_title,
             ]);
             if (is_wp_error($post_id)) {
                 continue;
