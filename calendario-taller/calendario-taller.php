@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.12
+ * Version: 1.9.13
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.12';
+    const VERSION   = '1.9.13';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';

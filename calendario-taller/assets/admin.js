@@ -56,17 +56,27 @@ $(document).on('acal:clipboard-clear', function(){
   $(document).on('click', '.acal-paste', function(e){
     e.preventDefault();
     if(!CLIP_ID) return;
-    var $b = $(this); $b.prop('disabled', true);
+
+    var $b = $(this);
+    var defaultDate = String($b.data('date') || '');
+    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', defaultDate);
+    if (targetDate === null) return;
+    targetDate = String(targetDate).trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
+      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
+      return;
+    }
+
+    $b.prop('disabled', true);
     $.post(ajaxurl, {
       action: 'acal_paste_task',
       nonce: (window.ACAL_NONCE || ''),
       src_id: CLIP_ID,
       tecnico_id: $b.data('tecnico'),
-      fecha: $b.data('date')
+      fecha: targetDate
     }).done(function(r){
       if(r && r.success){
-        var d = String($b.data('date'));
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
       } else {
         alert((r && r.data && r.data.msg) || 'No se pudo pegar');
       }
@@ -131,17 +141,27 @@ $(document).on('acal:clipboard-clear', function(){
   $(document).on('click', '.acal-paste', function(e){
     e.preventDefault();
     if (!CLIP_ID) return;
-    var $b = $(this).prop('disabled', true);
+
+    var $b = $(this);
+    var defaultDate = String($b.data('date') || '');
+    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', defaultDate);
+    if (targetDate === null) return;
+    targetDate = String(targetDate).trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
+      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
+      return;
+    }
+
+    $b.prop('disabled', true);
     $.post(ajaxurl, {
       action: 'acal_paste_task',
       nonce: (window.ACAL_NONCE || ''),
       src_id: CLIP_ID,
       tecnico_id: $b.data('tecnico'),
-      fecha: $b.data('date')
+      fecha: targetDate
     }).done(function(r){
       if (r && r.success) {
-        var d = String($b.data('date'));
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
       } else {
         alert((r && r.data && r.data.msg) || 'No se pudo pegar');
       }
@@ -211,17 +231,27 @@ $(document).on('acal:clipboard-clear', function(){
   $(document).on('click', '.acal-paste', function(e){
     e.preventDefault();
     if(!CLIP_ID) return;
-    var $b=$(this).prop('disabled', true);
+
+    var $b = $(this);
+    var defaultDate = String($b.data('date') || '');
+    var targetDate = window.prompt('Fecha destino (YYYY-MM-DD). Puedes pegar en otra semana:', defaultDate);
+    if (targetDate === null) return;
+    targetDate = String(targetDate).trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)){
+      alert('Fecha inválida. Usa formato YYYY-MM-DD.');
+      return;
+    }
+
+    $b.prop('disabled', true);
     $.post(ajaxurl, {
       action:'acal_paste_task',
       nonce:(window.ACAL_NONCE||''),
       src_id: CLIP_ID,
       tecnico_id: $b.data('tecnico'),
-      fecha: $b.data('date')
+      fecha: targetDate
     }).done(function(r){
       if(r && r.success){
-        var d=String($b.data('date'));
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
+        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(targetDate);
       }else{
         alert((r && r.data && r.data.msg)||'No se pudo pegar');
       }

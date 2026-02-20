@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.13
+- Se mejora el pegado de tareas (copiado de a una): ahora permite indicar fecha destino manual (`YYYY-MM-DD`).
+- Esto habilita copiar una tarea hacia otra semana sin depender solo de celdas visibles en la semana actual.
+- Se valida formato de fecha en cliente antes de enviar la solicitud de pegado.
+
 ## 1.9.12
 - Se agrega opción en importación para **permitir tareas duplicadas**.
 - Si la opción está activa, las tareas con motivo `duplicada` dejan de omitirse y se importan.
