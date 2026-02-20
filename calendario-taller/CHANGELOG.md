@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.9
+- Se muestra la cantidad actual de tareas y técnicos en la pantalla de Importar/Exportar.
+- Se agrega detalle visual del resultado de importación (tareas totales, agregadas, omitidas, errores; técnicos totales/agregados/omitidos).
+- La exportación ahora incluye bloque `summary` con metadatos del proceso (versión plugin, conteos, usuario y fecha).
+- Se mantiene importación incremental: en modo normal agrega solo faltantes y evita duplicados.
+
 ## 1.9.8
 - El importador en modo normal ahora compara contra datos existentes y agrega solo faltantes (evita duplicados exactos de tareas).
 - Merge de técnicos por `id`: conserva los existentes y añade solo técnicos nuevos del archivo importado.

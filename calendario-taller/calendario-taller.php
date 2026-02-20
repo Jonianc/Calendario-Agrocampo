@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.8
+ * Version: 1.9.9
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.8';
+    const VERSION   = '1.9.9';
     const OPT_TECHS = 'acal_tecnicos';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
@@ -254,6 +254,17 @@ public function enqueue_assets_frontend(){
             'turno'         => strtolower($this->extract_meta_scalar($meta_data, '_acal_turno')),
         ];
         return md5(wp_json_encode($payload));
+    }
+
+    private function get_tasks_total_count(){
+        $counts = wp_count_posts(self::CPT_TASK);
+        if (!is_object($counts)) return 0;
+        $total = 0;
+        foreach ((array)$counts as $status => $qty){
+            if (in_array($status, ['auto-draft','trash','inherit'], true)) continue;
+            $total += (int) $qty;
+        }
+        return $total;
     }
     private function best_text_color($bg){
         $hex = ltrim($bg,'#'); if(strlen($hex)==3){ $hex=$hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
@@ -656,11 +667,37 @@ echo '</div>';   // .acal-tech-item
         if (!current_user_can('read')) wp_die('No tienes permisos.');
         $can_edit = $this->can_edit();
         $nonce = wp_create_nonce(self::NONCE_KEY);
+        $current_tasks = $this->get_tasks_total_count();
+        $tecnicos_count = count($this->get_tecnicos());
+
+        $import_done = isset($_GET['import']) && $_GET['import'] === '1';
+        $stats = [
+            'tasks_total' => isset($_GET['tasks_total']) ? absint($_GET['tasks_total']) : 0,
+            'tasks_added' => isset($_GET['tasks_added']) ? absint($_GET['tasks_added']) : 0,
+            'tasks_skipped' => isset($_GET['tasks_skipped']) ? absint($_GET['tasks_skipped']) : 0,
+            'tasks_errors' => isset($_GET['tasks_errors']) ? absint($_GET['tasks_errors']) : 0,
+            'tecs_total' => isset($_GET['tecs_total']) ? absint($_GET['tecs_total']) : 0,
+            'tecs_added' => isset($_GET['tecs_added']) ? absint($_GET['tecs_added']) : 0,
+            'tecs_skipped' => isset($_GET['tecs_skipped']) ? absint($_GET['tecs_skipped']) : 0,
+        ];
 
         echo '<div class="wrap"><h1>Importar / Exportar</h1>';
         echo '<p>Exporta o importa datos del calendario (tareas y técnicos).</p>';
+        echo '<p><strong>Tareas actuales:</strong> '.esc_html((string)$current_tasks).' · <strong>Técnicos actuales:</strong> '.esc_html((string)$tecnicos_count).'</p>';
+
+        if ($import_done){
+            echo '<div class="notice notice-success"><p><strong>Importación finalizada.</strong> '
+                .'Tareas archivo: '.esc_html((string)$stats['tasks_total'])
+                .', agregadas: '.esc_html((string)$stats['tasks_added'])
+                .', omitidas: '.esc_html((string)$stats['tasks_skipped'])
+                .', errores: '.esc_html((string)$stats['tasks_errors'])
+                .'. Técnicos archivo: '.esc_html((string)$stats['tecs_total'])
+                .', agregados: '.esc_html((string)$stats['tecs_added'])
+                .', omitidos: '.esc_html((string)$stats['tecs_skipped']).'.</p></div>';
+        }
 
         echo '<h2>Exportar</h2>';
+        echo '<p>La exportación incluye un bloque <code>summary</code> con conteos y metadatos del proceso.</p>';
         if ($can_edit){
             echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
             echo '<input type="hidden" name="action" value="acal_export_data" />';
@@ -672,6 +709,7 @@ echo '</div>';   // .acal-tech-item
         }
 
         echo '<h2>Importar</h2>';
+        echo '<p>En modo normal, solo agrega faltantes (sin duplicar registros existentes).</p>';
         if ($can_edit){
             echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" enctype="multipart/form-data">';
             echo '<input type="hidden" name="action" value="acal_import_data" />';
@@ -1247,10 +1285,20 @@ ACALJS;
             wp_reset_postdata();
         }
 
+        $tecnicos = get_option(self::OPT_TECHS, []);
+        if (!is_array($tecnicos)) $tecnicos = [];
+        $current_user = wp_get_current_user();
+
         $payload = [
             'version'         => '1.0',
             'exported_at'     => current_time('c'),
-            'tecnicos'        => get_option(self::OPT_TECHS, []),
+            'summary'         => [
+                'plugin_version' => self::VERSION,
+                'tasks_count'    => count($tasks),
+                'tecnicos_count' => count($tecnicos),
+                'generated_by'   => ($current_user && !empty($current_user->user_login)) ? $current_user->user_login : '',
+            ],
+            'tecnicos'        => $tecnicos,
             'tecnicos_order'  => get_option('acal_tecnicos_order', []),
             'tasks'           => $tasks,
         ];
@@ -1281,6 +1329,15 @@ ACALJS;
         }
 
         $replace = !empty($_POST['acal_replace']);
+        $stats = [
+            'tasks_total'   => 0,
+            'tasks_added'   => 0,
+            'tasks_skipped' => 0,
+            'tasks_errors'  => 0,
+            'tecs_total'    => 0,
+            'tecs_added'    => 0,
+            'tecs_skipped'  => 0,
+        ];
         if ($replace){
             $q = new WP_Query([
                 'post_type'      => self::CPT_TASK,
@@ -1297,8 +1354,10 @@ ACALJS;
 
         // Técnicos: si no es reemplazo, agrega solo faltantes por ID.
         if (isset($data['tecnicos']) && is_array($data['tecnicos'])){
+            $stats['tecs_total'] = count($data['tecnicos']);
             if ($replace){
                 update_option(self::OPT_TECHS, $data['tecnicos'], false);
+                $stats['tecs_added'] = count($data['tecnicos']);
             } else {
                 $existing_tecs = get_option(self::OPT_TECHS, []);
                 if (!is_array($existing_tecs)) $existing_tecs = [];
@@ -1307,8 +1366,9 @@ ACALJS;
                     if (!empty($t['id'])) $by_id[$t['id']] = $t;
                 }
                 foreach ($data['tecnicos'] as $t){
-                    if (empty($t['id']) || isset($by_id[$t['id']])) continue;
+                    if (empty($t['id']) || isset($by_id[$t['id']])) { $stats['tecs_skipped']++; continue; }
                     $existing_tecs[] = $t;
+                    $stats['tecs_added']++;
                     $by_id[$t['id']] = $t;
                 }
                 update_option(self::OPT_TECHS, $existing_tecs, false);
@@ -1334,6 +1394,7 @@ ACALJS;
         }
 
         $tasks = isset($data['tasks']) && is_array($data['tasks']) ? $data['tasks'] : [];
+        $stats['tasks_total'] = count($tasks);
 
         // Si no es reemplazo, indexa tareas existentes para importar solo faltantes.
         $existing_fingerprints = [];
@@ -1362,6 +1423,7 @@ ACALJS;
             if (!$replace){
                 $fp = $this->build_task_fingerprint($post_title, is_array($meta_data) ? $meta_data : []);
                 if (isset($existing_fingerprints[$fp])) {
+                    $stats['tasks_skipped']++;
                     continue;
                 }
                 $existing_fingerprints[$fp] = true;
@@ -1373,8 +1435,10 @@ ACALJS;
                 'post_title'  => $post_title,
             ]);
             if (is_wp_error($post_id)) {
+                $stats['tasks_errors']++;
                 continue;
             }
+            $stats['tasks_added']++;
 
             foreach ($meta_data as $key => $values){
                 if (!is_array($values)) { $values = [$values]; }
@@ -1384,7 +1448,17 @@ ACALJS;
             }
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=acal_import_export&import=1'));
+        wp_safe_redirect(add_query_arg([
+            'page' => 'acal_import_export',
+            'import' => 1,
+            'tasks_total' => $stats['tasks_total'],
+            'tasks_added' => $stats['tasks_added'],
+            'tasks_skipped' => $stats['tasks_skipped'],
+            'tasks_errors' => $stats['tasks_errors'],
+            'tecs_total' => $stats['tecs_total'],
+            'tecs_added' => $stats['tecs_added'],
+            'tecs_skipped' => $stats['tecs_skipped'],
+        ], admin_url('admin.php')));
         exit;
     }
 
