@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.18
+- Se corrige guardado de slug frontend: al guardar ajustes se registra la regla con el nuevo slug antes de `flush_rewrite_rules()`, evitando que la URL nueva falle hasta un flush manual.
+- Se desacopla la vista frontend de solo lectura del shortcode: se extrae renderer interno y `?acal_standalone=1` ya no depende de `shortcode_calendar()`.
+- Se mantiene `/calendario-taller/` (o slug configurado) como ruta de gestión y `?acal_standalone=1` como visualización.
+
 ## 1.9.17
 - Se agrega ruta frontend de gestión del calendario vía rewrite (`/calendario-taller/` por defecto), servida por template interno del plugin (sin depender del theme ni shortcode).
 - La ruta de gestión exige usuario logueado con capacidad `read` y redirige a login cuando no hay sesión.

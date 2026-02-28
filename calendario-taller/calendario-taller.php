@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.17
+ * Version: 1.9.18
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.17';
+    const VERSION   = '1.9.18';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -880,6 +880,9 @@ echo '</div>';   // .acal-tech-item
         }
 
         update_option(self::OPT_FRONT_SLUG, $slug, false);
+
+        // Registra la regla con el nuevo slug dentro del mismo request antes de flush
+        add_rewrite_rule('^'.preg_quote($slug, '/').'/?$', 'index.php?acal_front_mgmt=1', 'top');
         flush_rewrite_rules();
 
         wp_safe_redirect(admin_url('admin.php?page=acal_ajustes&saved=1'));
@@ -1669,7 +1672,7 @@ ACALJS;
         exit;
     }
 
-    public function shortcode_calendar($atts){
+    private function render_front_readonly_calendar(array $atts = []){
     // Frontend sin botón "+ Agregar" (solo navegación de semana)
     $atts = shortcode_atts([
         'filters' => '0',
@@ -1682,14 +1685,12 @@ ACALJS;
 
     $days       = $this->week_range_from_query();
     $renderDays = $atts['lv']==='1' ? array_slice($days,0,5) : $days;
-   $tecnicos_raw = array_values(array_filter($this->get_tecnicos(), function($t){
-    return !isset($t['activo']) || $t['activo'];
-}));
-$tecnicos = $this->order_tecnicos_array($tecnicos_raw); // o la versión con method_exists del Paso 0
+    $tecnicos_raw = array_values(array_filter($this->get_tecnicos(), function($t){
+        return !isset($t['activo']) || $t['activo'];
+    }));
+    $tecnicos = $this->order_tecnicos_array($tecnicos_raw);
 
-    $tasks      = $this->get_tasks_for_week($days);
-    $can_edit = is_admin() ? $this->can_edit() : false;
-    $show_actions = false; // <- forzado a false en frontend
+    $tasks = $this->get_tasks_for_week($days);
 
     ob_start();
     $stickyClass = $atts['sticky']==='both' ? 'sticky-both' : ($atts['sticky']==='header' ? 'sticky-header' : '');
@@ -1719,44 +1720,37 @@ $tecnicos = $this->order_tecnicos_array($tecnicos_raw); // o la versión con met
     // Grid
     echo '<div class="acal-grid">';
     echo '<div class="acal-cell acal-head acal-tech-col">&nbsp;</div>';
-    foreach ($renderDays as $d){ $label = date_i18n('D d/m', strtotime($d)); echo '<div class="acal-cell acal-head">'.esc_html(ucfirst($label)).'</div>'; }
+    foreach ($renderDays as $d){
+        $label = date_i18n('D d/m', strtotime($d));
+        echo '<div class="acal-cell acal-head">'.esc_html(ucfirst($label)).'</div>';
+    }
 
     foreach ($tecnicos as $t){
-       $tecId = $t['id'];
-$color = $t['color'];
-$fg    = $this->best_text_color($color);
+        $tecId = $t['id'];
+        $color = $t['color'];
+        $fg    = $this->best_text_color($color);
 
-echo '<div class="acal-cell acal-tech-col acal-tech-item" data-tecnico-id="'.esc_attr($t['id']).'">';
-
-// pastilla con nombre + flechas adentro
-echo   '<div class="acal-techname" style="background:'.esc_attr($color).';color:'.esc_attr($fg).'">';
-
-if ($can_edit){
-  echo   '<button type="button" class="acal-order-btn acal-move-up" title="Subir" aria-label="Subir">↑</button>';
-}
-
-echo     '<span class="acal-techlabel">'.esc_html($t['nombre']).'</span>';
-
-if ($can_edit){
-  echo   '<button type="button" class="acal-order-btn acal-move-down" title="Bajar" aria-label="Bajar">↓</button>';
-}
-
-echo   '</div>'; // .acal-techname
-echo '</div>';   // .acal-tech-item
-
+        echo '<div class="acal-cell acal-tech-col acal-tech-item" data-tecnico-id="'.esc_attr($t['id']).'">';
+        echo   '<div class="acal-techname" style="background:'.esc_attr($color).';color:'.esc_attr($fg).'">';
+        echo     '<span class="acal-techlabel">'.esc_html($t['nombre']).'</span>';
+        echo   '</div>'; // .acal-techname
+        echo '</div>';   // .acal-tech-item
 
         foreach ($renderDays as $d){
-$bg = $this->rgba_from_hex($color, 0.08);
-echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
+            $bg = $this->rgba_from_hex($color, 0.08);
+            echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
             $cellTasks = $tasks[$tecId][$d] ?? [];
-
-            // (REMOVIDO) Botón + Agregar en frontend
 
             if (!empty($cellTasks)){
                 foreach($cellTasks as $task){
                     $title   = trim($task['descripcion']);
-                    $cliente = trim($task['cliente']); $equipo=trim($task['equipo']); $suc=$task['sucursal'];
-                    $metaLine=[]; if($cliente) $metaLine[]=$cliente; if($equipo) $metaLine[]=$equipo; if($suc) $metaLine[]=$suc;
+                    $cliente = trim($task['cliente']);
+                    $equipo  = trim($task['equipo']);
+                    $suc     = $task['sucursal'];
+                    $metaLine=[];
+                    if($cliente) $metaLine[]=$cliente;
+                    if($equipo) $metaLine[]=$equipo;
+                    if($suc) $metaLine[]=$suc;
                     $body=implode(' · ',$metaLine);
 
                     echo '<div class="acal-task" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'">';
@@ -1769,12 +1763,13 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         }
     }
     echo '</div>'; // grid
-
-    // (REMOVIDO) modal en frontend, no es necesario sin "+ Agregar"
-
     echo '</div>'; // wrap
     return ob_get_clean();
 }
+
+    public function shortcode_calendar($atts){
+        return $this->render_front_readonly_calendar((array) $atts);
+    }
 
 
     public function maybe_fullscreen(){
@@ -1829,7 +1824,7 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         if (!current_user_can('read')) {
             wp_die('No tienes permisos.');
         }
-        echo $this->shortcode_calendar([]);
+        echo $this->render_front_readonly_calendar([]);
         wp_footer();
         echo '</body></html>';
         exit;
