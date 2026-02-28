@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.17
+- Se agrega ruta frontend de gestión del calendario vía rewrite (`/calendario-taller/` por defecto), servida por template interno del plugin (sin depender del theme ni shortcode).
+- La ruta de gestión exige usuario logueado con capacidad `read` y redirige a login cuando no hay sesión.
+- Se añade ajuste en admin para editar el slug de la ruta de gestión y se refrescan reglas de rewrite al guardar/activar/desactivar.
+
 ## 1.9.16
 - La acción **Pegar en otra fecha…** (solo en tarea origen copiada) ahora usa selector de fecha (`input type="date"`) en lugar de `prompt()`.
 - Se agrega mini modal con botones **Confirmar/Cancelar**, validación de formato y selección más intuitiva.

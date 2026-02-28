@@ -119,7 +119,15 @@ En admin:
 
 ## Vista standalone
 
-Para mostrar el calendario en frontend sin theme ni shortcode, usa el enlace directo:
+Para **gestionar** el calendario en frontend sin theme ni shortcode, usa la ruta dedicada (configurable en Ajustes):
+
+```
+https://tu-sitio.com/calendario-taller/
+```
+
+La ruta exige usuario logueado con capacidad `read`.
+
+Para mostrar una vista de **solo lectura** sin theme, usa el enlace legacy:
 
 ```
 https://tu-sitio.com/?acal_standalone=1

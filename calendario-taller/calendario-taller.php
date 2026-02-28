@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.16
+ * Version: 1.9.17
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,18 +10,22 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.16';
+    const VERSION   = '1.9.17';
     const OPT_TECHS = 'acal_tecnicos';
+    const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
     const NONCE_KEY = 'acal_nonce';
 
     public function __construct() {
         add_action('init', [$this, 'register_cpt']);
+        add_action('init', [$this, 'register_front_route']);
+        add_filter('query_vars', [$this, 'register_query_vars']);
         add_action('admin_menu', [$this, 'register_admin_pages']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets_frontend']);
         add_shortcode('calendario_taller', [$this, 'shortcode_calendar']);
         add_action('template_redirect', [$this,'maybe_fullscreen']);
+        add_action('template_redirect', [$this,'maybe_front_management']);
         add_action('template_redirect', [$this,'maybe_standalone']);
 
         // Admin-post actions
@@ -35,6 +39,7 @@ class ACAL_Calendario_Taller {
         add_action('admin_post_acal_export_data', [$this, 'handle_export_data']);
         add_action('admin_post_acal_import_data', [$this, 'handle_import_data']);
         add_action('admin_post_acal_purge_tasks', [$this, 'handle_purge_tasks']);
+        add_action('admin_post_acal_save_settings', [$this, 'handle_save_settings']);
         add_action('wp_ajax_acal_move_task', [$this, 'ajax_move_task']);
         add_action('wp_ajax_acal_save_tecnicos_order', [$this, 'ajax_save_tecnicos_order']);
         add_action('wp_ajax_acal_paste_task', [$this, 'ajax_paste_task']);
@@ -47,6 +52,38 @@ class ACAL_Calendario_Taller {
             'show_ui' => false,
             'supports' => ['title'],
         ]);
+    }
+
+    public static function activate_plugin(){
+        if (get_option(self::OPT_FRONT_SLUG, '') === '') {
+            update_option(self::OPT_FRONT_SLUG, 'calendario-taller', false);
+        }
+        $instance = new self();
+        $instance->register_front_route();
+        flush_rewrite_rules();
+    }
+
+    public static function deactivate_plugin(){
+        flush_rewrite_rules();
+    }
+
+    public function register_query_vars($vars){
+        $vars[] = 'acal_front_mgmt';
+        return $vars;
+    }
+
+    public function register_front_route(){
+        $slug = $this->get_front_route_slug();
+        add_rewrite_rule('^'.preg_quote($slug, '/').'/?$', 'index.php?acal_front_mgmt=1', 'top');
+    }
+
+    private function get_front_route_slug(){
+        $slug = sanitize_title((string) get_option(self::OPT_FRONT_SLUG, 'calendario-taller'));
+        return $slug !== '' ? $slug : 'calendario-taller';
+    }
+
+    private function is_front_management_request(){
+        return (string) get_query_var('acal_front_mgmt', '') === '1';
     }
 
 public function ajax_save_tecnicos_order(){
@@ -160,6 +197,25 @@ public function ajax_move_task(){
 public function enqueue_assets_frontend(){
     if ($this->is_restricted_context()) { return; }
     if (is_admin()) return;
+
+    if ($this->is_front_management_request()) {
+        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
+        wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], self::VERSION);
+        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
+        wp_enqueue_script('acal_admin_js', plugins_url('assets/admin.js', __FILE__), ['jquery'], self::VERSION, true);
+        wp_enqueue_script('acal_rs_upgrade_js', plugins_url('assets/rs-upgrade.js', __FILE__), ['jquery','acal_admin_js'], self::VERSION, true);
+        wp_localize_script('acal_rs_upgrade_js', 'ACAL_ORDER', [
+            'ajax'  => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce(self::NONCE_KEY),
+        ]);
+        wp_localize_script('acal_rs_upgrade_js', 'ACAL_MOVE', [
+            'ajax'  => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce(self::NONCE_KEY),
+        ]);
+        wp_add_inline_script('acal_admin_js', 'var ajaxurl = '.wp_json_encode(admin_url('admin-ajax.php')).';', 'before');
+        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
+        return;
+    }
 
     $post = is_singular() ? get_post() : null;
     if (!$post) return;
@@ -774,6 +830,9 @@ echo '</div>';   // .acal-tech-item
     public function render_ajustes_page(){
         if (!current_user_can('read')) wp_die('No tienes permisos.');
         $days = $this->week_range_from_query();
+        $settings_nonce = wp_create_nonce(self::NONCE_KEY);
+        $front_slug = $this->get_front_route_slug();
+        $front_url = home_url('/'.$front_slug.'/');
         $standalone_calendar = add_query_arg(
             [
                 'acal_standalone' => '1',
@@ -783,12 +842,48 @@ echo '</div>';   // .acal-tech-item
         );
 
         echo '<div class="wrap"><h1>Ajustes</h1>';
+        if (isset($_GET['saved']) && $_GET['saved'] === '1') {
+            echo '<div class="notice notice-success"><p>Ajustes guardados.</p></div>';
+        }
+        echo '<h2>Ruta de gestión frontend</h2>';
+        echo '<p>Configura la ruta para gestionar el calendario desde frontend sin depender del theme ni shortcode.</p>';
+        echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
+        echo '<input type="hidden" name="action" value="acal_save_settings" />';
+        echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($settings_nonce).'" />';
+        echo '<table class="form-table" role="presentation"><tbody>';
+        echo '<tr><th scope="row"><label for="acal-front-slug">Slug de ruta</label></th>';
+        echo '<td><input type="text" id="acal-front-slug" name="front_slug" value="'.esc_attr($front_slug).'" class="regular-text" required pattern="[a-z0-9\-]+" />';
+        echo '<p class="description">URL actual: <code>'.esc_html($front_url).'</code></p></td></tr>';
+        echo '</tbody></table>';
+        if ($this->can_edit()) {
+            echo '<p><button class="button button-primary">Guardar ruta</button></p>';
+        } else {
+            echo '<p><em>Solo lectura</em></p>';
+        }
+        echo '</form>';
+
         echo '<h2>Vista standalone</h2>';
         echo '<p>Abre el calendario en frontend sin theme (solo lectura).</p>';
         echo '<ul>';
         echo '<li><a class="button" href="'.esc_url($standalone_calendar).'" target="_blank" rel="noopener noreferrer">Abrir Calendario Taller</a></li>';
         echo '</ul>';
         echo '</div>';
+    }
+
+    public function handle_save_settings(){
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
+        if (!$this->can_edit()) wp_die('Permisos insuficientes');
+
+        $slug = sanitize_title((string) ($_POST['front_slug'] ?? ''));
+        if ($slug === '') {
+            $slug = 'calendario-taller';
+        }
+
+        update_option(self::OPT_FRONT_SLUG, $slug, false);
+        flush_rewrite_rules();
+
+        wp_safe_redirect(admin_url('admin.php?page=acal_ajustes&saved=1'));
+        exit;
     }
 
     /* Crear / actualizar / eliminar tareas */
@@ -1701,6 +1796,21 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
         exit;
     }
 
+    public function maybe_front_management(){
+        if ($this->is_restricted_context()) { return; }
+        if (is_admin() || !$this->is_front_management_request()) return;
+
+        status_header(200);
+        nocache_headers();
+
+        if (!is_user_logged_in() || !current_user_can('read')) {
+            auth_redirect();
+        }
+
+        include plugin_dir_path(__FILE__) . 'templates/frontend-management.php';
+        exit;
+    }
+
     public function maybe_standalone(){
         if ($this->is_restricted_context()) { return; }
         if (is_admin() || !isset($_GET['acal_standalone']) || $_GET['acal_standalone'] !== '1') return;
@@ -1727,4 +1837,6 @@ echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
 
     
 }
+register_activation_hook(__FILE__, ['ACAL_Calendario_Taller', 'activate_plugin']);
+register_deactivation_hook(__FILE__, ['ACAL_Calendario_Taller', 'deactivate_plugin']);
 new ACAL_Calendario_Taller();
