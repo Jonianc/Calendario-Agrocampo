@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.18
+ * Version: 1.9.19
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.18';
+    const VERSION   = '1.9.19';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -199,8 +199,35 @@ public function enqueue_assets_frontend(){
     if (is_admin()) return;
 
     if ($this->is_front_management_request()) {
+        $this->enqueue_management_assets();
+        return;
+    }
+
+    if ($this->is_standalone_request()) {
+        $this->enqueue_readonly_assets();
+        return;
+    }
+
+    $post = is_singular() ? get_post() : null;
+    if (!$post) return;
+    if (!has_shortcode($post->post_content, 'calendario_taller')) return;
+
+    $this->enqueue_readonly_assets();
+}
+
+    private function is_standalone_request(){
+        return isset($_GET['acal_standalone']) && $_GET['acal_standalone'] === '1';
+    }
+
+    private function enqueue_readonly_assets(){
         wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
         wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], self::VERSION);
+        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
+        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
+    }
+
+    private function enqueue_management_assets(){
+        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
         wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
         wp_enqueue_script('acal_admin_js', plugins_url('assets/admin.js', __FILE__), ['jquery'], self::VERSION, true);
         wp_enqueue_script('acal_rs_upgrade_js', plugins_url('assets/rs-upgrade.js', __FILE__), ['jquery','acal_admin_js'], self::VERSION, true);
@@ -213,22 +240,7 @@ public function enqueue_assets_frontend(){
             'nonce' => wp_create_nonce(self::NONCE_KEY),
         ]);
         wp_add_inline_script('acal_admin_js', 'var ajaxurl = '.wp_json_encode(admin_url('admin-ajax.php')).';', 'before');
-        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
-        return;
     }
-
-    $post = is_singular() ? get_post() : null;
-    if (!$post) return;
-    if (!has_shortcode($post->post_content, 'calendario_taller')) return;
-
-    wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
-    wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], self::VERSION);
-
-    // Añadido: CSS de mejoras para que también aplique en frontend
-    wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
-
-    wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
-}
 
 
     /* Helpers */
@@ -1808,12 +1820,7 @@ ACALJS;
 
     public function maybe_standalone(){
         if ($this->is_restricted_context()) { return; }
-        if (is_admin() || !isset($_GET['acal_standalone']) || $_GET['acal_standalone'] !== '1') return;
-
-        wp_enqueue_style('acal_admin_css', plugins_url('assets/admin.css', __FILE__), [], self::VERSION);
-        wp_enqueue_style('acal_front_css', plugins_url('assets/front.css', __FILE__), [], self::VERSION);
-        wp_enqueue_style('acal_rs_upgrade_css', plugins_url('assets/rs-upgrade.css', __FILE__), [], self::VERSION);
-        wp_enqueue_script('acal_front_js', plugins_url('assets/front.js', __FILE__), ['jquery'], self::VERSION, true);
+        if (is_admin() || !$this->is_standalone_request()) return;
 
         status_header(200);
         nocache_headers();

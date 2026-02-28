@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.19
+- Se optimiza la carga de assets frontend por contexto: la ruta de gestión carga solo assets de gestión, y standalone/shortcode cargan solo assets de lectura.
+- Se encapsula la lógica en helpers (`enqueue_management_assets`, `enqueue_readonly_assets`, `is_standalone_request`) para reducir dependencia del shortcode en rutas no objetivo.
+- `maybe_standalone()` reutiliza detección centralizada de request standalone.
+
 ## 1.9.18
 - Se corrige guardado de slug frontend: al guardar ajustes se registra la regla con el nuevo slug antes de `flush_rewrite_rules()`, evitando que la URL nueva falle hasta un flush manual.
 - Se desacopla la vista frontend de solo lectura del shortcode: se extrae renderer interno y `?acal_standalone=1` ya no depende de `shortcode_calendar()`.
