@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.19
+ * Version: 1.9.20
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.19';
+    const VERSION   = '1.9.20';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -518,9 +518,19 @@ public function render_calendar_page(){
         ],
         home_url('/')
     );
+    $frontend_management_url = home_url('/'.$this->get_front_route_slug().'/');
+    $is_admin_legacy_view = is_admin() && !$this->is_front_management_request();
 
     echo '<div class="wrap acal-wrap">';
     echo '<h1>Calendario Taller — Vista Semanal (L-V)</h1>';
+
+    if ($is_admin_legacy_view){
+        echo '<div class="notice notice-warning acal-legacy-notice">';
+        echo '<p><strong>Vista legacy (admin):</strong> la gestión principal ahora está en frontend para una mejor experiencia de uso.</p>';
+        echo '<p><a class="button button-primary" href="'.esc_url($frontend_management_url).'" target="_blank" rel="noopener noreferrer">Abrir gestor frontend recomendado</a></p>';
+        echo '</div>';
+    }
+
     echo '<p><a class="button" href="'.esc_url($standalone_url).'" target="_blank" rel="noopener noreferrer">Abrir vista standalone</a></p>';
 
     echo '<form method="get" class="acal-topbar">';

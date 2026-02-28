@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.20
+- Se inicia la deprecación UX de la vista admin (modo legacy): ahora muestra aviso y CTA al gestor frontend recomendado.
+- Se aplica un refresh visual notorio desktop-first en la ruta frontend de gestión (`/calendario-taller/` o slug configurado): topbar elevada, jerarquía tipográfica, grilla y tarjetas modernizadas.
+- Se mantienen arquitectura, permisos y endpoints existentes para evitar quiebres funcionales durante la transición desde admin a frontend.
+
 ## 1.9.19
 - Se optimiza la carga de assets frontend por contexto: la ruta de gestión carga solo assets de gestión, y standalone/shortcode cargan solo assets de lectura.
 - Se encapsula la lógica en helpers (`enqueue_management_assets`, `enqueue_readonly_assets`, `is_standalone_request`) para reducir dependencia del shortcode en rutas no objetivo.
