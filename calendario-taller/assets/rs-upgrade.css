@@ -47,6 +47,17 @@ body.acal-front-management textarea:focus-visible{
 body.acal-front-management .button.button-primary{
   background: #0f172a;
   border-color: #0f172a;
+  color: #ffffff !important;
+  text-shadow: none;
+  opacity: 1;
+}
+
+body.acal-front-management .button.button-primary:hover,
+body.acal-front-management .button.button-primary:focus,
+body.acal-front-management .button.button-primary:active{
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #ffffff !important;
 }
 
 body.acal-front-management .acal-topbar{
@@ -116,6 +127,9 @@ body.acal-front-management .acal-task{
   border: 1px solid #e2e8f0;
   box-shadow: 0 8px 18px rgba(15,23,42,.07);
   transition: transform .12s ease, box-shadow .12s ease;
+  position: relative;
+  padding: 10px 88px 10px 12px;
+  overflow: hidden;
 }
 
 body.acal-front-management .acal-task:hover{
@@ -133,9 +147,84 @@ body.acal-front-management .acal-task .acal-task-meta{
   font-size: 12px;
 }
 
+body.acal-front-management .acal-task .acal-task-title,
+body.acal-front-management .acal-task .acal-task-meta{
+  margin-right: 0;
+}
+
+body.acal-front-management .acal-kebab-wrap{
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 6;
+}
+
+body.acal-front-management .acal-kebab,
+body.acal-front-management .acal-copy-inline{
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  border-radius: 10px;
+}
+
+body.acal-front-management .acal-copy-inline{
+  margin-left: 0 !important;
+}
+
+body.acal-front-management .acal-menu{
+  position: absolute;
+  top: 38px;
+  right: 0;
+  z-index: 9;
+}
+
 body.acal-front-management .acal-modal-content{
   border-radius: 14px;
   border: 1px solid #dbe3ee;
+  width: min(760px, calc(100vw - 40px));
+  max-width: min(760px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  box-sizing: border-box;
+  position: relative;
+}
+
+body.acal-front-management #acal-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, .48);
+}
+
+html.acal-modal-open,
+body.acal-front-management.acal-modal-open{
+  overflow: hidden;
+}
+
+body.acal-front-management #acal-form{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body.acal-front-management #acal-form .acal-form-actions{
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 10px;
+  padding-bottom: 6px;
+  z-index: 2;
 }
 
 body.acal-front-management .acal-modal-close{

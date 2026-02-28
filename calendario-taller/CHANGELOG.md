@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.22
+- Se corrige superposición y alineación de acciones en tarjetas de la vista semanal frontend: se estabiliza layout de `.acal-task`, `kebab` y botón de copia inline con espaciado reservado y z-index consistente.
+- Se corrige modal de edición en frontend: overlay `fixed` completo, bloqueo de scroll de fondo, límite de tamaño por viewport y scroll interno para evitar cortes de contenido/acciones.
+- Se corrige contraste del botón **Filtrar** en topbar frontend (`button-primary`) para asegurar texto visible en estados normal/hover/focus/active.
+
 ## 1.9.21
 - Se mejora accesibilidad operable en la ruta frontend de gestión: modal con `role="dialog"`, `aria-modal`, `aria-hidden`, cierre por teclado y foco controlado.
 - Se agregan atributos ARIA en acciones de calendario (kebab/menú de tarea, botones agregar/pegar) para reforzar navegación por teclado y soporte de lector de pantalla.

@@ -365,12 +365,16 @@ function enableModalA11y(){
   function openA11y(){
     lastFocused = document.activeElement;
     $modal.attr('aria-hidden', 'false');
+    $('body').addClass('acal-modal-open');
+    $('html').addClass('acal-modal-open');
     var $focusables = getFocusableElements($modal);
     if($focusables.length){ $focusables.first().trigger('focus'); }
   }
 
   function closeA11y(){
     $modal.attr('aria-hidden', 'true');
+    $('body').removeClass('acal-modal-open');
+    $('html').removeClass('acal-modal-open');
     if(lastFocused && typeof lastFocused.focus === 'function'){ lastFocused.focus(); }
   }
 
