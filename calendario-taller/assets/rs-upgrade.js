@@ -338,6 +338,93 @@ function enableTechArrows(){
 }
 
 
+
+
+function getFocusableElements($container){
+  return $container.find('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])').filter(':visible');
+}
+
+function syncKebabA11y(){
+  $('.acal-kebab').each(function(){
+    var $btn = $(this);
+    var menuId = $btn.attr('aria-controls');
+    if(!menuId) return;
+    var $menu = $('#'+menuId);
+    if(!$menu.length) return;
+    var expanded = $menu.is(':visible');
+    $btn.attr('aria-expanded', expanded ? 'true' : 'false');
+  });
+}
+
+function enableModalA11y(){
+  var $modal = $('#acal-modal');
+  if(!$modal.length) return;
+
+  var lastFocused = null;
+
+  function openA11y(){
+    lastFocused = document.activeElement;
+    $modal.attr('aria-hidden', 'false');
+    var $focusables = getFocusableElements($modal);
+    if($focusables.length){ $focusables.first().trigger('focus'); }
+  }
+
+  function closeA11y(){
+    $modal.attr('aria-hidden', 'true');
+    if(lastFocused && typeof lastFocused.focus === 'function'){ lastFocused.focus(); }
+  }
+
+  $(document).off('keydown.acalModalTrap').on('keydown.acalModalTrap', function(e){
+    if(!$modal.is(':visible')) return;
+
+    if(e.key === 'Escape'){
+      e.preventDefault();
+      $modal.find('.acal-modal-close').first().trigger('click');
+      return;
+    }
+
+    if(e.key !== 'Tab') return;
+
+    var $focusables = getFocusableElements($modal);
+    if(!$focusables.length) return;
+
+    var first = $focusables.get(0);
+    var last  = $focusables.get($focusables.length - 1);
+
+    if(e.shiftKey && document.activeElement === first){
+      e.preventDefault();
+      last.focus();
+    } else if(!e.shiftKey && document.activeElement === last){
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  $(document).off('click.acalModalA11yOpen').on('click.acalModalA11yOpen', '.acal-add, .acal-edit, .acal-kebab', function(){
+    setTimeout(function(){
+      if($modal.is(':visible')) openA11y();
+      syncKebabA11y();
+    }, 0);
+  });
+
+  $(document).off('click.acalModalA11yClose').on('click.acalModalA11yClose', '.acal-modal-close, #acal-modal', function(e){
+    if($(e.target).is('#acal-modal, .acal-modal-close')){
+      setTimeout(function(){
+        if(!$modal.is(':visible')) closeA11y();
+      }, 0);
+    }
+  });
+
+  $(document).off('click.acalKebabA11y').on('click.acalKebabA11y', '.acal-kebab', function(){
+    setTimeout(syncKebabA11y, 0);
+  });
+  $(document).off('click.acalKebabA11yDoc').on('click.acalKebabA11yDoc', function(){
+    setTimeout(syncKebabA11y, 0);
+  });
+
+  if(!$modal.is(':visible')) closeA11y();
+}
+
 function init(){
   patchFilters();
   patchModal();
@@ -352,6 +439,8 @@ function init(){
   enableDragDrop();
   //enableTechOrder();
   enableTechArrows();
+  enableModalA11y();
+  syncKebabA11y();
 
 }
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.20
+ * Version: 1.9.21
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.20';
+    const VERSION   = '1.9.21';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -618,8 +618,8 @@ echo '</div>';   // .acal-tech-item
 
             $cellTasks = $tasks[$tecId][$d] ?? [];
             if ($can_edit){
-                echo '<button class="button acal-add acal-hide-on-print" data-tecnico="'.esc_attr($tecId).'" data-date="'.esc_attr($d).'" data-tecnico-name="'.esc_attr($t['nombre']).'">+ Agregar</button>'; 
-                echo '<button class="button acal-paste" data-date="'.esc_attr($d).'" data-tecnico="'.esc_attr($tecId).'" style="margin-left:6px;display:none">Pegar</button>';
+                echo '<button class="button acal-add acal-hide-on-print" data-tecnico="'.esc_attr($tecId).'" data-date="'.esc_attr($d).'" data-tecnico-name="'.esc_attr($t['nombre']).'" aria-label="Agregar tarea para '.esc_attr($t['nombre']).' el '.esc_attr($d).'">+ Agregar</button>';
+                echo '<button class="button acal-paste" data-date="'.esc_attr($d).'" data-tecnico="'.esc_attr($tecId).'" style="margin-left:6px;display:none" aria-label="Pegar tarea en '.esc_attr($t['nombre']).' el '.esc_attr($d).'">Pegar</button>';
             }
             if (!empty($cellTasks)){
                 foreach($cellTasks as $task){
@@ -647,15 +647,15 @@ echo '</div>';   // .acal-tech-item
 
                     if ($can_edit){
                         echo '<div class="acal-kebab-wrap">';
-                        echo   '<button class="button acal-kebab" aria-haspopup="true" aria-expanded="false">&#8942;</button>';
-                        echo   '<div class="acal-menu" role="menu" style="display:none">';
-                        echo '<a href="#" class="acal-menu-link acal-copy" data-task-id="'.esc_attr($task['id']).'">Copiar</a>';
-                        echo     '<a href="#" class="acal-edit" data-task=\''.esc_attr(wp_json_encode($task)).'\' data-tecnico-name="'.esc_attr($t['nombre']).'">Editar</a>';
+                        echo   '<button class="button acal-kebab" aria-haspopup="true" aria-expanded="false" aria-label="Acciones de tarea" aria-controls="acal-menu-'.esc_attr($task['id']).'">&#8942;</button>';
+                        echo   '<div id="acal-menu-'.esc_attr($task['id']).'" class="acal-menu" role="menu" style="display:none">';
+                        echo '<a href="#" class="acal-menu-link acal-copy" role="menuitem" data-task-id="'.esc_attr($task['id']).'">Copiar</a>';
+                        echo     '<a href="#" class="acal-edit" role="menuitem" data-task=\''.esc_attr(wp_json_encode($task)).'\' data-tecnico-name="'.esc_attr($t['nombre']).'">Editar</a>';
                         echo     '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" class="acal-menu-form" onsubmit="return confirm(\'¿Eliminar tarea?\')">';
                         echo       '<input type="hidden" name="action" value="acal_delete_task" />';
                         echo       '<input type="hidden" name="task_id" value="'.esc_attr($task['id']).'" />';
                         echo       '<input type="hidden" name="_wpnonce" value="'.esc_attr(wp_create_nonce(self::NONCE_KEY)).'" />';
-                        echo       '<button type="submit" class="acal-menu-link">Eliminar</button>';
+                        echo       '<button type="submit" class="acal-menu-link" role="menuitem">Eliminar</button>';
                         echo     '</form>';
                         echo   '</div>';
                         echo '</div>';
@@ -671,8 +671,8 @@ echo '</div>';   // .acal-tech-item
 
     // Modal
     $nonce = wp_create_nonce(self::NONCE_KEY);
-    echo '<div id="acal-modal" class="acal-modal" style="display:none"><div class="acal-modal-content">';
-    echo '<span class="acal-modal-close">&times;</span><h2 id="acal-modal-title">Nueva tarea</h2>';
+    echo '<div id="acal-modal" class="acal-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="acal-modal-title" aria-hidden="true"><div class="acal-modal-content">';
+    echo '<button type="button" class="acal-modal-close" aria-label="Cerrar modal">&times;</button><h2 id="acal-modal-title">Nueva tarea</h2>';
     echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" id="acal-form">';
     echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
     echo '<input type="hidden" name="action" value="acal_create_task" id="acal-action" />';

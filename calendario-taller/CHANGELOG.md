@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.21
+- Se mejora accesibilidad operable en la ruta frontend de gestión: modal con `role="dialog"`, `aria-modal`, `aria-hidden`, cierre por teclado y foco controlado.
+- Se agregan atributos ARIA en acciones de calendario (kebab/menú de tarea, botones agregar/pegar) para reforzar navegación por teclado y soporte de lector de pantalla.
+- Se añade estilo de foco visible (`:focus-visible`) y refinamiento visual del botón de cierre del modal en frontend de gestión.
+
 ## 1.9.20
 - Se inicia la deprecación UX de la vista admin (modo legacy): ahora muestra aviso y CTA al gestor frontend recomendado.
 - Se aplica un refresh visual notorio desktop-first en la ruta frontend de gestión (`/calendario-taller/` o slug configurado): topbar elevada, jerarquía tipográfica, grilla y tarjetas modernizadas.

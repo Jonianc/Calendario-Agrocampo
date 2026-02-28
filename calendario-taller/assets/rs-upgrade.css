@@ -35,6 +35,15 @@ body.acal-front-management button.button{
   min-height: 34px;
 }
 
+body.acal-front-management button:focus-visible,
+body.acal-front-management a:focus-visible,
+body.acal-front-management input:focus-visible,
+body.acal-front-management select:focus-visible,
+body.acal-front-management textarea:focus-visible{
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
 body.acal-front-management .button.button-primary{
   background: #0f172a;
   border-color: #0f172a;
@@ -127,6 +136,19 @@ body.acal-front-management .acal-task .acal-task-meta{
 body.acal-front-management .acal-modal-content{
   border-radius: 14px;
   border: 1px solid #dbe3ee;
+}
+
+body.acal-front-management .acal-modal-close{
+  border: 0;
+  background: transparent;
+  color: #0f172a;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+body.acal-front-management .acal-modal-close:hover{
+  background: #e2e8f0;
 }
 
 body.acal-front-management #acal-form .acal-form-actions{
