@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.30
+- Se mejora la legibilidad de tarjetas en el gestor frontend desktop: ajuste de densidad en celdas, jerarquía tipográfica y truncado controlado (2 líneas) para título/descripción.
+- Se corrige cálculo de fechas en acciones rápidas (**Hoy** / **Semana actual**) para evitar desfases en sitios no UTC: se reemplaza el uso de timestamp local por `current_datetime()` en zona horaria del sitio.
+
 ## 1.9.29
 - Se mejora la topbar del gestor frontend (desktop): nueva disposición visual con navegación semanal, acciones rápidas y filtros en estructura más escaneable.
 - Se agregan acciones rápidas **Hoy**, **Semana actual** y **Limpiar filtros** para reducir clics en la operación diaria.

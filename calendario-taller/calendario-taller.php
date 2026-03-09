@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.29
+ * Version: 1.9.30
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.29';
+    const VERSION   = '1.9.30';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -560,9 +560,9 @@ public function render_calendar_page(){
         }));
     }
     $can_edit = $this->can_edit();
-    $today_ts = (int) current_time('timestamp');
-    $today = wp_date('Y-m-d', $today_ts);
-    $week_current = wp_date('Y-m-d', strtotime('monday this week', $today_ts));
+    $now_dt = current_datetime();
+    $today = $now_dt->format('Y-m-d');
+    $week_current = $now_dt->modify('monday this week')->format('Y-m-d');
     $prev = date('Y-m-d', strtotime($days[0].' -7 days'));
     $next = date('Y-m-d', strtotime($days[0].' +7 days'));
     $clear_filters_url = add_query_arg([
