@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.27
+ * Version: 1.9.28
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.27';
+    const VERSION   = '1.9.28';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -428,13 +428,17 @@ private function order_tecnicos_array(array $tecs): array{
     }
 
     private function redirect_to_context_or_admin($fecha){
-        $redirect_to = isset($_POST['redirect_to']) ? esc_url_raw((string) $_POST['redirect_to']) : '';
+        $redirect_to = isset($_POST['redirect_to']) ? esc_url_raw((string) wp_unslash($_POST['redirect_to'])) : '';
         if ($redirect_to === '') {
             $redirect_to = wp_get_referer() ? esc_url_raw((string) wp_get_referer()) : '';
         }
 
         if ($redirect_to !== '') {
-            if ($fecha && strpos($redirect_to, 'date=') === false) {
+            $query_string = parse_url($redirect_to, PHP_URL_QUERY);
+            parse_str((string) $query_string, $query_vars);
+            $has_date_param = is_array($query_vars) && array_key_exists('date', $query_vars);
+
+            if ($fecha && !$has_date_param) {
                 $redirect_to = add_query_arg(['date' => $fecha], $redirect_to);
             }
             $safe = wp_validate_redirect($redirect_to, '');

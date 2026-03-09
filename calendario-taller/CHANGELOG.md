@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.28
+- Se refuerza la preservación de contexto/filtros en redirecciones post crear/editar/eliminar: `redirect_to` ahora se procesa con `wp_unslash` y validación robusta de query.
+- Se mejora la detección de `date` en `redirect_to` parseando parámetros reales (evita falsos positivos por coincidencias de texto) para mantener intactos filtros activos.
+
 ## 1.9.27
 - Se corrige redirección post-guardar en creación/edición de tareas para mantener el contexto actual (frontend management cuando aplica), evitando volver forzadamente a admin legacy.
 - Se agrega `redirect_to` al formulario del modal de tarea y se unifica la validación de retorno seguro en un helper reutilizable para crear/editar/eliminar.
