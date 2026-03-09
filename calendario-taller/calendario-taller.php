@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.23
+ * Version: 1.9.24
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.23';
+    const VERSION   = '1.9.24';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -425,6 +425,15 @@ private function order_tecnicos_array(array $tecs): array{
         }
 
         return true;
+    }
+
+    private function sanitize_csv_cell($value){
+        $value = is_scalar($value) ? (string) $value : '';
+        $trimmed = ltrim($value, " \t\r\n");
+        if ($trimmed !== '' && preg_match('/^[=+\-@]/', $trimmed)) {
+            return "'".$value;
+        }
+        return $value;
     }
 
     /* Fechas / Semana */
@@ -1505,14 +1514,14 @@ ACALJS;
                     $q->the_post();
                     $meta = get_post_meta(get_the_ID());
                     $rows[] = [
-                        $meta['_acal_fecha'][0] ?? '',
-                        $tecnico_nombre,
-                        $meta['_acal_cliente'][0] ?? '',
-                        $meta['_acal_sucursal'][0] ?? '',
-                        $meta['_acal_equipo'][0] ?? '',
-                        $meta['_acal_estado'][0] ?? '',
-                        strtoupper((string)($meta['_acal_turno'][0] ?? '')),
-                        $meta['_acal_descripcion'][0] ?? '',
+                        $this->sanitize_csv_cell($meta['_acal_fecha'][0] ?? ''),
+                        $this->sanitize_csv_cell($tecnico_nombre),
+                        $this->sanitize_csv_cell($meta['_acal_cliente'][0] ?? ''),
+                        $this->sanitize_csv_cell($meta['_acal_sucursal'][0] ?? ''),
+                        $this->sanitize_csv_cell($meta['_acal_equipo'][0] ?? ''),
+                        $this->sanitize_csv_cell($meta['_acal_estado'][0] ?? ''),
+                        $this->sanitize_csv_cell(strtoupper((string)($meta['_acal_turno'][0] ?? ''))),
+                        $this->sanitize_csv_cell($meta['_acal_descripcion'][0] ?? ''),
                     ];
                 }
                 wp_reset_postdata();

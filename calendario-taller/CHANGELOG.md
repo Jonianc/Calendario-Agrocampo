@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.9.24
+- Se corrige seguridad en exportación CSV por técnico: ahora cada celda se sanea para prevenir **CSV formula injection** en Excel/Google Sheets (prefijo seguro en valores que inician con `=`, `+`, `-` o `@`).
+
 ## 1.9.23
 - Se corrige el filtro por técnico en la vista semanal: ahora aplica correctamente y muestra solo la fila del técnico seleccionado.
 - Se aplica el filtrado activo (técnico/sucursal/estado/búsqueda) sobre las tareas visibles de cada celda del calendario semanal.
