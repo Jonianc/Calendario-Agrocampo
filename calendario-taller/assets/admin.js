@@ -34,138 +34,25 @@
 })(jQuery);
 
 
-/* ===== Copiar / Pegar por ID (robusto) ===== */
-(function($){
-  var CLIP_ID = null;
-  function refreshPaste(){ if(CLIP_ID){ $('.acal-paste').show(); } else { $('.acal-paste').hide(); } }
-
-  $(document).on('click', '.acal-copy', function(e){
-    e.preventDefault();
-    var tid = $(this).data('task-id');
-    CLIP_ID = tid ? parseInt(tid,10) : null;
-    refreshPaste();
-  });
-  
-  // Permite que otros módulos limpien el “portapapeles” (CLIP_ID)
-$(document).on('acal:clipboard-clear', function(){
-  CLIP_ID = null;
-  if (typeof refreshPaste === 'function') refreshPaste();
-});
-
-
-  $(document).on('click', '.acal-paste', function(e){
-    e.preventDefault();
-    if(!CLIP_ID) return;
-    var $b = $(this); $b.prop('disabled', true);
-    $.post(ajaxurl, {
-      action: 'acal_paste_task',
-      nonce: (window.ACAL_NONCE || ''),
-      src_id: CLIP_ID,
-      tecnico_id: $b.data('tecnico'),
-      fecha: $b.data('date')
-    }).done(function(r){
-      if(r && r.success){
-        var d = String($b.data('date'));
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
-      } else {
-        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
-      }
-    }).fail(function(){ alert('Error pegando'); })
-      .always(function(){ $b.prop('disabled', false); });
-  });
-
-  $(function(){ refreshPaste(); });
-})(jQuery);
-
-/* ===== Inyectar “Copiar” (robusto, por ID) ===== */
-/* ===== Inyectar “Copiar” (robusto, por ID) + Pegar ===== */
+/* ===== Clipboard unificado: Copiar / Pegar por ID + botón inline ===== */
 (function($){
   var CLIP_ID = null;
 
-  function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
-
-  // Obtiene el ID de la tarea desde el menú
-  function getTaskIdFromMenu($menu){
-    // a) hidden del form de Eliminar (el más estable)
-    var tid = $menu.find('input[name="task_id"]').val();
-    if (tid) return parseInt(tid, 10);
-
-    // b) data-json del enlace Editar
-    var payload = $menu.find('.acal-edit').data('json');
-    try{ if(typeof payload === 'string') payload = JSON.parse(payload); }catch(e){ payload = null; }
-    if (payload && payload.id) return parseInt(payload.id, 10);
-
-    // c) atributo en la tarjeta
-    var t = $menu.closest('.acal-task').data('taskId') || $menu.closest('.acal-task').data('task-id');
-    if (t) return parseInt(t, 10);
-
-    return null;
+  function refreshPaste(){
+    $('.acal-paste')[CLIP_ID ? 'show' : 'hide']();
   }
-
-  // Inserta “Copiar” si aún no existe
-  function ensureCopy($menu){
-    if (!$menu.length || $menu.find('.acal-copy').length) return;
-    var id = getTaskIdFromMenu($menu);
-    if (!id) return;
-    var $edit = $menu.find('.acal-edit').first();
-    var $copy = $('<a href="#" class="acal-menu-link acal-copy" data-task-id="'+ id +'">Copiar</a>');
-    if ($edit.length) $copy.insertAfter($edit); else $menu.prepend($copy);
-  }
-
-  // Disparadores para inyectar “Copiar”
-  $(document).on('click', '.acal-kebab', function(){
-    var $m = $(this).siblings('.acal-menu');
-    setTimeout(function(){ ensureCopy($m); }, 0);
-  });
-  $(document).on('mouseenter focusin', '.acal-menu', function(){ ensureCopy($(this)); });
-
-  // Clipboard por ID
-  $(document).on('click', '.acal-copy', function(e){
-    e.preventDefault();
-    var tid = $(this).data('task-id');
-    CLIP_ID = tid ? parseInt(tid, 10) : null;
-    refreshPaste();
-  });
-
-  // Pegar en celda
-  $(document).on('click', '.acal-paste', function(e){
-    e.preventDefault();
-    if (!CLIP_ID) return;
-    var $b = $(this).prop('disabled', true);
-    $.post(ajaxurl, {
-      action: 'acal_paste_task',
-      nonce: (window.ACAL_NONCE || ''),
-      src_id: CLIP_ID,
-      tecnico_id: $b.data('tecnico'),
-      fecha: $b.data('date')
-    }).done(function(r){
-      if (r && r.success) {
-        var d = String($b.data('date'));
-        window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
-      } else {
-        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
-      }
-    }).fail(function(){ alert('Error pegando'); })
-      .always(function(){ $b.prop('disabled', false); });
-  });
-
-  $(function(){ $('.acal-menu').each(function(){ ensureCopy($(this)); }); refreshPaste(); });
-})(jQuery);
-
-
-/* ===== Copiar/Pegar robusto (menu + botón inline) ===== */
-(function($){
-  var CLIP_ID = null;
-  function refreshPaste(){ $('.acal-paste')[CLIP_ID ? 'show' : 'hide'](); }
 
   function getTaskIdFromMenu($menu){
     var tid = $menu.find('input[name="task_id"]').val();
     if (tid) return parseInt(tid,10);
+
     var payload = $menu.find('.acal-edit').data('json');
     try{ if(typeof payload==='string') payload=JSON.parse(payload); }catch(e){ payload=null; }
     if (payload && payload.id) return parseInt(payload.id,10);
+
     var t = $menu.closest('.acal-task').data('taskId') || $menu.closest('.acal-task').data('task-id');
     if (t) return parseInt(t,10);
+
     return null;
   }
 
@@ -173,45 +60,55 @@ $(document).on('acal:clipboard-clear', function(){
     if(!$menu.length || $menu.find('.acal-copy').length) return;
     var id = getTaskIdFromMenu($menu);
     if(!id) return;
+
     var $edit = $menu.find('.acal-edit').first();
     var $copy = $('<a href="#" class="acal-menu-link acal-copy" data-task-id="'+id+'">Copiar</a>');
     if($edit.length) $copy.insertAfter($edit); else $menu.prepend($copy);
   }
 
-  // Inyección en menú al abrir
-  $(document).on('click', '.acal-kebab', function(){
-    var $m = $(this).siblings('.acal-menu');
-    setTimeout(function(){ ensureCopy($m); }, 0);
-  });
-  $(document).on('mouseenter focusin', '.acal-menu', function(){ ensureCopy($(this)); });
-
-  // Botón inline al lado del kebab (si podemos deducir el ID)
   function addInlineCopy(){
     $('.acal-kebab-wrap').each(function(){
-      var $wrap=$(this);
+      var $wrap = $(this);
       if($wrap.find('.acal-copy-inline').length) return;
-      var $menu=$wrap.find('.acal-menu');
+
+      var $menu = $wrap.find('.acal-menu');
       var id = getTaskIdFromMenu($menu);
       if(!id) return;
+
       var $k = $wrap.find('.acal-kebab').first();
-      var $btn=$('<button type="button" class="button button-small acal-copy-inline" title="Copiar" style="margin-left:4px">📋</button>').attr('data-task-id', id);
+      var $btn = $('<button type="button" class="button button-small acal-copy-inline" title="Copiar" style="margin-left:4px">📋</button>').attr('data-task-id', id);
       if($k.length) $btn.insertAfter($k);
     });
   }
 
-  // Clipboard
-  $(document).on('click', '.acal-copy, .acal-copy-inline', function(e){
-    e.preventDefault();
-    var tid = $(this).data('task-id');
-    CLIP_ID = tid ? parseInt(tid,10) : null;
+  function setClipboard(taskId){
+    CLIP_ID = taskId ? parseInt(taskId,10) : null;
     refreshPaste();
+  }
+
+  $(document).on('click', '.acal-kebab', function(){
+    var $m = $(this).siblings('.acal-menu');
+    setTimeout(function(){ ensureCopy($m); }, 0);
   });
 
-  // Pegar
+  $(document).on('mouseenter focusin', '.acal-menu', function(){
+    ensureCopy($(this));
+  });
+
+  $(document).on('click', '.acal-copy, .acal-copy-inline', function(e){
+    e.preventDefault();
+    setClipboard($(this).data('task-id'));
+  });
+
+  $(document).on('acal:clipboard-clear', function(){
+    setClipboard(null);
+  });
+
   $(document).on('click', '.acal-paste', function(e){
     e.preventDefault();
     if(!CLIP_ID) return;
-    var $b=$(this).prop('disabled', true);
+
+    var $b = $(this).prop('disabled', true);
     $.post(ajaxurl, {
       action:'acal_paste_task',
       nonce:(window.ACAL_NONCE||''),
@@ -220,16 +117,20 @@ $(document).on('acal:clipboard-clear', function(){
       fecha: $b.data('date')
     }).done(function(r){
       if(r && r.success){
-        var d=String($b.data('date'));
+        var d = String($b.data('date'));
         window.location = window.location.pathname + '?page=acal_calendario&date=' + encodeURIComponent(d);
-      }else{
-        alert((r && r.data && r.data.msg)||'No se pudo pegar');
+      } else {
+        alert((r && r.data && r.data.msg) || 'No se pudo pegar');
       }
     }).fail(function(){ alert('Error pegando'); })
       .always(function(){ $b.prop('disabled', false); });
   });
 
-  $(function(){ setTimeout(addInlineCopy, 0); refreshPaste(); });
+  $(function(){
+    $('.acal-menu').each(function(){ ensureCopy($(this)); });
+    setTimeout(addInlineCopy, 0);
+    refreshPaste();
+  });
 })(jQuery);
 
 /* ===== Colocar solo "Pegar" en la esquina izq. sin mover "+ Agregar" ===== */

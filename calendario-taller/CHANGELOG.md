@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.31
+- Se refactoriza `assets/admin.js` para unificar la lógica de **copiar/pegar** en un único módulo y eliminar bindings/eventos duplicados.
+- Se conserva compatibilidad funcional con menú kebab, botón inline 📋, acción **Pegar** por celda y evento `acal:clipboard-clear`.
+- Se reduce riesgo de dobles llamadas AJAX y comportamiento inconsistente en modo copiar.
+
 ## 1.9.30
 - Se mejora la legibilidad de tarjetas en el gestor frontend desktop: ajuste de densidad en celdas, jerarquía tipográfica y truncado controlado (2 líneas) para título/descripción.
 - Se corrige cálculo de fechas en acciones rápidas (**Hoy** / **Semana actual**) para evitar desfases en sitios no UTC: se reemplaza el uso de timestamp local por `current_datetime()` en zona horaria del sitio.
