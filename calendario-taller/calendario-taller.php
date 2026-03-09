@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.31
+ * Version: 1.9.32
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.31';
+    const VERSION   = '1.9.32';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -1027,6 +1027,11 @@ echo '</div>';   // .acal-tech-item
         update_post_meta($post_id,'_acal_cliente',$cliente);
         update_post_meta($post_id,'_acal_equipo',$equipo);
         update_post_meta($post_id,'_acal_descripcion',$desc);
+
+        $turno = isset($_POST['turno']) ? sanitize_text_field($_POST['turno']) : 'am';
+        $turno = in_array(strtolower($turno), ['am','pm'], true) ? strtolower($turno) : 'am';
+        update_post_meta($post_id, '_acal_turno', $turno);
+
         $this->redirect_to_context_or_admin($fecha);
     }
 public function handle_update_task(){

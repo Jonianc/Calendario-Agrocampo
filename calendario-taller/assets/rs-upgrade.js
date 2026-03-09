@@ -584,6 +584,70 @@ function enableModalA11y(){
   if(!$modal.is(':visible')) closeA11y();
 }
 
+
+function ensureA11yLiveRegion(){
+  if($('#acal-a11y-live').length) return;
+  $('body').append('<div id="acal-a11y-live" class="screen-reader-text" aria-live="polite" aria-atomic="true"></div>');
+}
+
+function announceA11y(message){
+  ensureA11yLiveRegion();
+  var $live = $('#acal-a11y-live');
+  $live.text('');
+  setTimeout(function(){ $live.text(message || ''); }, 10);
+}
+
+function enhanceGridKeyboardA11y(){
+  var $grid = $('.acal-grid');
+  if(!$grid.length) return;
+
+  $grid.find('.acal-cell').each(function(){
+    var $cell = $(this);
+    if($cell.hasClass('acal-head') || $cell.hasClass('acal-tech-col')) return;
+
+    if(!$cell.attr('tabindex')) $cell.attr('tabindex', '0');
+    $cell.attr('role', 'group');
+
+    var dayLabel = $.trim($grid.find('.acal-head').eq($cell.index() % 6).text()) || 'día';
+    var techLabel = $.trim($cell.prevAll('.acal-tech-col').first().text()) || 'técnico';
+    $cell.attr('aria-label', 'Celda de ' + techLabel + ' en ' + dayLabel + '. Enter para agregar tarea.');
+  });
+
+  $(document).off('keydown.acalGridA11y').on('keydown.acalGridA11y', '.acal-grid .acal-cell[tabindex="0"]', function(e){
+    if(e.key === 'Enter'){
+      var $add = $(this).find('.acal-add').first();
+      if($add.length){
+        e.preventDefault();
+        $add.trigger('click');
+        announceA11y('Formulario de nueva tarea abierto.');
+      }
+    }
+
+    if((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V')){
+      var $paste = $(this).find('.acal-paste:visible').first();
+      if($paste.length){
+        e.preventDefault();
+        $paste.trigger('click');
+        announceA11y('Pegando tarea en celda seleccionada.');
+      }
+    }
+  });
+
+  $(document).off('keydown.acalQuickNew').on('keydown.acalQuickNew', function(e){
+    var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+    if(tag === 'input' || tag === 'textarea' || tag === 'select' || $('#acal-modal:visible').length) return;
+
+    if(e.key === 'n' || e.key === 'N'){
+      var $firstAdd = $('.acal-grid .acal-add:visible').first();
+      if($firstAdd.length){
+        e.preventDefault();
+        $firstAdd.trigger('click');
+        announceA11y('Formulario de nueva tarea abierto con atajo de teclado.');
+      }
+    }
+  });
+}
+
 function init(){
   patchFilters();
   patchModal();
@@ -601,6 +665,7 @@ function init(){
   enableModalA11y();
   syncKebabA11y();
   enhanceTopbarQuickActions();
+  enhanceGridKeyboardA11y();
 
 }
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.32
+- Se corrige guardado de turno al crear tareas: cuando el formulario llega sin turno explícito ahora se persiste por defecto como `am`, evitando que el valor preseleccionado se pierda.
+- Se mejora accesibilidad del gestor frontend en grilla (desktop): celdas enfocables con feedback visual, soporte de teclado (`Enter` para agregar y `Ctrl/Cmd+V` para pegar en celda) y atajo `N` para nueva tarea.
+- Se agrega región `aria-live` para anunciar acciones rápidas de teclado en la planificación.
+
 ## 1.9.31
 - Se refactoriza `assets/admin.js` para unificar la lógica de **copiar/pegar** en un único módulo y eliminar bindings/eventos duplicados.
 - Se conserva compatibilidad funcional con menú kebab, botón inline 📋, acción **Pegar** por celda y evento `acal:clipboard-clear`.

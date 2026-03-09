@@ -188,6 +188,17 @@ body.acal-front-management .acal-grid .acal-cell{
   padding: 12px 10px;
 }
 
+
+body.acal-front-management .acal-grid .acal-cell[tabindex="0"]:focus-visible{
+  outline: 3px solid #2563eb;
+  outline-offset: -3px;
+  background: #eff6ff;
+}
+
+body.acal-front-management .acal-grid .acal-cell[tabindex="0"]{
+  transition: background-color .12s ease;
+}
+
 body.acal-front-management .acal-task{
   min-height: 86px;
   display: grid;
