@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.28
+ * Version: 1.9.29
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.28';
+    const VERSION   = '1.9.29';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -560,8 +560,17 @@ public function render_calendar_page(){
         }));
     }
     $can_edit = $this->can_edit();
+    $today_ts = (int) current_time('timestamp');
+    $today = wp_date('Y-m-d', $today_ts);
+    $week_current = wp_date('Y-m-d', strtotime('monday this week', $today_ts));
     $prev = date('Y-m-d', strtotime($days[0].' -7 days'));
     $next = date('Y-m-d', strtotime($days[0].' +7 days'));
+    $clear_filters_url = add_query_arg([
+        'f_tecnico' => false,
+        'f_sucursal' => false,
+        'f_estado' => false,
+        's' => false,
+    ]);
 
     $standalone_url = add_query_arg(
         [
@@ -592,6 +601,12 @@ public function render_calendar_page(){
     echo '<label>Semana de: <input type="date" name="date" value="'.esc_attr($days[0]).'" /></label> ';
     echo '<button class="button">Ir</button> ';
     echo '<a class="button" href="'.esc_url(add_query_arg(['date'=>$next])).'">Próxima semana &raquo;</a>';
+    echo '</div>';
+
+    echo '<div class="acal-quick-actions" aria-label="Acciones rápidas">';
+    echo '<a class="button" href="'.esc_url(add_query_arg(['date'=>$today])).'">Hoy</a>';
+    echo '<a class="button" href="'.esc_url(add_query_arg(['date'=>$week_current])).'">Semana actual</a>';
+    echo '<a class="button" href="'.esc_url($clear_filters_url).'">Limpiar filtros</a>';
     echo '</div>';
 
     echo '<div class="acal-filters">';

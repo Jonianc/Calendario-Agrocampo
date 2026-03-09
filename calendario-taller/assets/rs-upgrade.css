@@ -70,12 +70,43 @@ body.acal-front-management .acal-topbar{
   margin-bottom: 16px;
 }
 
+body.acal-front-management .acal-topbar{
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
 body.acal-front-management .acal-topbar .acal-nav,
 body.acal-front-management .acal-topbar .acal-filters{
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+body.acal-front-management .acal-topbar .acal-filters{
+  grid-column: 1 / -1;
+}
+
+body.acal-front-management .acal-quick-actions{
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+body.acal-front-management .acal-quick-actions .button{
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+body.acal-front-management .acal-quick-actions .button.is-active,
+body.acal-front-management .acal-quick-actions .button:hover{
+  border-color: #94a3b8;
+  background: #f1f5f9;
 }
 
 body.acal-front-management .acal-topbar label{

@@ -477,6 +477,40 @@ function syncKebabA11y(){
   });
 }
 
+function enhanceTopbarQuickActions(){
+  var $topbar = $('.acal-topbar');
+  if(!$topbar.length) return;
+
+  var $quick = $topbar.find('.acal-quick-actions');
+  if(!$quick.length) return;
+
+  var params = new URLSearchParams(window.location.search || '');
+  var selectedDate = params.get('date') || '';
+
+  $quick.find('a.button').each(function(){
+    var href = $(this).attr('href') || '';
+    if(!href) return;
+    try {
+      var url = new URL(href, window.location.origin);
+      var actionDate = url.searchParams.get('date') || '';
+      if(actionDate && selectedDate && actionDate === selectedDate){
+        $(this).addClass('is-active').attr('aria-current', 'page');
+      }
+    } catch(e){ }
+  });
+
+  var $clear = $quick.find('a.button').filter(function(){
+    return /Limpiar filtros/i.test($(this).text());
+  }).first();
+
+  if($clear.length){
+    $clear.on('click', function(){
+      if($('#acal-filter-feedback').length) return;
+      $('<span id="acal-filter-feedback" class="acal-help" aria-live="polite">Limpiando filtros…</span>').insertAfter($quick);
+    });
+  }
+}
+
 function enableModalA11y(){
   var $modal = $('#acal-modal');
   if(!$modal.length) return;
@@ -566,6 +600,7 @@ function init(){
   enableTechArrows();
   enableModalA11y();
   syncKebabA11y();
+  enhanceTopbarQuickActions();
 
 }
 

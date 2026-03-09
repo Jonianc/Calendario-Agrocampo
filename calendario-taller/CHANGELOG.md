@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.29
+- Se mejora la topbar del gestor frontend (desktop): nueva disposición visual con navegación semanal, acciones rápidas y filtros en estructura más escaneable.
+- Se agregan acciones rápidas **Hoy**, **Semana actual** y **Limpiar filtros** para reducir clics en la operación diaria.
+- Se añade realce de acción activa por fecha (`is-active`) y feedback visual breve al limpiar filtros.
+
 ## 1.9.28
 - Se refuerza la preservación de contexto/filtros en redirecciones post crear/editar/eliminar: `redirect_to` ahora se procesa con `wp_unslash` y validación robusta de query.
 - Se mejora la detección de `date` en `redirect_to` parseando parámetros reales (evita falsos positivos por coincidencias de texto) para mantener intactos filtros activos.
