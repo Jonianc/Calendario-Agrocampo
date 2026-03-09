@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.25
+- Mejora UI/UX del modal **Nueva tarea** en frontend: se reorganiza en bloques "Datos clave" y "Detalle de la tarea" para acelerar el flujo de creación.
+- Se añaden ayudas de contexto y validación inline accesible (`aria-invalid`, mensajes por campo y región `aria-live`) para técnico, fecha y longitud de descripción.
+- Se refuerza visualmente el estado de error en campos y se ajusta el layout responsive del formulario dentro del modal.
+
 ## 1.9.24
 - Se corrige seguridad en exportación CSV por técnico: ahora cada celda se sanea para prevenir **CSV formula injection** en Excel/Google Sheets (prefijo seguro en valores que inician con `=`, `+`, `-` o `@`).
 

@@ -105,6 +105,7 @@ function enableTechOrder(){
 function patchModal(){
   var $form = $('#acal-form');
   if(!$form.length) return;
+  var isFrontManagement = $('body').hasClass('acal-front-management');
 
   // ----- Oculta "Estado" y fija "programado"
   var $est = $form.find('#acal-estado');
@@ -180,6 +181,117 @@ function patchModal(){
     }, 0);
   });
   if($form.is(':visible')){ setTurno($('#acal-turno-hidden').val() || 'am'); }
+
+  if(isFrontManagement){
+    if(!$form.find('.acal-form-priority').length){
+      var $priority = $('<div class="acal-form-priority" />');
+      var $details  = $('<div class="acal-form-details" />');
+
+      $form.find('#acal-tecnico-id').closest('label').addClass('acal-field-tecnico').appendTo($priority);
+      $form.find('#acal-fecha').closest('label').addClass('acal-field-fecha').appendTo($priority);
+      $form.find('#acal-turno-group').appendTo($priority);
+
+      $form.find('#acal-cliente').closest('label').addClass('acal-field-cliente').appendTo($details);
+      $form.find('#acal-equipo').closest('label').addClass('acal-field-equipo').appendTo($details);
+      $form.find('#acal-lugar').closest('label').addClass('acal-field-lugar').appendTo($details);
+      $form.find('#acal-descripcion').closest('label').addClass('acal-field-descripcion').appendTo($details);
+
+      $('<h3 class="acal-form-block-title">Datos clave</h3>').prependTo($priority);
+      $('<p class="acal-form-block-help">Completa estos campos primero para programar rápidamente.</p>').insertAfter($priority.find('.acal-form-block-title'));
+      $('<h3 class="acal-form-block-title">Detalle de la tarea</h3>').prependTo($details);
+
+      $priority.insertBefore($form.find('.acal-form-actions'));
+      $details.insertBefore($form.find('.acal-form-actions'));
+    }
+
+    if(!$form.find('#acal-form-live').length){
+      $('<div id="acal-form-live" class="acal-form-live" aria-live="polite" aria-atomic="true"></div>').insertBefore($form.find('.acal-form-actions'));
+    }
+
+    if(!$form.find('#acal-fecha-help').length){
+      $('<small id="acal-fecha-help" class="acal-help">Usa una fecha válida en la semana que estás planificando.</small>').insertAfter($form.find('#acal-fecha'));
+      $form.find('#acal-fecha').attr('aria-describedby', 'acal-fecha-help');
+    }
+    if(!$form.find('#acal-descripcion-help').length){
+      $('<small id="acal-descripcion-help" class="acal-help">Máximo recomendado: 280 caracteres para mantener tarjetas legibles.</small>').insertAfter($form.find('#acal-descripcion'));
+      $form.find('#acal-descripcion').attr('aria-describedby', 'acal-descripcion-help');
+    }
+
+    function setFieldError(selector, message){
+      var $field = $form.find(selector);
+      if(!$field.length) return;
+      var id = $field.attr('id');
+      var errId = id + '-error';
+      $field.attr('aria-invalid', 'true').addClass('acal-invalid');
+      if(!$form.find('#'+errId).length){
+        $('<span class="acal-error" id="'+errId+'"></span>').insertAfter($field);
+      }
+      $form.find('#'+errId).text(message);
+      var desc = ($field.attr('aria-describedby') || '').split(' ').filter(Boolean);
+      if(desc.indexOf(errId) === -1){
+        desc.push(errId);
+        $field.attr('aria-describedby', desc.join(' '));
+      }
+    }
+
+    function clearFieldError(selector){
+      var $field = $form.find(selector);
+      if(!$field.length) return;
+      var id = $field.attr('id');
+      var errId = id + '-error';
+      $field.removeAttr('aria-invalid').removeClass('acal-invalid');
+      $form.find('#'+errId).remove();
+      var desc = ($field.attr('aria-describedby') || '').split(' ').filter(function(v){ return v && v !== errId; });
+      if(desc.length){ $field.attr('aria-describedby', desc.join(' ')); }
+      else { $field.removeAttr('aria-describedby'); }
+      if(id === 'acal-fecha' && !$form.find('#acal-fecha-help').length){
+        $('<small id="acal-fecha-help" class="acal-help">Usa una fecha válida en la semana que estás planificando.</small>').insertAfter($field);
+        $field.attr('aria-describedby','acal-fecha-help');
+      }
+      if(id === 'acal-descripcion' && !$form.find('#acal-descripcion-help').length){
+        $('<small id="acal-descripcion-help" class="acal-help">Máximo recomendado: 280 caracteres para mantener tarjetas legibles.</small>').insertAfter($field);
+        $field.attr('aria-describedby','acal-descripcion-help');
+      }
+    }
+
+    function isValidDate(v){
+      return /^\d{4}-\d{2}-\d{2}$/.test(v || '');
+    }
+
+    function validateForm(){
+      var errors = [];
+      var tecnico = ($form.find('#acal-tecnico-id').val() || '').trim();
+      var fecha = ($form.find('#acal-fecha').val() || '').trim();
+      var desc = ($form.find('#acal-descripcion').val() || '').trim();
+
+      clearFieldError('#acal-tecnico-id');
+      clearFieldError('#acal-fecha');
+      clearFieldError('#acal-descripcion');
+
+      if(!tecnico){ errors.push({selector:'#acal-tecnico-id', message:'Selecciona un técnico para continuar.'}); }
+      if(!fecha || !isValidDate(fecha)){ errors.push({selector:'#acal-fecha', message:'Ingresa una fecha válida (AAAA-MM-DD).'}); }
+      if(desc.length > 280){ errors.push({selector:'#acal-descripcion', message:'La descripción no debe superar 280 caracteres.'}); }
+
+      if(errors.length){
+        errors.forEach(function(err){ setFieldError(err.selector, err.message); });
+        $form.find('#acal-form-live').text('Hay ' + errors.length + ' campo(s) por corregir antes de guardar.');
+        $form.find(errors[0].selector).trigger('focus');
+        return false;
+      }
+
+      $form.find('#acal-form-live').text('Formulario listo para guardar.');
+      return true;
+    }
+
+    $form.off('input.acalValidation change.acalValidation')
+      .on('input.acalValidation change.acalValidation', '#acal-tecnico-id, #acal-fecha, #acal-descripcion', function(){
+        clearFieldError('#'+this.id);
+      });
+
+    $form.off('submit.acalValidation').on('submit.acalValidation', function(e){
+      if(!validateForm()) e.preventDefault();
+    });
+  }
 
   // ---------- NUEVO: Botón "Eliminar" (solo en editar) ----------
   function ensureDeleteButton(){
