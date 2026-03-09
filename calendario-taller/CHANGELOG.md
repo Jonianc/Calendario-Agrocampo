@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.23
+- Se corrige el filtro por técnico en la vista semanal: ahora aplica correctamente y muestra solo la fila del técnico seleccionado.
+- Se aplica el filtrado activo (técnico/sucursal/estado/búsqueda) sobre las tareas visibles de cada celda del calendario semanal.
+- Se agrega en Importar/Exportar la opción de descargar **CSV por técnico** (formato amigable para Excel/Google Sheets) con columnas de fecha, técnico, cliente, sucursal, equipo, estado, turno y descripción.
+
 ## 1.9.22
 - Se corrige superposición y alineación de acciones en tarjetas de la vista semanal frontend: se estabiliza layout de `.acal-task`, `kebab` y botón de copia inline con espaciado reservado y z-index consistente.
 - Se corrige modal de edición en frontend: overlay `fixed` completo, bloqueo de scroll de fondo, límite de tamaño por viewport y scroll interno para evitar cortes de contenido/acciones.

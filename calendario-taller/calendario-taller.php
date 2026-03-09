@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.22
+ * Version: 1.9.23
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.22';
+    const VERSION   = '1.9.23';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -414,6 +414,19 @@ private function order_tecnicos_array(array $tecs): array{
         return true;
     }
 
+    private function task_array_matches_filters($task, $filters){
+        if ($filters['tecnico'] && (($task['tecnico_id'] ?? '') !== $filters['tecnico'])) return false;
+        if ($filters['sucursal'] && strtolower((string)($task['sucursal'] ?? '')) !== strtolower((string)$filters['sucursal'])) return false;
+        if ($filters['estado'] && strtolower((string)($task['estado'] ?? '')) !== strtolower((string)$filters['estado'])) return false;
+
+        if ($filters['search']) {
+            $blob = strtolower(trim(((string)($task['cliente'] ?? '')).' '.((string)($task['equipo'] ?? '')).' '.((string)($task['descripcion'] ?? ''))));
+            if (strpos($blob, strtolower((string)$filters['search'])) === false) return false;
+        }
+
+        return true;
+    }
+
     /* Fechas / Semana */
     private function week_range_from_query(){
         $date = $this->normalize_date($_GET['date'] ?? '', true);
@@ -507,6 +520,11 @@ public function render_calendar_page(){
 
     $tasks   = $this->get_tasks_for_week($days);
     $filters = $this->get_filters();
+    if (!empty($filters['tecnico'])) {
+        $tecnicos = array_values(array_filter($tecnicos, function($t) use ($filters){
+            return isset($t['id']) && $t['id'] === $filters['tecnico'];
+        }));
+    }
     $can_edit = $this->can_edit();
     $prev = date('Y-m-d', strtotime($days[0].' -7 days'));
     $next = date('Y-m-d', strtotime($days[0].' +7 days'));
@@ -617,6 +635,11 @@ echo '</div>';   // .acal-tech-item
             echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
 
             $cellTasks = $tasks[$tecId][$d] ?? [];
+            if (!empty($filters['sucursal']) || !empty($filters['estado']) || !empty($filters['search']) || !empty($filters['tecnico'])) {
+                $cellTasks = array_values(array_filter($cellTasks, function($task) use ($filters){
+                    return $this->task_array_matches_filters($task, $filters);
+                }));
+            }
             if ($can_edit){
                 echo '<button class="button acal-add acal-hide-on-print" data-tecnico="'.esc_attr($tecId).'" data-date="'.esc_attr($d).'" data-tecnico-name="'.esc_attr($t['nombre']).'" aria-label="Agregar tarea para '.esc_attr($t['nombre']).' el '.esc_attr($d).'">+ Agregar</button>';
                 echo '<button class="button acal-paste" data-date="'.esc_attr($d).'" data-tecnico="'.esc_attr($tecId).'" style="margin-left:6px;display:none" aria-label="Pegar tarea en '.esc_attr($t['nombre']).' el '.esc_attr($d).'">Pegar</button>';
@@ -748,6 +771,9 @@ echo '</div>';   // .acal-tech-item
         $nonce = wp_create_nonce(self::NONCE_KEY);
         $current_tasks = $this->get_tasks_total_count();
         $tecnicos_count = count($this->get_tecnicos());
+        $tecnicos = $this->order_tecnicos_array(array_values(array_filter($this->get_tecnicos(), function($t){
+            return !empty($t['id']) && !empty($t['nombre']);
+        })));
 
         $import_done = isset($_GET['import']) && $_GET['import'] === '1';
         $stats = [
@@ -815,6 +841,20 @@ echo '</div>';   // .acal-tech-item
             echo '<input type="hidden" name="action" value="acal_export_data" />';
             echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
             echo '<button class="button button-primary">Descargar exportación</button>';
+            echo '</form>';
+
+            echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">';
+            echo '<input type="hidden" name="action" value="acal_export_data" />';
+            echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
+            echo '<input type="hidden" name="export_format" value="csv" />';
+            echo '<label for="acal-export-tecnico"><strong>Exportar CSV por técnico:</strong></label>';
+            echo '<select id="acal-export-tecnico" name="tecnico_id" required>';
+            echo '<option value="">Selecciona técnico</option>';
+            foreach ($tecnicos as $t){
+                echo '<option value="'.esc_attr($t['id']).'">'.esc_html($t['nombre']).'</option>';
+            }
+            echo '</select>';
+            echo '<button class="button button-secondary">Descargar CSV</button>';
             echo '</form>';
         } else {
             echo '<p><em>Solo lectura</em></p>';
@@ -1428,6 +1468,70 @@ ACALJS;
     public function handle_export_data(){
         if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
         if (!$this->can_edit()) wp_die('Permisos insuficientes');
+
+        $export_format = isset($_POST['export_format']) ? sanitize_key((string)$_POST['export_format']) : 'json';
+        $tecnico_id = $this->sanitize_text($_POST['tecnico_id'] ?? '');
+
+        if ($export_format === 'csv'){
+            if ($tecnico_id === '') wp_die('Técnico requerido para exportar CSV');
+
+            $tecnicos = $this->get_tecnicos();
+            $tecnico_nombre = $tecnico_id;
+            foreach ($tecnicos as $t){
+                if (($t['id'] ?? '') === $tecnico_id){
+                    $tecnico_nombre = (string)($t['nombre'] ?? $tecnico_id);
+                    break;
+                }
+            }
+
+            $q = new WP_Query([
+                'post_type'      => self::CPT_TASK,
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+                'meta_query'     => [
+                    [
+                        'key'   => '_acal_tecnico_id',
+                        'value' => $tecnico_id,
+                    ],
+                ],
+                'orderby'        => 'meta_value',
+                'meta_key'       => '_acal_fecha',
+                'order'          => 'ASC',
+            ]);
+
+            $rows = [];
+            if ($q->have_posts()){
+                while($q->have_posts()){
+                    $q->the_post();
+                    $meta = get_post_meta(get_the_ID());
+                    $rows[] = [
+                        $meta['_acal_fecha'][0] ?? '',
+                        $tecnico_nombre,
+                        $meta['_acal_cliente'][0] ?? '',
+                        $meta['_acal_sucursal'][0] ?? '',
+                        $meta['_acal_equipo'][0] ?? '',
+                        $meta['_acal_estado'][0] ?? '',
+                        strtoupper((string)($meta['_acal_turno'][0] ?? '')),
+                        $meta['_acal_descripcion'][0] ?? '',
+                    ];
+                }
+                wp_reset_postdata();
+            }
+
+            $slug_tecnico = sanitize_title($tecnico_nombre);
+            $filename = 'acal-export-tecnico-'.($slug_tecnico !== '' ? $slug_tecnico : $tecnico_id).'-'.date('Ymd-His').'.csv';
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename='.$filename);
+
+            $out = fopen('php://output', 'w');
+            fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+            fputcsv($out, ['Fecha', 'Técnico', 'Cliente', 'Sucursal', 'Equipo/Modelo', 'Estado', 'Turno', 'Descripción']);
+            foreach ($rows as $row){
+                fputcsv($out, $row);
+            }
+            fclose($out);
+            exit;
+        }
 
         $tasks = [];
         $q = new WP_Query([
