@@ -107,6 +107,13 @@ function patchModal(){
   if(!$form.length) return;
   var isFrontManagement = $('body').hasClass('acal-front-management');
 
+  function syncRedirectToCurrentUrl(){
+    var $redirect = $form.find('#acal-redirect-to');
+    if($redirect.length){
+      $redirect.val((window.location.href || '').split('#')[0]);
+    }
+  }
+
   // ----- Oculta "Estado" y fija "programado"
   var $est = $form.find('#acal-estado');
   if($est.length){ $est.val('programado'); $est.closest('label').hide(); }
@@ -170,7 +177,7 @@ function patchModal(){
     $('#acal-turno-hidden').val(v);
   });
   $(document).off('click.acalAddTurno').on('click.acalAddTurno', '.acal-add', function(){
-    setTimeout(function(){ ensureTurnoControls(); setTurno('am'); toggleDelete(false); }, 0);
+    setTimeout(function(){ ensureTurnoControls(); setTurno('am'); toggleDelete(false); syncRedirectToCurrentUrl(); }, 0);
   });
   $(document).off('click.acalEditTurno').on('click.acalEditTurno', '.acal-edit', function(){
     var task = $(this).data('task') || {};
@@ -178,6 +185,7 @@ function patchModal(){
       ensureTurnoControls();
       setTurno(task.turno || 'am');
       toggleDelete(true);
+      syncRedirectToCurrentUrl();
     }, 0);
   });
   if($form.is(':visible')){ setTurno($('#acal-turno-hidden').val() || 'am'); }

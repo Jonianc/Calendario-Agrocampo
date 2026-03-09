@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.26
+ * Version: 1.9.27
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.26';
+    const VERSION   = '1.9.27';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -427,6 +427,27 @@ private function order_tecnicos_array(array $tecs): array{
         return true;
     }
 
+    private function redirect_to_context_or_admin($fecha){
+        $redirect_to = isset($_POST['redirect_to']) ? esc_url_raw((string) $_POST['redirect_to']) : '';
+        if ($redirect_to === '') {
+            $redirect_to = wp_get_referer() ? esc_url_raw((string) wp_get_referer()) : '';
+        }
+
+        if ($redirect_to !== '') {
+            if ($fecha && strpos($redirect_to, 'date=') === false) {
+                $redirect_to = add_query_arg(['date' => $fecha], $redirect_to);
+            }
+            $safe = wp_validate_redirect($redirect_to, '');
+            if ($safe !== '') {
+                wp_safe_redirect($safe);
+                exit;
+            }
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=acal_calendario&date='.urlencode($fecha)));
+        exit;
+    }
+
     private function sanitize_csv_cell($value){
         $value = is_scalar($value) ? (string) $value : '';
         $trimmed = ltrim($value, " \t\r\n");
@@ -708,9 +729,11 @@ echo '</div>';   // .acal-tech-item
     echo '<div id="acal-modal" class="acal-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="acal-modal-title" aria-hidden="true"><div class="acal-modal-content">';
     echo '<button type="button" class="acal-modal-close" aria-label="Cerrar modal">&times;</button><h2 id="acal-modal-title">Nueva tarea</h2>';
     echo '<form method="post" action="'.esc_url(admin_url('admin-post.php')).'" id="acal-form">';
+    $current_url = (is_ssl() ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '');
     echo '<input type="hidden" name="_wpnonce" value="'.esc_attr($nonce).'" />';
     echo '<input type="hidden" name="action" value="acal_create_task" id="acal-action" />';
     echo '<input type="hidden" name="task_id" id="acal-task-id" value="" />';
+    echo '<input type="hidden" name="redirect_to" id="acal-redirect-to" value="'.esc_url($current_url).'" />';
     // Hidden para turno (lo completa el JS)
     echo '<input type="hidden" name="turno" id="acal-turno-hidden" value="" />';
     echo '<label>Técnico<br><select name="tecnico_id" id="acal-tecnico-id" required>';
@@ -985,7 +1008,7 @@ echo '</div>';   // .acal-tech-item
         update_post_meta($post_id,'_acal_cliente',$cliente);
         update_post_meta($post_id,'_acal_equipo',$equipo);
         update_post_meta($post_id,'_acal_descripcion',$desc);
-        wp_safe_redirect(admin_url('admin.php?page=acal_calendario&date='.urlencode($fecha))); exit;
+        $this->redirect_to_context_or_admin($fecha);
     }
 public function handle_update_task(){
     if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
@@ -1026,8 +1049,7 @@ public function handle_update_task(){
     if(!$title) $title = 'Tarea';
     wp_update_post([ 'ID'=>$post_id, 'post_title'=>$title ]);
 
-    wp_safe_redirect(admin_url('admin.php?page=acal_calendario&date='.urlencode($fecha)));
-    exit;
+    $this->redirect_to_context_or_admin($fecha);
 }
     public function handle_delete_task(){
         if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', self::NONCE_KEY)) wp_die('Nonce inválido');
@@ -1036,23 +1058,7 @@ public function handle_update_task(){
         if ($task_id) wp_delete_post($task_id, true);
 
         $fecha = $this->normalize_date($_REQUEST['date'] ?? '', true);
-        $redirect_to = isset($_POST['redirect_to']) ? esc_url_raw((string) $_POST['redirect_to']) : '';
-        if ($redirect_to === '') {
-            $redirect_to = wp_get_referer() ? esc_url_raw((string) wp_get_referer()) : '';
-        }
-
-        if ($redirect_to !== '') {
-            if ($fecha && strpos($redirect_to, 'date=') === false) {
-                $redirect_to = add_query_arg(['date' => $fecha], $redirect_to);
-            }
-            $safe = wp_validate_redirect($redirect_to, '');
-            if ($safe !== '') {
-                wp_safe_redirect($safe);
-                exit;
-            }
-        }
-
-        wp_safe_redirect(admin_url('admin.php?page=acal_calendario&date='.urlencode($fecha))); exit;
+        $this->redirect_to_context_or_admin($fecha);
     }
 
     /* Exportar columna del día como PNG (admin) */

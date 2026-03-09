@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.27
+- Se corrige redirección post-guardar en creación/edición de tareas para mantener el contexto actual (frontend management cuando aplica), evitando volver forzadamente a admin legacy.
+- Se agrega `redirect_to` al formulario del modal de tarea y se unifica la validación de retorno seguro en un helper reutilizable para crear/editar/eliminar.
+
 ## 1.9.26
 - Se corrige el flujo de eliminación de tareas para mantener el contexto actual: al borrar desde gestión frontend ahora retorna a la misma vista (en lugar de forzar redirección al admin legacy).
 - Se agrega `redirect_to` seguro en formularios de eliminación y se valida servidor-side con `wp_validate_redirect`, conservando compatibilidad con la vista admin.
