@@ -314,6 +314,7 @@ function patchModal(){
     var delForm = $('<form>', {method:'post', action:actionUrl}).appendTo('body');
     delForm.append($('<input>', {type:'hidden', name:'action', value:'acal_delete_task'}));
     delForm.append($('<input>', {type:'hidden', name:'task_id', value:taskId}));
+    delForm.append($('<input>', {type:'hidden', name:'redirect_to', value:(window.location.href || '').split('#')[0]}));
     var nonce = $form.find('input[name="_wpnonce"]').val() || '';
     delForm.append($('<input>', {type:'hidden', name:'_wpnonce', value:nonce}));
     delForm.trigger('submit');

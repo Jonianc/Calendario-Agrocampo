@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.26
+- Se corrige el flujo de eliminación de tareas para mantener el contexto actual: al borrar desde gestión frontend ahora retorna a la misma vista (en lugar de forzar redirección al admin legacy).
+- Se agrega `redirect_to` seguro en formularios de eliminación y se valida servidor-side con `wp_validate_redirect`, conservando compatibilidad con la vista admin.
+
 ## 1.9.25
 - Mejora UI/UX del modal **Nueva tarea** en frontend: se reorganiza en bloques "Datos clave" y "Detalle de la tarea" para acelerar el flujo de creación.
 - Se añaden ayudas de contexto y validación inline accesible (`aria-invalid`, mensajes por campo y región `aria-live`) para técnico, fecha y longitud de descripción.
