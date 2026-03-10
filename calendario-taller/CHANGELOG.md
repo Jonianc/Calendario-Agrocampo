@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.36
+- Se mejora la opción 2 de tooltip para tarjetas truncadas con posicionamiento dinámico (floating tooltip en `body`) y lógica de flip arriba/abajo según espacio en viewport.
+- Se corrige compatibilidad con mouse hover en celdas complejas de la grilla: el tooltip ya no depende del pseudo-elemento dentro de la tarjeta y evita recortes por stacking/overflow.
+
 ## 1.9.35
 - Se corrige tooltip expandido en tarjetas para interacción con mouse (`hover`): la tarjeta ya no recorta el contenido del tooltip por `overflow` y eleva `z-index` en hover/focus para asegurar visibilidad sobre la grilla.
 

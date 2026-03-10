@@ -652,6 +652,57 @@ function enhanceGridKeyboardA11y(){
 function enhanceTaskTooltips(){
   if(!$('body').hasClass('acal-front-management')) return;
 
+  var $tooltip = $('#acal-floating-tooltip');
+  if(!$tooltip.length){
+    $tooltip = $('<div id="acal-floating-tooltip" class="acal-floating-tooltip" role="tooltip" aria-hidden="true"></div>').appendTo('body');
+  }
+
+  var activeTask = null;
+
+  function positionTooltip($task){
+    if(!$task || !$task.length || !$tooltip.is(':visible')) return;
+
+    var rect = $task[0].getBoundingClientRect();
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || 0;
+
+    var maxWidth = Math.min(420, Math.max(260, window.innerWidth - 32));
+    $tooltip.css({ maxWidth: maxWidth + 'px', left: 0, top: 0 });
+
+    var ttW = $tooltip.outerWidth();
+    var ttH = $tooltip.outerHeight();
+
+    var top = rect.bottom + scrollTop + 8;
+    var placeTop = (rect.bottom + ttH + 12) > window.innerHeight;
+    if(placeTop){
+      top = rect.top + scrollTop - ttH - 8;
+    }
+
+    var left = rect.left + scrollLeft;
+    var minLeft = scrollLeft + 8;
+    var maxLeft = scrollLeft + window.innerWidth - ttW - 8;
+    left = Math.max(minLeft, Math.min(left, maxLeft));
+
+    $tooltip
+      .toggleClass('is-top', placeTop)
+      .toggleClass('is-bottom', !placeTop)
+      .css({ left: left + 'px', top: top + 'px' });
+  }
+
+  function showTooltip($task){
+    var txt = String($task.attr('data-acal-tooltip') || '').trim();
+    if(!txt) return;
+
+    activeTask = $task;
+    $tooltip.text(txt).attr('aria-hidden', 'false').show();
+    positionTooltip($task);
+  }
+
+  function hideTooltip(){
+    activeTask = null;
+    $tooltip.hide().attr('aria-hidden', 'true').removeClass('is-top is-bottom');
+  }
+
   $('.acal-task').each(function(){
     var $task = $(this);
     var title = $.trim($task.find('.acal-task-title').first().text() || '');
@@ -666,6 +717,22 @@ function enhanceTaskTooltips(){
     if(!$task.attr('tabindex')) $task.attr('tabindex', '0');
     if(!$task.attr('aria-label')) $task.attr('aria-label', full);
   });
+
+  $(document)
+    .off('mouseenter.acalTooltip focusin.acalTooltip', '.acal-task[data-acal-tooltip]')
+    .on('mouseenter.acalTooltip focusin.acalTooltip', '.acal-task[data-acal-tooltip]', function(){
+      showTooltip($(this));
+    })
+    .off('mouseleave.acalTooltip focusout.acalTooltip', '.acal-task[data-acal-tooltip]')
+    .on('mouseleave.acalTooltip focusout.acalTooltip', '.acal-task[data-acal-tooltip]', function(){
+      hideTooltip();
+    });
+
+  $(window)
+    .off('scroll.acalTooltip resize.acalTooltip')
+    .on('scroll.acalTooltip resize.acalTooltip', function(){
+      if(activeTask && activeTask.length){ positionTooltip(activeTask); }
+    });
 }
 
 function init(){

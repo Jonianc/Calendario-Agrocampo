@@ -241,6 +241,7 @@ body.acal-front-management .acal-task[data-acal-tooltip]:focus-within{
 }
 
 body.acal-front-management .acal-task[data-acal-tooltip]::after{
+  display: none;
   content: attr(data-acal-tooltip);
   position: absolute;
   left: 12px;
@@ -695,3 +696,19 @@ body.acal-copy-mode .button.acal-add {
 
 /* En modo copiar, mostrar "Pegar" */
 body.acal-copy-mode .acal-paste { display: inline-flex !important; }
+
+
+body.acal-front-management .acal-floating-tooltip{
+  position: absolute;
+  z-index: 100000;
+  display: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+  box-shadow: 0 10px 24px rgba(15,23,42,.28);
+  pointer-events: none;
+  white-space: normal;
+}
