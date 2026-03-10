@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.9.35
+- Se corrige tooltip expandido en tarjetas para interacción con mouse (`hover`): la tarjeta ya no recorta el contenido del tooltip por `overflow` y eleva `z-index` en hover/focus para asegurar visibilidad sobre la grilla.
+
 ## 1.9.34
 - Se implementa alternativa UI para tarjetas truncadas: tooltip expandido al `hover/focus` en frontend management, mostrando contenido completo (título + metadatos) sin romper densidad de grilla.
 - Se agrega foco accesible en tarjeta para visualizar tooltip también por teclado.

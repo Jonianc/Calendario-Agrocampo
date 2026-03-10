@@ -230,6 +230,14 @@ body.acal-front-management .acal-task .acal-task-meta:last-child{
 
 body.acal-front-management .acal-task[data-acal-tooltip]{
   position: relative;
+  overflow: visible;
+  z-index: 4;
+}
+
+body.acal-front-management .acal-task[data-acal-tooltip]:hover,
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-visible,
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-within{
+  z-index: 32;
 }
 
 body.acal-front-management .acal-task[data-acal-tooltip]::after{
