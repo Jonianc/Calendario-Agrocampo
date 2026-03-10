@@ -648,6 +648,26 @@ function enhanceGridKeyboardA11y(){
   });
 }
 
+
+function enhanceTaskTooltips(){
+  if(!$('body').hasClass('acal-front-management')) return;
+
+  $('.acal-task').each(function(){
+    var $task = $(this);
+    var title = $.trim($task.find('.acal-task-title').first().text() || '');
+    var metas = $task.find('.acal-task-meta').map(function(){
+      return $.trim($(this).text() || '');
+    }).get().filter(Boolean);
+
+    var full = [title].concat(metas).filter(Boolean).join(' · ');
+    if(!full) return;
+
+    $task.attr('data-acal-tooltip', full);
+    if(!$task.attr('tabindex')) $task.attr('tabindex', '0');
+    if(!$task.attr('aria-label')) $task.attr('aria-label', full);
+  });
+}
+
 function init(){
   patchFilters();
   patchModal();
@@ -666,6 +686,7 @@ function init(){
   syncKebabA11y();
   enhanceTopbarQuickActions();
   enhanceGridKeyboardA11y();
+  enhanceTaskTooltips();
 
 }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.34
+- Se implementa alternativa UI para tarjetas truncadas: tooltip expandido al `hover/focus` en frontend management, mostrando contenido completo (título + metadatos) sin romper densidad de grilla.
+- Se agrega foco accesible en tarjeta para visualizar tooltip también por teclado.
+
 ## 1.9.33
 - Se agrega guía operativa `QA.md` con checklist de regresión/smoke para flujos críticos (navegación, filtros, CRUD, copy/paste, drag & drop, atajos teclado y permisos/nonce).
 - `README.md` incorpora sección de QA con enlace directo a la guía para validar releases antes de despliegue.
