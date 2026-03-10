@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.9.37
+- Se corrige visibilidad del botón **+Agregar** y acciones de celda cuando hay tooltip activo: ahora los controles de acción se renderizan por encima del tooltip flotante mediante ajuste de `z-index`.
+
 ## 1.9.36
 - Se mejora la opción 2 de tooltip para tarjetas truncadas con posicionamiento dinámico (floating tooltip en `body`) y lógica de flip arriba/abajo según espacio en viewport.
 - Se corrige compatibilidad con mouse hover en celdas complejas de la grilla: el tooltip ya no depende del pseudo-elemento dentro de la tarjeta y evita recortes por stacking/overflow.

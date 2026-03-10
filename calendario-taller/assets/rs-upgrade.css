@@ -712,3 +712,17 @@ body.acal-front-management .acal-floating-tooltip{
   pointer-events: none;
   white-space: normal;
 }
+
+
+/* v1.9.37: mantener acciones de celda visibles sobre tooltip */
+body.acal-front-management .acal-grid .acal-cell .acal-add,
+body.acal-front-management .acal-actions-fixed,
+body.acal-front-management .acal-actions-fixed .button,
+body.acal-front-management .acal-grid .acal-cell .acal-paste{
+  position: relative;
+  z-index: 100001;
+}
+
+body.acal-front-management .acal-floating-tooltip{
+  z-index: 100000;
+}
