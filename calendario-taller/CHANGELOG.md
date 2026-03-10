@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.38
+- Se corrige regresión de layout en botón **+Agregar**: se elimina override de `position` en acciones de celda para conservar el anclaje absoluto original y evitar que el botón quede montado sobre la tarjeta.
+- Se mantiene prioridad visual (`z-index`) de acciones por encima del tooltip flotante sin romper la distribución de la celda.
+
 ## 1.9.37
 - Se corrige visibilidad del botón **+Agregar** y acciones de celda cuando hay tooltip activo: ahora los controles de acción se renderizan por encima del tooltip flotante mediante ajuste de `z-index`.
 
