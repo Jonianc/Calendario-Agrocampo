@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.33
+- Se agrega guía operativa `QA.md` con checklist de regresión/smoke para flujos críticos (navegación, filtros, CRUD, copy/paste, drag & drop, atajos teclado y permisos/nonce).
+- `README.md` incorpora sección de QA con enlace directo a la guía para validar releases antes de despliegue.
+
 ## 1.9.32
 - Se corrige guardado de turno al crear tareas: cuando el formulario llega sin turno explícito ahora se persiste por defecto como `am`, evitando que el valor preseleccionado se pierda.
 - Se mejora accesibilidad del gestor frontend en grilla (desktop): celdas enfocables con feedback visual, soporte de teclado (`Enter` para agregar y `Ctrl/Cmd+V` para pegar en celda) y atajo `N` para nueva tarea.

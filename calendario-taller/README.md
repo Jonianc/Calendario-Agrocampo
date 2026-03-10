@@ -221,3 +221,10 @@ El plugin incluye una pantalla **Importar/Exportar** en el menú de Calendario T
 ---
 
 **Autor:** Rocket Solutions (https://www.rocketsolutions.cl)
+
+
+## QA y regresión (smoke test)
+
+Para validar cambios sin romper flujos críticos, revisa la guía:
+
+- [`QA.md`](QA.md)
