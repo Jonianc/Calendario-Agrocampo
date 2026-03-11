@@ -39,7 +39,7 @@
   top: 6px; right: 6px;
 }
 
-/* ===== 1.9.40 Standalone readonly visual refresh ===== */
+/* ===== 1.9.41 Standalone sticky regression fix + mobile polish ===== */
 body.acal-standalone{
   background:
     radial-gradient(950px 420px at 4% -4%, #dbeafe 0, rgba(219,234,254,0) 56%),
@@ -98,7 +98,7 @@ body.acal-standalone button.button{
 body.acal-standalone .acal-grid{
   border: 1px solid #dbe3ee;
   border-radius: 14px;
-  overflow: auto;
+  overflow: visible;
   background: #fff;
   box-shadow: 0 20px 35px rgba(15, 23, 42, .10);
 }
@@ -171,10 +171,38 @@ body.acal-standalone input:focus-visible{
 
   body.acal-standalone .acal-topbar{
     padding: 10px;
+    gap: 8px;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav{
+    width: 100%;
+  }
+
+  body.acal-standalone .acal-grid{
+    border-radius: 10px;
+  }
+
+  body.acal-standalone .acal-grid{
+    grid-template-columns: 160px repeat(5, minmax(160px, 1fr)) !important;
   }
 
   body.acal-standalone .acal-grid .acal-cell{
     min-height: 104px;
     padding: 8px;
+  }
+
+  body.acal-standalone .acal-grid .acal-head{
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    margin: 6px;
+    min-height: 48px;
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-task{
+    padding: 8px 10px;
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.41
+- Se corrige regresión en vista standalone readonly (`?acal_standalone=1`): se elimina el `overflow` que rompía el contexto de `position: sticky`, restaurando el comportamiento sticky de cabecera/columna con scroll de viewport.
+- Se aplica ajuste responsive adicional para standalone en móvil (ancho de columnas, densidad de celdas/tarjetas y legibilidad de cabeceras) sin afectar el gestor frontend.
+
 ## 1.9.40
 - Se aplica un refresh visual específico para la vista standalone legacy readonly (`?acal_standalone=1`) sin afectar el gestor frontend de edición.
 - Se mejora jerarquía visual y legibilidad en standalone: fondo, contenedor, topbar de navegación semanal, grilla y tarjetas con mejor contraste/espaciado.
