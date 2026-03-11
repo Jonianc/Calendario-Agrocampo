@@ -1088,3 +1088,49 @@ body.acal-front-management .acal-floating-tooltip .acal-tooltip-meta > div + div
     outline-offset: 1px;
   }
 }
+
+
+/* 1.9.48 - Priorizar lectura completa de títulos OT (sin truncado agresivo) */
+body.acal-front-management .acal-task,
+body.acal-standalone .acal-task{
+  min-height: unset !important;
+  height: auto !important;
+}
+
+body.acal-front-management .acal-task .acal-task-title,
+body.acal-standalone .acal-task .acal-task-title{
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: initial !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35 !important;
+}
+
+body.acal-front-management .acal-grid .acal-cell:not(.acal-head),
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 88px !important;
+  height: auto;
+}
+
+@media (min-width: 1024px){
+  body.acal-front-management .acal-grid,
+  body.acal-standalone .acal-grid{
+    grid-template-columns: 220px repeat(5, minmax(280px,1fr)) !important;
+  }
+
+  body.acal-front-management .acal-task,
+  body.acal-standalone .acal-task{
+    padding: 9px 10px !important;
+  }
+
+  body.acal-front-management .acal-task .acal-task-title,
+  body.acal-standalone .acal-task .acal-task-title{
+    font-size: 13px !important;
+    line-height: 1.38 !important;
+    margin-bottom: 4px !important;
+  }
+}

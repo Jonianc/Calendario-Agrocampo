@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.48
+- Se prioriza lectura operativa de OT/tareas: el título principal deja de truncarse visualmente (sin cortes agresivos con `...`) en frontend management y standalone.
+- Las tarjetas ahora permiten crecimiento vertical controlado para mostrar títulos completos, en lugar de forzar alturas fijas que ocultaban contenido.
+- Se ajustan densidad y ancho útil de columnas en desktop para mejorar visibilidad del texto sin perder estabilidad de la grilla.
+- Se mantienen sticky header/columna y se recalibra el layout para evitar solapes al crecer contenido.
+
 ## 1.9.47
 - Se aplica la mejora visual directamente a la vista `?acal_standalone=1` (desktop), corrigiendo que el ajuste previo no impactara esta pantalla.
 - Se compactan barra semanal y cabecera de días en standalone, reduciendo altura y espacios muertos sin perder legibilidad.

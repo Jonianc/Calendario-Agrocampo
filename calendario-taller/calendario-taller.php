@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.47
+ * Version: 1.9.48
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.47';
+    const VERSION   = '1.9.48';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -153,8 +153,7 @@ public function ajax_paste_task(){
   $desc     = get_post_meta($src_id, '_acal_descripcion', true);
   $turno    = get_post_meta($src_id, '_acal_turno', true);
 
-  $title = $cliente ? $cliente : wp_trim_words(wp_strip_all_tags($desc), 6, '…');
-  if (!$title) $title = 'Tarea';
+  $title = $this->build_task_title($cliente, $desc);
 
   $post_id = wp_insert_post(['post_type'=>self::CPT_TASK,'post_status'=>'publish','post_title'=>$title]);
   if (is_wp_error($post_id)) wp_send_json_error(['msg'=>'Error creando tarea'], 500);
@@ -274,6 +273,13 @@ public function enqueue_assets_frontend(){
         update_option(self::OPT_TECHS, $arr, false);
     }
     private function sanitize_text($s){ return sanitize_text_field($s); }
+    private function build_task_title($cliente, $desc){
+        $cliente = sanitize_text_field((string) $cliente);
+        $desc    = sanitize_text_field((string) wp_strip_all_tags((string) $desc));
+
+        $title = $cliente !== '' ? $cliente : $desc;
+        return $title !== '' ? $title : 'Tarea';
+    }
     private function normalize_date($value, $allow_fallback = true) {
         $value = sanitize_text_field((string) $value);
         if ($value === '') {
@@ -1017,7 +1023,7 @@ echo '</div>';   // .acal-tech-item
         $desc    = $this->sanitize_text($_POST['descripcion'] ?? '');
 
         if (!$tecnico_id) wp_die('Técnico requerido');
-        $title = $cliente ? $cliente : wp_trim_words(wp_strip_all_tags($desc),6,'…'); if(!$title) $title='Tarea';
+        $title = $this->build_task_title($cliente, $desc);
         $post_id = wp_insert_post(['post_type'=>self::CPT_TASK,'post_status'=>'publish','post_title'=>$title]);
         if (is_wp_error($post_id)) wp_die('Error creando tarea');
         update_post_meta($post_id,'_acal_tecnico_id',$tecnico_id);
@@ -1069,8 +1075,7 @@ public function handle_update_task(){
     }
 
     // Actualiza título si corresponde (opcional)
-    $title = $cliente ? $cliente : wp_trim_words(wp_strip_all_tags($desc), 6, '…');
-    if(!$title) $title = 'Tarea';
+    $title = $this->build_task_title($cliente, $desc);
     wp_update_post([ 'ID'=>$post_id, 'post_title'=>$title ]);
 
     $this->redirect_to_context_or_admin($fecha);
