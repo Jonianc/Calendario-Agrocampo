@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.39
+- Se mejora legibilidad del tooltip flotante con contenido estructurado (título y metadatos en líneas separadas), reemplazando el texto concatenado en una sola línea.
+- Se refuerza accesibilidad: al mostrar tooltip en hover/focus la tarjeta activa enlaza `aria-describedby` al tooltip y se limpia al cerrar.
+
 ## 1.9.38
 - Se corrige regresión de layout en botón **+Agregar**: se elimina override de `position` en acciones de celda para conservar el anclaje absoluto original y evitar que el botón quede montado sobre la tarjeta.
 - Se mantiene prioridad visual (`z-index`) de acciones por encima del tooltip flotante sin romper la distribución de la celda.

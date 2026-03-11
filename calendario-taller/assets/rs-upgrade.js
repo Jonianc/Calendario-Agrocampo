@@ -659,6 +659,12 @@ function enhanceTaskTooltips(){
 
   var activeTask = null;
 
+  function escHtml(str){
+    return String(str || '').replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+    });
+  }
+
   function positionTooltip($task){
     if(!$task || !$task.length || !$tooltip.is(':visible')) return;
 
@@ -666,7 +672,7 @@ function enhanceTaskTooltips(){
     var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
     var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || 0;
 
-    var maxWidth = Math.min(420, Math.max(260, window.innerWidth - 32));
+    var maxWidth = Math.min(460, Math.max(280, window.innerWidth - 32));
     $tooltip.css({ maxWidth: maxWidth + 'px', left: 0, top: 0 });
 
     var ttW = $tooltip.outerWidth();
@@ -690,17 +696,28 @@ function enhanceTaskTooltips(){
   }
 
   function showTooltip($task){
-    var txt = String($task.attr('data-acal-tooltip') || '').trim();
-    if(!txt) return;
+    var title = String($task.attr('data-acal-tooltip-title') || '').trim();
+    var metas = ($task.attr('data-acal-tooltip-meta') || '').split('||').map(function(v){ return String(v || '').trim(); }).filter(Boolean);
+    if(!title && !metas.length) return;
 
     activeTask = $task;
-    $tooltip.text(txt).attr('aria-hidden', 'false').show();
+
+    var html = '<div class="acal-tooltip-title">'+escHtml(title)+'</div>';
+    if(metas.length){
+      html += '<div class="acal-tooltip-meta">' + metas.map(function(m){ return '<div>'+escHtml(m)+'</div>'; }).join('') + '</div>';
+    }
+
+    $tooltip.html(html).attr('aria-hidden', 'false').show();
+    $task.attr('aria-describedby', 'acal-floating-tooltip');
     positionTooltip($task);
   }
 
   function hideTooltip(){
+    if(activeTask && activeTask.length){
+      activeTask.removeAttr('aria-describedby');
+    }
     activeTask = null;
-    $tooltip.hide().attr('aria-hidden', 'true').removeClass('is-top is-bottom');
+    $tooltip.hide().attr('aria-hidden', 'true').removeClass('is-top is-bottom').empty();
   }
 
   $('.acal-task').each(function(){
@@ -710,21 +727,22 @@ function enhanceTaskTooltips(){
       return $.trim($(this).text() || '');
     }).get().filter(Boolean);
 
-    var full = [title].concat(metas).filter(Boolean).join(' · ');
-    if(!full) return;
+    if(!title && !metas.length) return;
 
-    $task.attr('data-acal-tooltip', full);
+    $task.attr('data-acal-tooltip-title', title);
+    $task.attr('data-acal-tooltip-meta', metas.join('||'));
+
     if(!$task.attr('tabindex')) $task.attr('tabindex', '0');
-    if(!$task.attr('aria-label')) $task.attr('aria-label', full);
+    if(!$task.attr('aria-label')) $task.attr('aria-label', [title].concat(metas).filter(Boolean).join(' · '));
   });
 
   $(document)
-    .off('mouseenter.acalTooltip focusin.acalTooltip', '.acal-task[data-acal-tooltip]')
-    .on('mouseenter.acalTooltip focusin.acalTooltip', '.acal-task[data-acal-tooltip]', function(){
+    .off('mouseenter.acalTooltip focusin.acalTooltip', '.acal-task')
+    .on('mouseenter.acalTooltip focusin.acalTooltip', '.acal-task', function(){
       showTooltip($(this));
     })
-    .off('mouseleave.acalTooltip focusout.acalTooltip', '.acal-task[data-acal-tooltip]')
-    .on('mouseleave.acalTooltip focusout.acalTooltip', '.acal-task[data-acal-tooltip]', function(){
+    .off('mouseleave.acalTooltip focusout.acalTooltip', '.acal-task')
+    .on('mouseleave.acalTooltip focusout.acalTooltip', '.acal-task', function(){
       hideTooltip();
     });
 

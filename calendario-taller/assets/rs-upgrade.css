@@ -725,3 +725,17 @@ body.acal-front-management .acal-grid .acal-cell .acal-paste{
 body.acal-front-management .acal-floating-tooltip{
   z-index: 100000;
 }
+
+
+body.acal-front-management .acal-floating-tooltip .acal-tooltip-title{
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+body.acal-front-management .acal-floating-tooltip .acal-tooltip-meta{
+  opacity: .95;
+}
+
+body.acal-front-management .acal-floating-tooltip .acal-tooltip-meta > div + div{
+  margin-top: 2px;
+}
