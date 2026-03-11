@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.9.45
+- Se moderniza la tipografía del header de días en standalone readonly separando día (`D`) y fecha (`d/m`) para mejorar jerarquía visual y escaneabilidad.
+- Se reduce altura efectiva del header de días (desktop/móvil) con ajuste de `height/min-height/padding` para recuperar espacio vertical.
+- Se ajusta la celda de esquina del header para mantener alineación limpia y evitar que agregue altura visual extra.
+
+## 1.9.44
+- Se corrige la cascada CSS en standalone para compactar efectivamente el header de días: `min-height` ahora aplica solo a celdas de contenido (`.acal-cell:not(.acal-head)`), eliminando el espacio vacío que mantenía alta la fila de cabecera.
+- Se reduce visualmente la topbar de navegación semanal y se refinan tipografía/espaciado del header de días para un resultado más compacto y premium en desktop.
+- Se ajustan también los tamaños del header de días en móvil para conservar proporción y limpieza visual.
+
+## 1.9.43
+- Se agrega encabezado de contexto semanal en vista standalone readonly (rango de semana + timestamp de actualización) para mejorar orientación operacional.
+- Se moderniza y compacta el header de días en standalone: menor altura/espaciado, mejor jerarquía tipográfica y alineación más limpia con look visual más premium.
+- Se ajusta la presentación móvil del nuevo contexto semanal y cabeceras para mantener legibilidad y densidad sin afectar el gestor frontend de edición.
+
+## 1.9.42
+- Se mejora legibilidad de tarjetas en vista standalone readonly: truncado controlado de título/metadatos y `title` nativo con contenido completo para recuperar contexto en desktop.
+- Se corrigen errores visibles en standalone móvil/desktop: topbar móvil reordenada y más usable, grilla/celdas reajustadas y desactivación de sticky lateral en móvil para evitar solapes de la columna de técnicos.
+- Se mantiene sticky de cabecera y el comportamiento de lectura en viewport sin afectar el gestor frontend de edición.
+
+## 1.9.41
+- Se corrige regresión en vista standalone readonly (`?acal_standalone=1`): se elimina el `overflow` que rompía el contexto de `position: sticky`, restaurando el comportamiento sticky de cabecera/columna con scroll de viewport.
+- Se aplica ajuste responsive adicional para standalone en móvil (ancho de columnas, densidad de celdas/tarjetas y legibilidad de cabeceras) sin afectar el gestor frontend.
+
+## 1.9.40
+- Se aplica un refresh visual específico para la vista standalone legacy readonly (`?acal_standalone=1`) sin afectar el gestor frontend de edición.
+- Se mejora jerarquía visual y legibilidad en standalone: fondo, contenedor, topbar de navegación semanal, grilla y tarjetas con mejor contraste/espaciado.
+- Se refuerza accesibilidad visual en standalone con estilos de foco visible para navegación por teclado.
+
 ## 1.9.39
 - Se mejora legibilidad del tooltip flotante con contenido estructurado (título y metadatos en líneas separadas), reemplazando el texto concatenado en una sola línea.
 - Se refuerza accesibilidad: al mostrar tooltip en hover/focus la tarjeta activa enlaza `aria-describedby` al tooltip y se limpia al cerrar.
