@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.46
+- Se compacta la topbar del gestor frontend (desktop) para reducir altura percibida y espacios muertos, conservando un balance densidad/aire visual.
+- Se normalizan paddings/alturas de grilla semanal (header, celdas, acciones y tarjetas OT) para mejorar alineación y ritmo visual.
+- Se refuerza jerarquía y legibilidad de tarjetas OT (título/metadatos/controles), con mayor contraste y estados hover/focus más claros.
+- Se moderniza la columna de técnicos (labels y controles) con mejor truncado, consistencia de tamaño y lectura.
+- Se robustece el comportamiento sticky de header de días y columna de técnicos en desktop frontend para navegación más estable.
+
 ## 1.9.45
 - Se moderniza tipografía del header de días en standalone readonly separando visualmente día y fecha (ej. `LUN` + `09/03`) con mejor jerarquía y contraste.
 - Se reduce espacio residual en la fila de cabecera de días con altura fija compacta (`height/min-height`) y ajuste de celda de esquina para eliminar aire innecesario.
