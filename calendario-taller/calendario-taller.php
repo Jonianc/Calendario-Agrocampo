@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.42
+ * Version: 1.9.43
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.42';
+    const VERSION   = '1.9.43';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -1883,6 +1883,17 @@ ACALJS;
     // Topbar SOLO con navegación de semana
     $prev = date('Y-m-d', strtotime($days[0].' -7 days'));
     $next = date('Y-m-d', strtotime($days[0].' +7 days'));
+
+    if ($this->is_standalone_request()){
+        $week_end = end($renderDays);
+        $week_start_label = date_i18n('d/m/Y', strtotime($days[0]));
+        $week_end_label = date_i18n('d/m/Y', strtotime($week_end ?: $days[0]));
+        $rendered_at_label = current_datetime()->format('d/m/Y H:i');
+        echo '<div class="acal-week-context" aria-label="Contexto de semana">';
+        echo '<div class="acal-week-context__range">Semana: <strong>'.esc_html($week_start_label).' — '.esc_html($week_end_label).'</strong></div>';
+        echo '<div class="acal-week-context__updated">Actualizado: '.esc_html($rendered_at_label).'</div>';
+        echo '</div>';
+    }
     echo '<form method="get" class="acal-topbar">';
     echo '<div class="acal-nav">';
     echo '<a class="button" href="'.esc_url(add_query_arg(['date'=>$prev])).'">&laquo; Semana anterior</a> ';
@@ -1906,7 +1917,7 @@ ACALJS;
     echo '<div class="acal-cell acal-head acal-tech-col">&nbsp;</div>';
     foreach ($renderDays as $d){
         $label = date_i18n('D d/m', strtotime($d));
-        echo '<div class="acal-cell acal-head">'.esc_html(ucfirst($label)).'</div>';
+        echo '<div class="acal-cell acal-head"><span class="acal-day-label">'.esc_html(ucfirst($label)).'</span></div>';
     }
 
     foreach ($tecnicos as $t){

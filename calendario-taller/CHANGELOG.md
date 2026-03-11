@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.43
+- Se agrega encabezado de contexto semanal en vista standalone readonly (rango de semana + timestamp de actualización) para mejorar orientación operacional.
+- Se moderniza y compacta el header de días en standalone: menor altura/espaciado, mejor jerarquía tipográfica y alineación más limpia con look visual más premium.
+- Se ajusta la presentación móvil del nuevo contexto semanal y cabeceras para mantener legibilidad y densidad sin afectar el gestor frontend de edición.
+
 ## 1.9.42
 - Se mejora legibilidad de tarjetas en vista standalone readonly: truncado controlado de título/metadatos y `title` nativo con contenido completo para recuperar contexto en desktop.
 - Se corrigen errores visibles en standalone móvil/desktop: topbar móvil reordenada y más usable, grilla/celdas reajustadas y desactivación de sticky lateral en móvil para evitar solapes de la columna de técnicos.
