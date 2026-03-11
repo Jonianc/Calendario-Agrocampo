@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.45
+ * Version: 1.9.46
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.45';
+    const VERSION   = '1.9.46';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -641,6 +641,7 @@ public function render_calendar_page(){
     }
     echo '</div>';
 
+    echo '<div class="acal-grid-scroll">';
     echo '<div class="acal-grid">';
     // Cabecera (vacía + días)
     echo '<div class="acal-cell acal-head acal-tech-col">&nbsp;</div>';
@@ -704,7 +705,16 @@ echo '</div>';   // .acal-tech-item
                     $metaLine=[]; if($cliente) $metaLine[]=$cliente; if($equipo) $metaLine[]=$equipo; if($suc) $metaLine[]=$suc;
                     $body=implode(' · ',$metaLine);
 
-                    echo '<div class="acal-task" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'">';
+                    $is_no_desc = ($title === '');
+                    $is_vacation = (stripos($title, 'vacacion') !== false) || (stripos($title, 'vacaciones') !== false);
+                    $task_classes = 'acal-task';
+                    if ($is_no_desc) { $task_classes .= ' acal-task--no-desc'; }
+                    if ($is_vacation) { $task_classes .= ' acal-task--vacation'; }
+
+                    echo '<div class="'.esc_attr($task_classes).'" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'">';
+                    if ($is_vacation) {
+                        echo '<div class="acal-task-state">Vacaciones</div>';
+                    }
                     echo   '<div class="acal-task-title">'.esc_html($title ?: '(Sin descripción)').'</div>';
 
                     // Pill AM/PM (si existe)
@@ -741,6 +751,7 @@ echo '</div>';   // .acal-tech-item
         }
     }
     echo '</div>'; // .acal-grid
+    echo '</div>'; // .acal-grid-scroll
         echo '<script>window.ACAL_NONCE="'.esc_js(wp_create_nonce(self::NONCE_KEY)).'";</script>';
 
     // Modal
@@ -1913,6 +1924,7 @@ ACALJS;
     }
 
     // Grid
+    echo '<div class="acal-grid-scroll">';
     echo '<div class="acal-grid">';
     echo '<div class="acal-cell acal-head acal-tech-col">&nbsp;</div>';
     foreach ($renderDays as $d){
@@ -1951,7 +1963,16 @@ ACALJS;
                     $body=implode(' · ',$metaLine);
 
                     $full_text = trim(($title ?: '(Sin descripción)') . ($body ? "\n".$body : ''));
-                    echo '<div class="acal-task" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'" title="'.esc_attr($full_text).'">';
+                    $is_no_desc = ($title === '');
+                    $is_vacation = (stripos($title, 'vacacion') !== false) || (stripos($title, 'vacaciones') !== false);
+                    $task_classes = 'acal-task';
+                    if ($is_no_desc) { $task_classes .= ' acal-task--no-desc'; }
+                    if ($is_vacation) { $task_classes .= ' acal-task--vacation'; }
+
+                    echo '<div class="'.esc_attr($task_classes).'" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'" title="'.esc_attr($full_text).'">';
+                    if ($is_vacation) {
+                        echo '<div class="acal-task-state">Vacaciones</div>';
+                    }
                     echo '<div class="acal-task-title">'.esc_html($title ?: '(Sin descripción)').'</div>';
                     if ($body) echo '<div class="acal-task-meta">'.esc_html($body).'</div>';
                     echo '</div>';
@@ -1961,6 +1982,7 @@ ACALJS;
         }
     }
     echo '</div>'; // grid
+    echo '</div>'; // .acal-grid-scroll
     echo '</div>'; // wrap
     return ob_get_clean();
 }

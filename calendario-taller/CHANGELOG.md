@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.46
+- Se compacta y unifica la UI de la vista semanal (topbar/header/tarjetas) en admin y frontend con sistema consistente de radios, bordes, paddings y tipografía para reducir sensación de interfaz pesada.
+- Se rebalancea la grilla semanal (columna de técnicos vs días) y se incorpora contenedor con scroll horizontal estable para escritorio, reforzando `sticky` de header y columna técnica con mejor jerarquía de `z-index`.
+- Se mejora legibilidad de tarjetas OT con truncado controlado en título/metadatos, estados visuales de interacción y diferenciación explícita para casos especiales (`Vacaciones` y `(Sin descripción)`).
+
 ## 1.9.45
 - Se moderniza tipografía del header de días en standalone readonly separando visualmente día y fecha (ej. `LUN` + `09/03`) con mejor jerarquía y contraste.
 - Se reduce espacio residual en la fila de cabecera de días con altura fija compacta (`height/min-height`) y ajuste de celda de esquina para eliminar aire innecesario.

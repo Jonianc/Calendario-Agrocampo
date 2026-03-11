@@ -1,16 +1,35 @@
 /* Front-end tweaks */
 .acal-frontend { max-width: 100%; }
-.acal-frontend .acal-grid { grid-template-columns: 200px repeat(5, 1fr); }
+.acal-frontend .acal-grid-scroll { overflow:auto; max-width:100%; border:1px solid #d9e1ec; border-radius:12px; background:#fff; box-shadow:0 8px 24px rgba(15,23,42,.08); }
+.acal-frontend .acal-grid { grid-template-columns: 176px repeat(5, minmax(170px, 1fr)); }
 .acal-frontend .acal-cell { padding:8px; }
-.acal-frontend .acal-head { min-height: 28px; padding: 4px 6px; font-size: 12.5px; line-height: 1.1; }
-.acal-frontend.sticky-header .acal-head { position: sticky; top: 0; z-index: 5; }
-.acal-frontend.sticky-both .acal-head { position: sticky; top: 0; z-index: 5; }
-.acal-frontend.sticky-both .acal-tech-col { position: sticky; left: 0; z-index: 6; }
+.acal-frontend .acal-head { min-height: 30px; padding: 4px 8px; font-size: 12px; line-height: 1.1; position: sticky; top: 0; z-index: 20; background:#f8fafc; }
+.acal-frontend.sticky-both .acal-tech-col,
+.acal-frontend.sticky-header .acal-tech-col { position: sticky; left: 0; z-index: 15; background:#f8fafc; }
+.acal-frontend .acal-head.acal-tech-col { z-index: 25; }
+
+.acal-frontend .acal-topbar { margin: 6px 0 10px; padding: 8px 10px; border:1px solid #d9e1ec; border-radius:12px; background:#fff; }
+.acal-frontend .acal-topbar .acal-nav { gap:8px; }
+.acal-frontend .acal-topbar .button,
+.acal-frontend .acal-topbar button.button,
+.acal-frontend .acal-topbar input[type="date"] { min-height: 32px; border-radius:10px; }
+.acal-frontend .acal-topbar label { font-size:12px; font-weight:600; color:#334155; }
+
+.acal-frontend .acal-task { border-radius:12px; border:1px solid #dbe3ee; padding:8px 10px; box-shadow:0 2px 8px rgba(15,23,42,.06); margin:6px 0; }
+.acal-frontend .acal-task .acal-task-title { color:#0f172a; font-size:12.5px; font-weight:700; line-height:1.3; margin-bottom:2px; }
+.acal-frontend .acal-task .acal-task-meta { color:#475569; font-size:11.5px; line-height:1.3; }
+.acal-frontend .acal-task .acal-task-title,
+.acal-frontend .acal-task .acal-task-meta { overflow:hidden; display:-webkit-box; -webkit-box-orient:vertical; white-space:normal; }
+.acal-frontend .acal-task .acal-task-title { -webkit-line-clamp:2; }
+.acal-frontend .acal-task .acal-task-meta { -webkit-line-clamp:2; }
+.acal-frontend .acal-task-state { display:inline-flex; margin-bottom:4px; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:700; letter-spacing:.02em; text-transform:uppercase; background:#ede9fe; color:#5b21b6; }
+.acal-frontend .acal-task--vacation { background:linear-gradient(180deg, #fdf4ff 0%, #faf5ff 100%); border-color:#e9d5ff; }
+.acal-frontend .acal-task--no-desc .acal-task-title { color:#64748b; font-style:italic; }
 
 /* ===== HOTFIX grid & layout (integrado) ===== */
 .acal-grid{
   display:grid !important;
-  grid-template-columns: 200px repeat(5, 1fr) !important;
+  grid-template-columns: 176px repeat(5, minmax(170px, 1fr)) !important;
   grid-auto-flow: row;
   align-items: start;
   box-sizing: border-box;
@@ -18,7 +37,7 @@
 .acal-grid .acal-cell{
   position: relative;
   box-sizing: border-box;
-  min-height: 90px;
+  min-height: 96px;
   background: #fff;
   border-right: 1px solid #eef1f5;
   border-bottom: 1px solid #eef1f5;
