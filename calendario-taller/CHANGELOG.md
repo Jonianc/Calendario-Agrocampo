@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.40
+- Se aplica un refresh visual específico para la vista standalone legacy readonly (`?acal_standalone=1`) sin afectar el gestor frontend de edición.
+- Se mejora jerarquía visual y legibilidad en standalone: fondo, contenedor, topbar de navegación semanal, grilla y tarjetas con mejor contraste/espaciado.
+- Se refuerza accesibilidad visual en standalone con estilos de foco visible para navegación por teclado.
+
 ## 1.9.39
 - Se mejora legibilidad del tooltip flotante con contenido estructurado (título y metadatos en líneas separadas), reemplazando el texto concatenado en una sola línea.
 - Se refuerza accesibilidad: al mostrar tooltip en hover/focus la tarjeta activa enlaza `aria-describedby` al tooltip y se limpia al cerrar.
