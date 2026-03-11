@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.44
+- Se corrige la cascada CSS en standalone para compactar efectivamente el header de días: `min-height` ahora aplica solo a celdas de contenido (`.acal-cell:not(.acal-head)`), eliminando el espacio vacío que mantenía alta la fila de cabecera.
+- Se reduce visualmente la topbar de navegación semanal y se refinan tipografía/espaciado del header de días para un resultado más compacto y premium en desktop.
+- Se ajustan también los tamaños del header de días en móvil para conservar proporción y limpieza visual.
+
 ## 1.9.43
 - Se agrega encabezado de contexto semanal en vista standalone readonly (rango de semana + timestamp de actualización) para mejorar orientación operacional.
 - Se moderniza y compacta el header de días en standalone: menor altura/espaciado, mejor jerarquía tipográfica y alineación más limpia con look visual más premium.
