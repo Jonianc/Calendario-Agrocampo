@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.47
+- Se aplica la mejora visual directamente a la vista `?acal_standalone=1` (desktop), corrigiendo que el ajuste previo no impactara esta pantalla.
+- Se compactan barra semanal y cabecera de días en standalone, reduciendo altura y espacios muertos sin perder legibilidad.
+- Se normaliza densidad de grilla/celdas y se mejora alineación general entre columna de técnicos y columnas de días.
+- Se moderniza la presentación de labels de técnicos y tarjetas OT (tipografía, contraste, padding y hover/focus).
+- Se refuerza sticky header + sticky columna de técnicos en standalone con z-index/fondos consistentes para evitar solapes visuales.
+
 ## 1.9.46
 - Se compacta la topbar del gestor frontend (desktop) para reducir altura percibida y espacios muertos, conservando un balance densidad/aire visual.
 - Se normalizan paddings/alturas de grilla semanal (header, celdas, acciones y tarjetas OT) para mejorar alineación y ritmo visual.
