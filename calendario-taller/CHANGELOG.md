@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.42
+- Se mejora legibilidad de tarjetas en vista standalone readonly: truncado controlado de título/metadatos y `title` nativo con contenido completo para recuperar contexto en desktop.
+- Se corrigen errores visibles en standalone móvil/desktop: topbar móvil reordenada y más usable, grilla/celdas reajustadas y desactivación de sticky lateral en móvil para evitar solapes de la columna de técnicos.
+- Se mantiene sticky de cabecera y el comportamiento de lectura en viewport sin afectar el gestor frontend de edición.
+
 ## 1.9.41
 - Se corrige regresión en vista standalone readonly (`?acal_standalone=1`): se elimina el `overflow` que rompía el contexto de `position: sticky`, restaurando el comportamiento sticky de cabecera/columna con scroll de viewport.
 - Se aplica ajuste responsive adicional para standalone en móvil (ancho de columnas, densidad de celdas/tarjetas y legibilidad de cabeceras) sin afectar el gestor frontend.

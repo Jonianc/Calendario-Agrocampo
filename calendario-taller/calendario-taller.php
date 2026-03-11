@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.9.41
+ * Version: 1.9.42
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.9.41';
+    const VERSION   = '1.9.42';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -1937,7 +1937,8 @@ ACALJS;
                     if($suc) $metaLine[]=$suc;
                     $body=implode(' · ',$metaLine);
 
-                    echo '<div class="acal-task" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'">';
+                    $full_text = trim(($title ?: '(Sin descripción)') . ($body ? "\n".$body : ''));
+                    echo '<div class="acal-task" style="border-left:6px solid '.esc_attr($color).'" data-task-id="'.esc_attr($task['id']).'" title="'.esc_attr($full_text).'">';
                     echo '<div class="acal-task-title">'.esc_html($title ?: '(Sin descripción)').'</div>';
                     if ($body) echo '<div class="acal-task-meta">'.esc_html($body).'</div>';
                     echo '</div>';

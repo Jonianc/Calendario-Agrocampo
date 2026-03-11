@@ -39,7 +39,7 @@
   top: 6px; right: 6px;
 }
 
-/* ===== 1.9.41 Standalone sticky regression fix + mobile polish ===== */
+/* ===== 1.9.42 Standalone readonly legibility + mobile/desktop fixes ===== */
 body.acal-standalone{
   background:
     radial-gradient(950px 420px at 4% -4%, #dbeafe 0, rgba(219,234,254,0) 56%),
@@ -157,6 +157,22 @@ body.acal-standalone .acal-task .acal-task-meta{
   line-height: 1.35;
 }
 
+body.acal-standalone .acal-task .acal-task-title,
+body.acal-standalone .acal-task .acal-task-meta{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  -webkit-line-clamp: 2;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  -webkit-line-clamp: 3;
+}
+
 body.acal-standalone a:focus-visible,
 body.acal-standalone button:focus-visible,
 body.acal-standalone input:focus-visible{
@@ -166,43 +182,73 @@ body.acal-standalone input:focus-visible{
 
 @media (max-width: 782px){
   body.acal-standalone .acal-wrap.acal-frontend{
-    padding: 12px;
+    padding: 10px;
   }
 
   body.acal-standalone .acal-topbar{
     padding: 10px;
     gap: 8px;
+    border-radius: 12px;
   }
 
   body.acal-standalone .acal-topbar .acal-nav{
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav .button,
+  body.acal-standalone .acal-topbar .acal-nav label,
+  body.acal-standalone .acal-topbar .acal-nav button{
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav label{
+    justify-content: space-between;
+    flex-wrap: nowrap;
   }
 
   body.acal-standalone .acal-grid{
     border-radius: 10px;
+    grid-template-columns: 132px repeat(5, minmax(148px, 1fr)) !important;
   }
 
-  body.acal-standalone .acal-grid{
-    grid-template-columns: 160px repeat(5, minmax(160px, 1fr)) !important;
+  body.acal-standalone .acal-frontend.sticky-both .acal-tech-col{
+    position: static;
+    left: auto;
+    z-index: auto;
   }
 
   body.acal-standalone .acal-grid .acal-cell{
-    min-height: 104px;
-    padding: 8px;
+    min-height: 100px;
+    padding: 7px;
   }
 
   body.acal-standalone .acal-grid .acal-head{
-    font-size: 12px;
-    padding: 8px;
+    font-size: 11.5px;
+    padding: 7px;
   }
 
   body.acal-standalone .acal-tech-col .acal-techname{
-    margin: 6px;
-    min-height: 48px;
-    font-size: 12px;
+    margin: 4px;
+    min-height: 44px;
+    padding: 6px;
+    font-size: 11px;
   }
 
   body.acal-standalone .acal-task{
-    padding: 8px 10px;
+    padding: 8px 9px;
+    border-radius: 10px;
+  }
+
+  body.acal-standalone .acal-task .acal-task-title{
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-task .acal-task-meta{
+    font-size: 11px;
   }
 }
