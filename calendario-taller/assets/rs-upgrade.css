@@ -1490,3 +1490,65 @@ body.acal-standalone .acal-task .acal-task-meta::before{
     font-size: 11px;
   }
 }
+
+
+/* =========================================================
+   1.10.3 Standalone hotfix for visible layout regressions
+   ========================================================= */
+body.acal-standalone .acal-topbar .acal-nav{
+  gap: 10px;
+}
+
+body.acal-standalone .acal-topbar .acal-nav-updated{
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+body.acal-standalone .acal-topbar button.button{
+  box-shadow: 0 3px 8px rgba(15,23,42,.14);
+}
+
+body.acal-standalone .acal-grid .acal-head{
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 5px 8px !important;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label{
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  min-height: 60px;
+}
+
+body.acal-standalone .acal-task .acal-task-meta::before{
+  content: none;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-topbar .acal-nav-updated{
+    width: 100%;
+    margin-left: 0;
+    text-align: right;
+  }
+
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+    font-size: 12px;
+  }
+}

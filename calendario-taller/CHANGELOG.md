@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.3
+- Hotfix visual standalone para corregir errores visibles introducidos en 1.10.2: se normaliza la cabecera de días (tamaño/alineación) y se elimina la superposición visual en desktop.
+- Se recalibra la densidad de topbar y la etiqueta `Actualizado` para mantener alineación estable sin quiebres.
+- Se corrige la meta secundaria de tarjetas OT removiendo viñeta forzada que ensuciaba lectura.
+- Ajustes encapsulados a `body.acal-standalone`, sin cambios de comportamiento ni backend.
+
 ## 1.10.2
 - Se aplica ajuste visual standalone inspirado en la referencia adjunta: topbar más compacta y ordenada, mejor jerarquía en navegación semanal y timestamp `Actualizado` integrado con mayor legibilidad.
 - Se refina cabecera de días y composición general de la grilla para un look más limpio/técnico en desktop, con densidad y contraste más consistentes.
