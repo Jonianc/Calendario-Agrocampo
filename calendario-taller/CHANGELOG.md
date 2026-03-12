@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.10.6
+- Se confirma y corrige la causa del espacio superior en standalone: reglas globales en `rs-upgrade.css` (`.acal-grid .acal-cell { padding-top: 38px; }`) estaban contaminando contextos fuera de management/admin.
+- Las reglas con `padding-top: 38px` quedan scopeadas a `body.acal-front-management` y `body.wp-admin` para que no afecten la vista standalone.
+- Se eliminan hacks redundantes basados en `nth-child` (1.10.4/1.10.5) y se reemplazan por reglas standalone limpias para celdas, técnico y tarjetas.
+- Ajuste visual sin cambios de backend ni comportamiento funcional.
+
+## 1.10.5
+- Se elimina el espacio residual entre el header de días y la primera fila de tarjetas OT en standalone (desktop) ajustando `min-height` y `padding-top` de la primera fila de celdas de contenido.
+- Se fuerza `margin-top: 0` en la primera fila de tarjetas y en el primer bloque de técnico para alinear el contenido inmediatamente bajo la cabecera.
+- Hotfix visual puntual encapsulado a `body.acal-standalone`, sin cambios de lógica ni backend.
+
+## 1.10.4
+- Se corrige el espacio vertical excesivo entre el header de días y la primera fila de tarjetas OT en standalone (desktop), compactando la primera fila de celdas de contenido.
+- Se ajusta el margen superior de la primera fila de tarjetas y del bloque de técnico para alinear visualmente el inicio del contenido bajo la cabecera.
+- Ajuste visual puntual, encapsulado a `body.acal-standalone`, sin cambios de comportamiento ni backend.
+
+## 1.10.3
+- Hotfix visual standalone para corregir errores visibles introducidos en 1.10.2: se normaliza la cabecera de días (tamaño/alineación) y se elimina la superposición visual en desktop.
+- Se recalibra la densidad de topbar y la etiqueta `Actualizado` para mantener alineación estable sin quiebres.
+- Se corrige la meta secundaria de tarjetas OT removiendo viñeta forzada que ensuciaba lectura.
+- Ajustes encapsulados a `body.acal-standalone`, sin cambios de comportamiento ni backend.
+
+## 1.10.2
+- Se aplica ajuste visual standalone inspirado en la referencia adjunta: topbar más compacta y ordenada, mejor jerarquía en navegación semanal y timestamp `Actualizado` integrado con mayor legibilidad.
+- Se refina cabecera de días y composición general de la grilla para un look más limpio/técnico en desktop, con densidad y contraste más consistentes.
+- Se suaviza presentación de tarjetas OT (bordes/sombras/meta secundaria) manteniendo el mismo comportamiento funcional.
+- Se agregan ajustes responsive para conservar prolijidad en mobile sin romper layout.
+
+## 1.10.1
+- Se elimina completamente en standalone el bloque visual de rango semanal (`Semana: dd/mm/yyyy — dd/mm/yyyy`) para evitar redundancia en cabecera.
+- El sello `Actualizado: dd/mm/yyyy hh:mm` se integra en la misma línea de la navegación semanal (`Semana anterior`, selector de fecha, `Ir`, `Próxima semana`) para un uso de espacio superior más eficiente.
+- Ajuste visual acotado y encapsulado a standalone, sin cambios de comportamiento ni backend.
+
+## 1.10.0
+- Se aplica refresh visual **exclusivo de standalone** (`?acal_standalone=1`) con enfoque desktop: barra de contexto semanal y topbar con mayor jerarquía visual, mejor contraste y menor sensación de espacio vacío superior.
+- Se fortalece el bloque de navegación semanal (controles, bordes, hover y tipografía) manteniendo el mismo flujo funcional sin cambios de comportamiento.
+- Se rediseña el encabezado de días con más presencia visual (jerarquía día/fecha) y se ordena la composición general de la grilla con bordes/sombras consistentes.
+- Se mejora lectura de tarjetas OT por técnico: separación más clara entre título y metadatos secundarios, densidad más respirable y estados hover/focus más modernos.
+- Se añaden ajustes responsive para no romper en mobile y conservar una presentación prolija.
+
 ## 1.9.49
 - Se ajusta criterio UX por contexto: en **frontend management** los títulos de OT/tarea vuelven a truncado controlado (2 líneas) para mantener densidad operacional.
 - En **standalone** se mantiene prioridad de lectura completa del título (sin truncado agresivo), separando explícitamente reglas CSS por vista.
