@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.6
+- Se confirma y corrige la causa del espacio superior en standalone: reglas globales en `rs-upgrade.css` (`.acal-grid .acal-cell { padding-top: 38px; }`) estaban contaminando contextos fuera de management/admin.
+- Las reglas con `padding-top: 38px` quedan scopeadas a `body.acal-front-management` y `body.wp-admin` para que no afecten la vista standalone.
+- Se eliminan hacks redundantes basados en `nth-child` (1.10.4/1.10.5) y se reemplazan por reglas standalone limpias para celdas, técnico y tarjetas.
+- Ajuste visual sin cambios de backend ni comportamiento funcional.
+
 ## 1.10.5
 - Se elimina el espacio residual entre el header de días y la primera fila de tarjetas OT en standalone (desktop) ajustando `min-height` y `padding-top` de la primera fila de celdas de contenido.
 - Se fuerza `margin-top: 0` en la primera fila de tarjetas y en el primer bloque de técnico para alinear el contenido inmediatamente bajo la cabecera.

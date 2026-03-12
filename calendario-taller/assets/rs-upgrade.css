@@ -609,7 +609,8 @@ label:has(#acal-estado){ display:none !important; } /* si el navegador lo soport
 .acal-order-controls{ display:none !important; }
 
 /* Acciones fijas arriba-izquierda en cada celda */
-.acal-actions-fixed{
+body.acal-front-management .acal-actions-fixed,
+body.wp-admin .acal-actions-fixed{
   position: absolute;
   top: 6px;
   left: 6px;
@@ -618,8 +619,9 @@ label:has(#acal-estado){ display:none !important; } /* si el navegador lo soport
   z-index: 2;
 }
 
-/* Asegura anclaje y espacio para los botones */
-.acal-grid .acal-cell{
+/* Asegura anclaje y espacio para los botones (solo management/admin) */
+body.acal-front-management .acal-grid .acal-cell,
+body.wp-admin .acal-grid .acal-cell{
   position: relative;      /* para posicionar .acal-actions-fixed */
   padding-top: 38px;       /* deja espacio bajo los botones */
 }
@@ -632,7 +634,8 @@ label:has(#acal-estado){ display:none !important; } /* si el navegador lo soport
 }
 
 /* Contenedor fijo para "Pegar" (sin tocar el "+ Agregar" del plugin) */
-.acal-actions-fixed{
+body.acal-front-management .acal-actions-fixed,
+body.wp-admin .acal-actions-fixed{
   position: absolute;
   top: 6px;
   left: 6px;
@@ -641,8 +644,9 @@ label:has(#acal-estado){ display:none !important; } /* si el navegador lo soport
   z-index: 3;
 }
 
-/* Asegura anclaje y espacio en cada celda */
-.acal-grid .acal-cell{
+/* Asegura anclaje y espacio en cada celda (solo management/admin) */
+body.acal-front-management .acal-grid .acal-cell,
+body.wp-admin .acal-grid .acal-cell{
   position: relative;
   padding-top: 38px; /* deja espacio bajo los botones */
 }
@@ -1553,39 +1557,18 @@ body.acal-standalone .acal-task .acal-task-meta::before{
   }
 }
 
-
 /* =========================================================
-   1.10.4 Standalone spacing fix: day-header to first task row
+   1.10.6 Standalone spacing cleanup (no nth-child hacks)
    ========================================================= */
-body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12){
-  padding-top: 2px !important;
+body.acal-standalone .acal-grid .acal-cell{
+  padding-top: 8px !important;
 }
 
-body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12) .acal-task{
-  margin-top: 0;
-}
-
-body.acal-standalone .acal-grid > .acal-cell:nth-child(7) .acal-techname{
-  margin-top: 2px;
-}
-
-
-/* =========================================================
-   1.10.5 Standalone spacing hotfix: remove residual top gap
-   ========================================================= */
-body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12){
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
   min-height: 88px !important;
-  padding-top: 0 !important;
 }
 
-body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12) .acal-task{
-  margin-top: 0 !important;
-}
-
-body.acal-standalone .acal-grid > .acal-cell:nth-child(7){
-  padding-top: 0 !important;
-}
-
-body.acal-standalone .acal-grid > .acal-cell:nth-child(7) .acal-techname{
+body.acal-standalone .acal-grid .acal-tech-col .acal-techname,
+body.acal-standalone .acal-grid .acal-cell .acal-task{
   margin-top: 0 !important;
 }
