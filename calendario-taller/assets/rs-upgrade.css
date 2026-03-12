@@ -1090,14 +1090,27 @@ body.acal-front-management .acal-floating-tooltip .acal-tooltip-meta > div + div
 }
 
 
-/* 1.9.48 - Priorizar lectura completa de títulos OT (sin truncado agresivo) */
+/* 1.9.49 - Reconciliación UX: management trunca, standalone muestra título completo */
 body.acal-front-management .acal-task,
 body.acal-standalone .acal-task{
   min-height: unset !important;
   height: auto !important;
 }
 
-body.acal-front-management .acal-task .acal-task-title,
+/* Frontend management: truncado operativo controlado */
+body.acal-front-management .acal-task .acal-task-title{
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35 !important;
+}
+
+/* Standalone: lectura completa sin truncado agresivo */
 body.acal-standalone .acal-task .acal-task-title{
   display: block !important;
   -webkit-line-clamp: unset !important;
@@ -1119,7 +1132,7 @@ body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
 @media (min-width: 1024px){
   body.acal-front-management .acal-grid,
   body.acal-standalone .acal-grid{
-    grid-template-columns: 220px repeat(5, minmax(280px,1fr)) !important;
+    grid-template-columns: 200px repeat(5, minmax(240px,1fr)) !important;
   }
 
   body.acal-front-management .acal-task,

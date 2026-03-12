@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.49
+- Se ajusta criterio UX por contexto: en **frontend management** los títulos de OT/tarea vuelven a truncado controlado (2 líneas) para mantener densidad operacional.
+- En **standalone** se mantiene prioridad de lectura completa del título (sin truncado agresivo), separando explícitamente reglas CSS por vista.
+- Se corrige ancho de grilla desktop para evitar quiebres visuales por columnas sobredimensionadas y reducir el ancho excesivo percibido de la primera columna.
+
 ## 1.9.48
 - Se prioriza lectura operativa de OT/tareas: el título principal deja de truncarse visualmente (sin cortes agresivos con `...`) en frontend management y standalone.
 - Las tarjetas ahora permiten crecimiento vertical controlado para mostrar títulos completos, en lugar de forzar alturas fijas que ocultaban contenido.
