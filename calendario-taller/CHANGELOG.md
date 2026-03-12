@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.1
+- Se elimina completamente en standalone el bloque visual de rango semanal (`Semana: dd/mm/yyyy — dd/mm/yyyy`) para evitar redundancia en cabecera.
+- El sello `Actualizado: dd/mm/yyyy hh:mm` se integra en la misma línea de la navegación semanal (`Semana anterior`, selector de fecha, `Ir`, `Próxima semana`) para un uso de espacio superior más eficiente.
+- Ajuste visual acotado y encapsulado a standalone, sin cambios de comportamiento ni backend.
+
 ## 1.10.0
 - Se aplica refresh visual **exclusivo de standalone** (`?acal_standalone=1`) con enfoque desktop: barra de contexto semanal y topbar con mayor jerarquía visual, mejor contraste y menor sensación de espacio vacío superior.
 - Se fortalece el bloque de navegación semanal (controles, bordes, hover y tipografía) manteniendo el mismo flujo funcional sin cambios de comportamiento.

@@ -1192,6 +1192,14 @@ body.acal-standalone .acal-topbar .acal-nav{
   gap: 10px;
 }
 
+body.acal-standalone .acal-topbar .acal-nav-updated{
+  margin-left: auto;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 body.acal-standalone .acal-topbar .button,
 body.acal-standalone .acal-topbar button.button,
 body.acal-standalone .acal-topbar input[type="date"]{
@@ -1310,6 +1318,12 @@ body.acal-standalone .acal-task .acal-task-meta{
   body.acal-standalone .acal-week-context{
     border-radius: 12px;
     padding: 10px;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav-updated{
+    width: 100%;
+    margin-left: 0;
+    text-align: right;
   }
 
   body.acal-standalone .acal-tech-col .acal-techname{

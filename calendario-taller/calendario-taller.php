@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.10.0
+ * Version: 1.10.1
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.10.0';
+    const VERSION   = '1.10.1';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const CPT_TASK  = 'acal_tarea';
@@ -1889,15 +1889,9 @@ ACALJS;
     $prev = date('Y-m-d', strtotime($days[0].' -7 days'));
     $next = date('Y-m-d', strtotime($days[0].' +7 days'));
 
+    $rendered_at_label = '';
     if ($this->is_standalone_request()){
-        $week_end = end($renderDays);
-        $week_start_label = date_i18n('d/m/Y', strtotime($days[0]));
-        $week_end_label = date_i18n('d/m/Y', strtotime($week_end ?: $days[0]));
         $rendered_at_label = current_datetime()->format('d/m/Y H:i');
-        echo '<div class="acal-week-context" aria-label="Contexto de semana">';
-        echo '<div class="acal-week-context__range">Semana: <strong>'.esc_html($week_start_label).' — '.esc_html($week_end_label).'</strong></div>';
-        echo '<div class="acal-week-context__updated">Actualizado: '.esc_html($rendered_at_label).'</div>';
-        echo '</div>';
     }
     echo '<form method="get" class="acal-topbar">';
     echo '<div class="acal-nav">';
@@ -1905,6 +1899,9 @@ ACALJS;
     echo '<label>Semana de: <input type="date" name="date" value="'.esc_attr($days[0]).'" /></label> ';
     echo '<button class="button">Ir</button> ';
     echo '<a class="button" href="'.esc_url(add_query_arg(['date'=>$next])).'">Próxima semana &raquo;</a>';
+    if ($rendered_at_label !== '') {
+        echo '<span class="acal-nav-updated">Actualizado: '.esc_html($rendered_at_label).'</span>';
+    }
     echo '</div>';
     echo '</form>';
 
