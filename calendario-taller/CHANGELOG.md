@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.7
+- Limpieza de CSS standalone en `assets/rs-upgrade.css`: se eliminan bloques legacy duplicados de 1.10.2 y 1.10.3 que sobrescribían reglas entre sí y dificultaban la trazabilidad visual.
+- Se mantiene el bloque de ajuste vigente (1.10.6) y la base actual, sin cambios de lógica PHP, permisos, nonces ni endpoints.
+- Ajuste de mantenimiento visual acotado a standalone para reducir riesgo de regresión por cascada/conflicto de estilos.
+
 ## 1.10.6
 - Se confirma y corrige la causa del espacio superior en standalone: reglas globales en `rs-upgrade.css` (`.acal-grid .acal-cell { padding-top: 38px; }`) estaban contaminando contextos fuera de management/admin.
 - Las reglas con `padding-top: 38px` quedan scopeadas a `body.acal-front-management` y `body.wp-admin` para que no afecten la vista standalone.
