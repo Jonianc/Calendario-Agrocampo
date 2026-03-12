@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.4
+- Se corrige el espacio vertical excesivo entre el header de días y la primera fila de tarjetas OT en standalone (desktop), compactando la primera fila de celdas de contenido.
+- Se ajusta el margen superior de la primera fila de tarjetas y del bloque de técnico para alinear visualmente el inicio del contenido bajo la cabecera.
+- Ajuste visual puntual, encapsulado a `body.acal-standalone`, sin cambios de comportamiento ni backend.
+
 ## 1.10.3
 - Hotfix visual standalone para corregir errores visibles introducidos en 1.10.2: se normaliza la cabecera de días (tamaño/alineación) y se elimina la superposición visual en desktop.
 - Se recalibra la densidad de topbar y la etiqueta `Actualizado` para mantener alineación estable sin quiebres.

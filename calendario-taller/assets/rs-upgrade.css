@@ -1552,3 +1552,19 @@ body.acal-standalone .acal-task .acal-task-meta::before{
     font-size: 12px;
   }
 }
+
+
+/* =========================================================
+   1.10.4 Standalone spacing fix: day-header to first task row
+   ========================================================= */
+body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12){
+  padding-top: 2px !important;
+}
+
+body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12) .acal-task{
+  margin-top: 0;
+}
+
+body.acal-standalone .acal-grid > .acal-cell:nth-child(7) .acal-techname{
+  margin-top: 2px;
+}
