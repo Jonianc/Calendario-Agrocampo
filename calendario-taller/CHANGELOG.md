@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.10.11
+- Hardening responsive en standalone (`?acal_standalone=1`) para breakpoints críticos (<=1200px, <=900px y <=640px).
+- Se ajustan navegación superior, sello de actualización, alturas mínimas de celdas/cabecera y padding de tarjetas para reducir colisiones/overflow visual.
+- Cambio únicamente visual en CSS scopeado a `body.acal-standalone`, sin tocar lógica PHP, permisos, nonces ni endpoints.
+
+## 1.10.10
+- Mejora visual de estados interactivos en standalone (`?acal_standalone=1`) para botones, links, input de fecha y tarjetas.
+- Se refuerzan `hover` y `focus-visible` con contorno/foco consistente y contraste estable, manteniendo scope `body.acal-standalone`.
+- Cambio exclusivamente CSS; sin modificaciones de lógica PHP, permisos, nonces o endpoints.
+
+## 1.10.9
+- Ajuste tipográfico en standalone (`?acal_standalone=1`) para reforzar jerarquía visual entre día/fecha de cabecera, título de tarjeta y metadatos secundarios.
+- Se ajustan `font-size`, `font-weight`, `line-height` y contraste en scope `body.acal-standalone`, incluyendo calibración en <=1023px.
+- Cambio visual acotado; sin modificaciones en lógica PHP, permisos, nonces o endpoints.
+
+## 1.10.8
+- Ajuste puntual de densidad vertical en standalone (`?acal_standalone=1`) para armonizar topbar, cabecera de días y celdas de contenido.
+- Se normalizan alturas mínimas y márgenes verticales de técnico/tarjetas dentro de scope `body.acal-standalone`, sin tocar lógica funcional.
+- Incluye calibración responsive (<=1023px) para mantener ritmo visual consistente.
+
+## 1.10.7
+- Limpieza de CSS standalone en `assets/rs-upgrade.css`: se eliminan bloques legacy duplicados de 1.10.2 y 1.10.3 que sobrescribían reglas entre sí y dificultaban la trazabilidad visual.
+- Se mantiene el bloque de ajuste vigente (1.10.6) y la base actual, sin cambios de lógica PHP, permisos, nonces ni endpoints.
+- Ajuste de mantenimiento visual acotado a standalone para reducir riesgo de regresión por cascada/conflicto de estilos.
+
 ## 1.10.6
 - Se confirma y corrige la causa del espacio superior en standalone: reglas globales en `rs-upgrade.css` (`.acal-grid .acal-cell { padding-top: 38px; }`) estaban contaminando contextos fuera de management/admin.
 - Las reglas con `padding-top: 38px` quedan scopeadas a `body.acal-front-management` y `body.wp-admin` para que no afecten la vista standalone.
