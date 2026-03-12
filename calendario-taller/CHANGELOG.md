@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.5
+- Se elimina el espacio residual entre el header de días y la primera fila de tarjetas OT en standalone (desktop) ajustando `min-height` y `padding-top` de la primera fila de celdas de contenido.
+- Se fuerza `margin-top: 0` en la primera fila de tarjetas y en el primer bloque de técnico para alinear el contenido inmediatamente bajo la cabecera.
+- Hotfix visual puntual encapsulado a `body.acal-standalone`, sin cambios de lógica ni backend.
+
 ## 1.10.4
 - Se corrige el espacio vertical excesivo entre el header de días y la primera fila de tarjetas OT en standalone (desktop), compactando la primera fila de celdas de contenido.
 - Se ajusta el margen superior de la primera fila de tarjetas y del bloque de técnico para alinear visualmente el inicio del contenido bajo la cabecera.

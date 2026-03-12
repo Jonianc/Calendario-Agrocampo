@@ -1568,3 +1568,24 @@ body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12) .ac
 body.acal-standalone .acal-grid > .acal-cell:nth-child(7) .acal-techname{
   margin-top: 2px;
 }
+
+
+/* =========================================================
+   1.10.5 Standalone spacing hotfix: remove residual top gap
+   ========================================================= */
+body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12){
+  min-height: 88px !important;
+  padding-top: 0 !important;
+}
+
+body.acal-standalone .acal-grid > .acal-cell:nth-child(n+7):nth-child(-n+12) .acal-task{
+  margin-top: 0 !important;
+}
+
+body.acal-standalone .acal-grid > .acal-cell:nth-child(7){
+  padding-top: 0 !important;
+}
+
+body.acal-standalone .acal-grid > .acal-cell:nth-child(7) .acal-techname{
+  margin-top: 0 !important;
+}
