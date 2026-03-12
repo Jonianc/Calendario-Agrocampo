@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.2
+- Se aplica ajuste visual standalone inspirado en la referencia adjunta: topbar más compacta y ordenada, mejor jerarquía en navegación semanal y timestamp `Actualizado` integrado con mayor legibilidad.
+- Se refina cabecera de días y composición general de la grilla para un look más limpio/técnico en desktop, con densidad y contraste más consistentes.
+- Se suaviza presentación de tarjetas OT (bordes/sombras/meta secundaria) manteniendo el mismo comportamiento funcional.
+- Se agregan ajustes responsive para conservar prolijidad en mobile sin romper layout.
+
 ## 1.10.1
 - Se elimina completamente en standalone el bloque visual de rango semanal (`Semana: dd/mm/yyyy — dd/mm/yyyy`) para evitar redundancia en cabecera.
 - El sello `Actualizado: dd/mm/yyyy hh:mm` se integra en la misma línea de la navegación semanal (`Semana anterior`, selector de fecha, `Ir`, `Próxima semana`) para un uso de espacio superior más eficiente.

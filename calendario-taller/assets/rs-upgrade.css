@@ -1330,3 +1330,163 @@ body.acal-standalone .acal-task .acal-task-meta{
     font-size: 12px;
   }
 }
+
+
+/* =========================================================
+   1.10.2 Standalone visual tuning (reference-inspired)
+   ========================================================= */
+body.acal-standalone .acal-wrap.acal-frontend{
+  max-width: 1540px;
+  padding: 14px 18px 16px;
+}
+
+body.acal-standalone .acal-topbar{
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid #d7dee8;
+  background: #eef2f5;
+  box-shadow: 0 8px 22px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar .acal-nav{
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button,
+body.acal-standalone .acal-topbar input[type="date"]{
+  min-height: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+body.acal-standalone .acal-topbar input[type="date"]{
+  min-width: 150px;
+  background: #f8fafc;
+}
+
+body.acal-standalone .acal-topbar button.button{
+  background: linear-gradient(180deg, #707985 0%, #4b5563 100%);
+  border-color: #4b5563;
+  color: #fff;
+  box-shadow: 0 6px 12px rgba(15,23,42,.16);
+}
+
+body.acal-standalone .acal-topbar .acal-nav-updated{
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+body.acal-standalone .acal-grid{
+  border-radius: 16px;
+  border-color: #d8dee8;
+  background: #eef2f5;
+  box-shadow: 0 12px 28px rgba(15,23,42,.10);
+}
+
+body.acal-standalone .acal-grid .acal-head{
+  min-height: 64px !important;
+  height: 64px !important;
+  padding: 9px 8px !important;
+  background: #eef2f5;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label{
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 11px;
+  letter-spacing: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 30px;
+  font-weight: 800;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 106px !important;
+  background: #f4f6f8;
+}
+
+body.acal-standalone .acal-tech-col{
+  background: #eef2f5 !important;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  min-height: 84px;
+  border-radius: 14px;
+  box-shadow: 0 3px 8px rgba(15,23,42,.07), inset 0 0 0 1px rgba(255,255,255,.35);
+}
+
+body.acal-standalone .acal-task{
+  border-radius: 14px;
+  border-color: #cfd8e3;
+  background: #fcfdfd;
+  box-shadow: 0 4px 10px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  font-size: 13px !important;
+  font-weight: 800;
+  letter-spacing: .005em;
+  margin-bottom: 6px !important;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  font-size: 13px;
+  color: #1f2937;
+}
+
+body.acal-standalone .acal-task .acal-task-meta::before{
+  content: '\25CF';
+  display: inline-block;
+  margin-right: 6px;
+  color: #9ca3af;
+  font-size: 8px;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-wrap.acal-frontend{
+    padding: 10px;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav{
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  body.acal-standalone .acal-grid .acal-head{
+    min-height: 42px !important;
+    height: 42px !important;
+  }
+
+  body.acal-standalone .acal-grid .acal-head .acal-day-label{
+    flex-direction: row;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+    font-size: 10px;
+  }
+
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-task .acal-task-meta{
+    font-size: 11px;
+  }
+}
