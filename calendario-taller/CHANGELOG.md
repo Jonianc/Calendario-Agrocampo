@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.10.0
+- Se aplica refresh visual **exclusivo de standalone** (`?acal_standalone=1`) con enfoque desktop: barra de contexto semanal y topbar con mayor jerarquía visual, mejor contraste y menor sensación de espacio vacío superior.
+- Se fortalece el bloque de navegación semanal (controles, bordes, hover y tipografía) manteniendo el mismo flujo funcional sin cambios de comportamiento.
+- Se rediseña el encabezado de días con más presencia visual (jerarquía día/fecha) y se ordena la composición general de la grilla con bordes/sombras consistentes.
+- Se mejora lectura de tarjetas OT por técnico: separación más clara entre título y metadatos secundarios, densidad más respirable y estados hover/focus más modernos.
+- Se añaden ajustes responsive para no romper en mobile y conservar una presentación prolija.
+
 ## 1.9.49
 - Se ajusta criterio UX por contexto: en **frontend management** los títulos de OT/tarea vuelven a truncado controlado (2 líneas) para mantener densidad operacional.
 - En **standalone** se mantiene prioridad de lectura completa del título (sin truncado agresivo), separando explícitamente reglas CSS por vista.

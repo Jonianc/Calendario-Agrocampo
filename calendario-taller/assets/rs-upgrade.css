@@ -1147,3 +1147,172 @@ body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
     margin-bottom: 4px !important;
   }
 }
+
+/* =========================================================
+   1.10.0 Standalone visual refresh (desktop-first, scoped)
+   ========================================================= */
+body.acal-standalone .acal-wrap.acal-frontend{
+  padding-top: 12px;
+  padding-bottom: 18px;
+}
+
+body.acal-standalone .acal-week-context{
+  margin: 0 0 10px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid #d5dee9;
+  background: linear-gradient(180deg, rgba(255,255,255,.97) 0%, rgba(248,250,252,.95) 100%);
+  box-shadow: 0 10px 24px rgba(15,23,42,.07);
+  color: #334155;
+  font-size: 12.5px;
+}
+
+body.acal-standalone .acal-week-context__range{
+  font-size: 14px;
+  color: #1e293b;
+}
+
+body.acal-standalone .acal-week-context__updated{
+  color: #64748b;
+  font-size: 12px;
+}
+
+body.acal-standalone .acal-topbar{
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #d5dee9;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 12px 26px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar .acal-nav{
+  width: 100%;
+  justify-content: center;
+  gap: 10px;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button,
+body.acal-standalone .acal-topbar input[type="date"]{
+  min-height: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border-color: #cbd5e1;
+  font-size: 13px;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button{
+  color: #1e293b;
+  background: #f8fafc;
+  transition: background-color .12s ease, border-color .12s ease, box-shadow .12s ease;
+}
+
+body.acal-standalone .acal-topbar .button:hover,
+body.acal-standalone .acal-topbar button.button:hover{
+  background: #eef2f7;
+  border-color: #94a3b8;
+  box-shadow: 0 1px 0 rgba(15,23,42,.03), 0 6px 14px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar label{
+  margin: 0;
+  gap: 8px;
+  color: #334155;
+  font-weight: 700;
+}
+
+body.acal-standalone .acal-grid{
+  border-radius: 16px;
+  border-color: #dbe4ef;
+  box-shadow: 0 18px 34px rgba(15,23,42,.11);
+}
+
+body.acal-standalone .acal-grid .acal-head{
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 7px 10px !important;
+  background: linear-gradient(180deg, #f8fbff 0%, #edf3fa 100%);
+  border-bottom: 1px solid #d9e2ee;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label{
+  gap: 8px;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: .05em;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  margin: 7px 8px;
+  min-height: 54px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  letter-spacing: .01em;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding: 8px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 98px !important;
+}
+
+body.acal-standalone .acal-task{
+  margin: 4px 0;
+  padding: 10px 12px !important;
+  border-radius: 12px;
+  border: 1px solid #dce4ef;
+  border-left-width: 5px !important;
+  box-shadow: 0 4px 10px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-task:hover,
+body.acal-standalone .acal-task:focus-within{
+  transform: translateY(-1px);
+  border-color: #b3c0d3;
+  box-shadow: 0 10px 18px rgba(15,23,42,.14);
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+  margin-bottom: 5px !important;
+  color: #0b1730;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  font-size: 12px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-topbar,
+  body.acal-standalone .acal-week-context{
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    font-size: 12px;
+  }
+}
