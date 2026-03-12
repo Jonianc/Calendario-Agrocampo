@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.11
+- Hardening responsive en standalone (`?acal_standalone=1`) para breakpoints críticos (<=1200px, <=900px y <=640px).
+- Se ajustan navegación superior, sello de actualización, alturas mínimas de celdas/cabecera y padding de tarjetas para reducir colisiones/overflow visual.
+- Cambio únicamente visual en CSS scopeado a `body.acal-standalone`, sin tocar lógica PHP, permisos, nonces ni endpoints.
+
 ## 1.10.10
 - Mejora visual de estados interactivos en standalone (`?acal_standalone=1`) para botones, links, input de fecha y tarjetas.
 - Se refuerzan `hover` y `focus-visible` con contorno/foco consistente y contraste estable, manteniendo scope `body.acal-standalone`.
