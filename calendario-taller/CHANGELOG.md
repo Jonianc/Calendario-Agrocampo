@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.10
+- Mejora visual de estados interactivos en standalone (`?acal_standalone=1`) para botones, links, input de fecha y tarjetas.
+- Se refuerzan `hover` y `focus-visible` con contorno/foco consistente y contraste estable, manteniendo scope `body.acal-standalone`.
+- Cambio exclusivamente CSS; sin modificaciones de lógica PHP, permisos, nonces o endpoints.
+
 ## 1.10.9
 - Ajuste tipográfico en standalone (`?acal_standalone=1`) para reforzar jerarquía visual entre día/fecha de cabecera, título de tarjeta y metadatos secundarios.
 - Se ajustan `font-size`, `font-weight`, `line-height` y contraste en scope `body.acal-standalone`, incluyendo calibración en <=1023px.

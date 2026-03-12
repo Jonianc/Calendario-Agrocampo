@@ -1443,3 +1443,38 @@ body.acal-standalone .acal-task .acal-task-meta{
     font-size: 11px;
   }
 }
+
+/* =========================================================
+   1.10.10 Standalone interactive states tuning
+   ========================================================= */
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button,
+body.acal-standalone .acal-topbar input[type="date"],
+body.acal-standalone .acal-topbar a{
+  transition: background-color .12s ease, border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+}
+
+body.acal-standalone .acal-topbar .button:hover,
+body.acal-standalone .acal-topbar button.button:hover,
+body.acal-standalone .acal-topbar a:hover,
+body.acal-standalone .acal-topbar input[type="date"]:hover{
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 1px rgba(148,163,184,.2), 0 6px 14px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar .button:focus-visible,
+body.acal-standalone .acal-topbar button.button:focus-visible,
+body.acal-standalone .acal-topbar input[type="date"]:focus-visible,
+body.acal-standalone .acal-topbar a:focus-visible,
+body.acal-standalone .acal-task:focus-visible,
+body.acal-standalone .acal-task:focus-within{
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
+body.acal-standalone .acal-task:hover,
+body.acal-standalone .acal-task:focus-within{
+  border-color: #94a3b8;
+  box-shadow: 0 10px 18px rgba(15,23,42,.14), 0 0 0 1px rgba(148,163,184,.22);
+}
