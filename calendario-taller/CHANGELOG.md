@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.9
+- Ajuste tipográfico en standalone (`?acal_standalone=1`) para reforzar jerarquía visual entre día/fecha de cabecera, título de tarjeta y metadatos secundarios.
+- Se ajustan `font-size`, `font-weight`, `line-height` y contraste en scope `body.acal-standalone`, incluyendo calibración en <=1023px.
+- Cambio visual acotado; sin modificaciones en lógica PHP, permisos, nonces o endpoints.
+
 ## 1.10.8
 - Ajuste puntual de densidad vertical en standalone (`?acal_standalone=1`) para armonizar topbar, cabecera de días y celdas de contenido.
 - Se normalizan alturas mínimas y márgenes verticales de técnico/tarjetas dentro de scope `body.acal-standalone`, sin tocar lógica funcional.

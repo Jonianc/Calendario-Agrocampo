@@ -1397,3 +1397,49 @@ body.acal-standalone .acal-task{
     min-height: 50px;
   }
 }
+
+/* =========================================================
+   1.10.9 Standalone typographic hierarchy tuning
+   ========================================================= */
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  line-height: 1.1;
+  color: #6b7280;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  font-weight: 700;
+  color: #0b1730;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  font-size: 12px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-task .acal-task-title{
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+
+  body.acal-standalone .acal-task .acal-task-meta{
+    font-size: 11px;
+  }
+}
