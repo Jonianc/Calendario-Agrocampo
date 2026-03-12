@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.8
+- Ajuste puntual de densidad vertical en standalone (`?acal_standalone=1`) para armonizar topbar, cabecera de días y celdas de contenido.
+- Se normalizan alturas mínimas y márgenes verticales de técnico/tarjetas dentro de scope `body.acal-standalone`, sin tocar lógica funcional.
+- Incluye calibración responsive (<=1023px) para mantener ritmo visual consistente.
+
 ## 1.10.7
 - Limpieza de CSS standalone en `assets/rs-upgrade.css`: se eliminan bloques legacy duplicados de 1.10.2 y 1.10.3 que sobrescribían reglas entre sí y dificultaban la trazabilidad visual.
 - Se mantiene el bloque de ajuste vigente (1.10.6) y la base actual, sin cambios de lógica PHP, permisos, nonces ni endpoints.

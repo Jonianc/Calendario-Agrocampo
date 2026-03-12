@@ -1351,3 +1351,49 @@ body.acal-standalone .acal-grid .acal-tech-col .acal-techname,
 body.acal-standalone .acal-grid .acal-cell .acal-task{
   margin-top: 0 !important;
 }
+
+/* =========================================================
+   1.10.8 Standalone vertical density consistency
+   ========================================================= */
+body.acal-standalone .acal-topbar{
+  margin-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+body.acal-standalone .acal-grid .acal-head{
+  min-height: 42px !important;
+  height: 42px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 92px !important;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  min-height: 56px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+body.acal-standalone .acal-task{
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-grid .acal-head{
+    min-height: 40px !important;
+    height: 40px !important;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+    min-height: 84px !important;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    min-height: 50px;
+  }
+}
