@@ -1,3 +1,16 @@
+## [1.10.46] - 2026-04-30
+- Ajustes UI/UX de Informe entregado en frontend management (ancho completo), limpieza de estilos duplicados del chip y corrección de carga/limpieza de Lugar al abrir modal.
+
+## [1.10.45] - 2026-04-30
+- Mejora UI/UX del indicador Informe entregado, filtro por informe y resumen semanal.
+
+## [1.10.44] - 2026-04-30
+- Calendario Taller: nuevo campo `Informe entregado` en modal de crear/editar tarea, persistido en meta `_acal_informe_entregado` (`1`/`0`).
+- Se incluye `informe_entregado` en `get_tasks_for_week()` y en payload de edición (`data-task`) para cargar estado al editar.
+- Tarjetas: muestra chip `Informe entregado` en admin y frontend standalone cuando aplica.
+- Copiar/pegar tarea (`acal_paste_task`): ahora copia también `_acal_informe_entregado`.
+- Exportación diaria PNG: muestra indicador corto `INF ✓` cuando el informe está entregado.
+
 ## 1.10.43
 - `?acal_standalone=1`: el header frontend se realinea para replicar visualmente la vista previa de Ajustes en desktop, unificando proporciones, gaps, tipografías, altura de controles, logo y pill de actualización.
 - Se reduce el ancho visual útil del contenedor standalone para acercarlo al ancho percibido de la preview y evitar el header excesivamente estirado.

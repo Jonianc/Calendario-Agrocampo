@@ -177,13 +177,20 @@ function patchModal(){
     $('#acal-turno-hidden').val(v);
   });
   $(document).off('click.acalAddTurno').on('click.acalAddTurno', '.acal-add', function(){
-    setTimeout(function(){ ensureTurnoControls(); setTurno('am'); toggleDelete(false); syncRedirectToCurrentUrl(); }, 0);
+    setTimeout(function(){
+      ensureTurnoControls();
+      setTurno('am');
+      if($('#acal-lugar').length){ $('#acal-lugar').val(''); }
+      toggleDelete(false);
+      syncRedirectToCurrentUrl();
+    }, 0);
   });
   $(document).off('click.acalEditTurno').on('click.acalEditTurno', '.acal-edit', function(){
     var task = $(this).data('task') || {};
     setTimeout(function(){
       ensureTurnoControls();
       setTurno(task.turno || 'am');
+      if($('#acal-lugar').length){ $('#acal-lugar').val(task.sucursal || ''); }
       toggleDelete(true);
       syncRedirectToCurrentUrl();
     }, 0);
@@ -203,6 +210,7 @@ function patchModal(){
       $form.find('#acal-equipo').closest('label').addClass('acal-field-equipo').appendTo($details);
       $form.find('#acal-lugar').closest('label').addClass('acal-field-lugar').appendTo($details);
       $form.find('#acal-descripcion').closest('label').addClass('acal-field-descripcion').appendTo($details);
+      $form.find('#acal-informe-entregado').closest('label').addClass('acal-field-informe').appendTo($details);
 
       $('<h3 class="acal-form-block-title">Datos clave</h3>').prependTo($priority);
       $('<p class="acal-form-block-help">Completa estos campos primero para programar rápidamente.</p>').insertAfter($priority.find('.acal-form-block-title'));
@@ -210,6 +218,12 @@ function patchModal(){
 
       $priority.insertBefore($form.find('.acal-form-actions'));
       $details.insertBefore($form.find('.acal-form-actions'));
+    }
+
+    var $informeLabel = $form.find('#acal-informe-entregado').closest('label');
+    var $descLabel = $form.find('#acal-descripcion').closest('label');
+    if($informeLabel.length && $descLabel.length){
+      $informeLabel.insertAfter($descLabel);
     }
 
     if(!$form.find('#acal-form-live').length){
