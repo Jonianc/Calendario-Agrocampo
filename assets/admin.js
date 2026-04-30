@@ -8,6 +8,7 @@
       if(preset && preset.tecnico_id){ $('#acal-tecnico-id').val(preset.tecnico_id); }
       if(preset && preset.fecha){ $('#acal-fecha').val(preset.fecha); }
       $('#acal-estado').val('programado'); $('#acal-sucursal').val(''); $('#acal-cliente').val(''); $('#acal-equipo').val(''); $('#acal-descripcion').val('');
+      $('#acal-informe-entregado').prop('checked', false);
     } else {
       $('#acal-modal-title').text('Editar tarea');
       $('#acal-action').val('acal_update_task');
@@ -19,6 +20,7 @@
       $('#acal-cliente').val(preset.cliente || '');
       $('#acal-equipo').val(preset.equipo || '');
       $('#acal-descripcion').val(preset.descripcion || '');
+      $('#acal-informe-entregado').prop('checked', String(preset.informe_entregado || '0') === '1');
     }
   }
   function closeModal(){ $('#acal-modal').hide(); }

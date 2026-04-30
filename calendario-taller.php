@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.10.43';
+    const VERSION   = '1.10.44';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const OPT_STANDALONE_LOGO = 'acal_standalone_logo_url';
@@ -356,6 +356,7 @@ public function ajax_paste_task(){
   $equipo   = get_post_meta($src_id, '_acal_equipo', true);
   $desc     = get_post_meta($src_id, '_acal_descripcion', true);
   $turno    = get_post_meta($src_id, '_acal_turno', true);
+  $informe  = get_post_meta($src_id, '_acal_informe_entregado', true);
 
   $title = $this->build_task_title($cliente, $desc);
 
@@ -370,6 +371,7 @@ public function ajax_paste_task(){
   if ($equipo)   update_post_meta($post_id,'_acal_equipo',$equipo);
   if ($desc)     update_post_meta($post_id,'_acal_descripcion',$desc);
   if ($turno){ $turno = in_array(strtolower($turno), ['am','pm']) ? strtolower($turno) : ''; if($turno) update_post_meta($post_id,'_acal_turno',$turno); }
+  update_post_meta($post_id,'_acal_informe_entregado', ($informe === '1' ? '1' : '0'));
 
   wp_send_json_success(['msg'=>'OK','post_id'=>$post_id]);
 }
@@ -721,6 +723,7 @@ private function get_tasks_for_week($days){
                 'equipo'     => $meta['_acal_equipo'][0] ?? '',
                 'descripcion'=> $meta['_acal_descripcion'][0] ?? '',
                 'turno'      => $turno,
+                'informe_entregado' => (($meta['_acal_informe_entregado'][0] ?? '0') === '1' ? '1' : '0'),
                 'modified_ts'=> (int) get_post_modified_time('U', false, get_the_ID(), false),
             ];
             if ($tec && $fec){
@@ -936,6 +939,7 @@ echo '</div>';   // .acal-tech-item
                     }
 
                     if ($body) echo '<div class="acal-task-meta">'.esc_html($body).'</div>';
+                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="acal-task-badges"><span class="badge">Informe entregado</span></div>';
 
                     // (ELIMINADO) Badge de estado en tarjeta (se pidió no mostrar)
                     // echo '<div class="acal-task-badges"><span class="badge">'.esc_html($this->estados_list()[$estado] ?? $estado).'</span></div>';
@@ -990,6 +994,7 @@ echo '</div>';   // .acal-tech-item
     echo '<label>Equipo/Modelo<br><input type="text" name="equipo" id="acal-equipo" /></label>';
     // SIN placeholder en Descripción
     echo '<label>Descripción<br><textarea name="descripcion" id="acal-descripcion"></textarea></label>';
+    echo '<label><input type="checkbox" name="informe_entregado" id="acal-informe-entregado" value="1" /> Informe entregado</label>';
     echo '<div class="acal-form-actions"><button class="button button-primary">Guardar</button></div>';
     echo '</form></div></div>';
 
@@ -1350,6 +1355,7 @@ echo '</div>';   // .acal-tech-item
         $cliente = $this->sanitize_text($_POST['cliente'] ?? '');
         $equipo  = $this->sanitize_text($_POST['equipo'] ?? '');
         $desc    = $this->sanitize_text($_POST['descripcion'] ?? '');
+        $informe_entregado = !empty($_POST['informe_entregado']) ? '1' : '0';
 
         if (!$tecnico_id) wp_die('Técnico requerido');
         $title = $this->build_task_title($cliente, $desc);
@@ -1362,6 +1368,7 @@ echo '</div>';   // .acal-tech-item
         update_post_meta($post_id,'_acal_cliente',$cliente);
         update_post_meta($post_id,'_acal_equipo',$equipo);
         update_post_meta($post_id,'_acal_descripcion',$desc);
+        update_post_meta($post_id,'_acal_informe_entregado',$informe_entregado);
 
         $turno = isset($_POST['turno']) ? sanitize_text_field($_POST['turno']) : 'am';
         $turno = in_array(strtolower($turno), ['am','pm'], true) ? strtolower($turno) : 'am';
@@ -1383,6 +1390,7 @@ public function handle_update_task(){
     $cliente    = $this->sanitize_text($_POST['cliente'] ?? '');
     $equipo     = $this->sanitize_text($_POST['equipo'] ?? '');
     $desc       = $this->sanitize_text($_POST['descripcion'] ?? '');
+    $informe_entregado = !empty($_POST['informe_entregado']) ? '1' : '0';
 
     if ($tecnico_id){
         update_post_meta($post_id, '_acal_tecnico_id', $tecnico_id);
@@ -1393,6 +1401,7 @@ public function handle_update_task(){
     update_post_meta($post_id, '_acal_cliente',     $cliente);
     update_post_meta($post_id, '_acal_equipo',      $equipo);
     update_post_meta($post_id, '_acal_descripcion', $desc);
+    update_post_meta($post_id, '_acal_informe_entregado', $informe_entregado);
 
     // ---- NUEVO: turno AM/PM ----
     $turno = isset($_POST['turno']) ? sanitize_text_field($_POST['turno']) : '';
@@ -1466,6 +1475,7 @@ public function handle_export_day_png(){
                 'sucursal'    => $meta['_acal_sucursal'][0] ?? '',
                 'descripcion' => $meta['_acal_descripcion'][0] ?? '',
                 'turno'       => $meta['_acal_turno'][0] ?? '',   // AM / PM
+                'informe_entregado' => (($meta['_acal_informe_entregado'][0] ?? '0') === '1' ? '1' : '0'),
             ];
         }
         wp_reset_postdata();
@@ -1671,6 +1681,7 @@ public function handle_export_day_png(){
                     echo '<div class="task" style="border-left-color:'.esc_attr($t['color']).'">';
                     echo '<div class="t">'.esc_html($titleTxt).'</div>';
                     if($metaTxt) echo '<div class="m">'.esc_html($metaTxt).'</div>';
+                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="m">INF ✓</div>';
                     echo '</div>';
                 }
                 echo '</div></div>';
@@ -1692,6 +1703,7 @@ public function handle_export_day_png(){
                     echo '<div class="task" style="border-left-color:'.esc_attr($t['color']).'">';
                     echo '<div class="t">'.esc_html($titleTxt).'</div>';
                     if($metaTxt) echo '<div class="m">'.esc_html($metaTxt).'</div>';
+                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="m">INF ✓</div>';
                     echo '</div>';
                 }
                 echo '</div></div>';
@@ -2360,6 +2372,9 @@ ACALJS;
                             echo '<span class="acal-meta-chip">'.esc_html($meta_item).'</span>';
                         }
                         echo '</div>';
+                    }
+                    if (($task['informe_entregado'] ?? '0') === '1') {
+                        echo '<div class="acal-task-badges"><span class="badge">Informe entregado</span></div>';
                     }
                     echo '</div>';
                 }
