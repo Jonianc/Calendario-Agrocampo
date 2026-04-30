@@ -177,13 +177,20 @@ function patchModal(){
     $('#acal-turno-hidden').val(v);
   });
   $(document).off('click.acalAddTurno').on('click.acalAddTurno', '.acal-add', function(){
-    setTimeout(function(){ ensureTurnoControls(); setTurno('am'); toggleDelete(false); syncRedirectToCurrentUrl(); }, 0);
+    setTimeout(function(){
+      ensureTurnoControls();
+      setTurno('am');
+      if($('#acal-lugar').length){ $('#acal-lugar').val(''); }
+      toggleDelete(false);
+      syncRedirectToCurrentUrl();
+    }, 0);
   });
   $(document).off('click.acalEditTurno').on('click.acalEditTurno', '.acal-edit', function(){
     var task = $(this).data('task') || {};
     setTimeout(function(){
       ensureTurnoControls();
       setTurno(task.turno || 'am');
+      if($('#acal-lugar').length){ $('#acal-lugar').val(task.sucursal || ''); }
       toggleDelete(true);
       syncRedirectToCurrentUrl();
     }, 0);

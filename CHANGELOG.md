@@ -1,3 +1,6 @@
+## [1.10.46] - 2026-04-30
+- Ajustes UI/UX de Informe entregado en frontend management (ancho completo), limpieza de estilos duplicados del chip y corrección de carga/limpieza de Lugar al abrir modal.
+
 ## [1.10.45] - 2026-04-30
 - Mejora UI/UX del indicador Informe entregado, filtro por informe y resumen semanal.
 
