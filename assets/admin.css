@@ -76,3 +76,173 @@ button.button-link-delete { color:#b32d2e; }
 /* Admin padding */
 .wp-admin .acal-wrap .acal-cell{ padding-top: 8px !important; }
 .wp-admin .acal-wrap .acal-cell.acal-head{ padding-top: 8px !important; }
+
+
+/* ===== Ajustes: preview header standalone ===== */
+.acal-settings-preview-shell{
+  margin: 18px 0 8px;
+}
+
+.acal-settings-preview{
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  overflow: auto;
+}
+
+.acal-settings-preview .acal-standalone-header{
+  --acal-standalone-header-radius: 20px;
+  --acal-standalone-header-padding: 18px;
+  --acal-standalone-header-gap: 14px;
+  margin: 0 0 var(--acal-standalone-header-gap, 14px);
+  padding: var(--acal-standalone-header-padding, 18px);
+  border: 1px solid #d8e0e8;
+  border-radius: var(--acal-standalone-header-radius, 20px);
+  background: #f8fafc;
+  box-shadow: 0 10px 24px rgba(15,23,42,.08);
+  min-width: 1100px;
+}
+
+.acal-settings-preview .acal-standalone-header.is-no-border{
+  border-color: transparent;
+}
+
+.acal-settings-preview .acal-standalone-header.is-no-shadow{
+  box-shadow: none;
+}
+
+.acal-settings-preview .acal-standalone-header__line{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.acal-settings-preview .acal-standalone-header__title{
+  flex: 0 0 auto;
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-topbar--standalone{
+  flex: 1 1 auto;
+  margin: 0;
+  min-width: 0;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.acal-settings-preview .acal-topbar--standalone .button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: rgba(255,255,255,.88);
+  color: #1e3a5f;
+  font-weight: 600;
+  box-shadow: none;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav-jump-label{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #1e3a5f;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav-fake-date{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #0f172a;
+  font-family: monospace;
+  font-size: 16px;
+  letter-spacing: .04em;
+}
+
+.acal-settings-preview .acal-standalone-header__meta{
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.acal-settings-preview .acal-standalone-header__logo{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+}
+
+.acal-settings-preview .acal-standalone-header__logo img{
+  max-height: 32px;
+  width: auto;
+  display: block;
+}
+
+.acal-settings-preview .acal-standalone-header__logo-placeholder{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.acal-settings-preview .acal-standalone-header__updated{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: rgba(255,255,255,.8);
+  color: #47627f;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-standalone-header__updated-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34,197,94,.14);
+  flex: 0 0 auto;
+}
+
+.acal-settings-preview .is-hidden{
+  display: none !important;
+}

@@ -1,0 +1,2801 @@
+/* Rocket Solutions admin upgrades — v1.9.7 */
+
+/* =========================================================
+   1.9.20 Frontend management refresh (desktop-first)
+   Prioriza la ruta frontend de gestión como experiencia principal.
+   ========================================================= */
+
+body.acal-front-management{
+  background: radial-gradient(1200px 520px at 10% -5%, #dbeafe 0, rgba(219,234,254,0) 60%),
+              radial-gradient(900px 460px at 90% 0%, #dcfce7 0, rgba(220,252,231,0) 56%),
+              #f8fafc;
+}
+
+body.acal-front-management .acal-wrap{
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+body.acal-front-management .acal-wrap > h1{
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #0f172a;
+}
+
+body.acal-front-management .acal-wrap > p{
+  margin: 0 0 14px;
+}
+
+body.acal-front-management .button,
+body.acal-front-management button.button{
+  border-radius: 10px;
+  min-height: 34px;
+}
+
+body.acal-front-management button:focus-visible,
+body.acal-front-management a:focus-visible,
+body.acal-front-management input:focus-visible,
+body.acal-front-management select:focus-visible,
+body.acal-front-management textarea:focus-visible{
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+body.acal-front-management .button.button-primary{
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff !important;
+  text-shadow: none;
+  opacity: 1;
+}
+
+body.acal-front-management .button.button-primary:hover,
+body.acal-front-management .button.button-primary:focus,
+body.acal-front-management .button.button-primary:active{
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #ffffff !important;
+}
+
+body.acal-front-management .acal-topbar{
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(148,163,184,.28);
+  border-radius: 14px;
+  box-shadow: 0 14px 30px rgba(15,23,42,.08);
+  backdrop-filter: blur(4px);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+body.acal-front-management .acal-topbar{
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+body.acal-front-management .acal-topbar .acal-nav,
+body.acal-front-management .acal-topbar .acal-filters{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+body.acal-front-management .acal-topbar .acal-filters{
+  grid-column: 1 / -1;
+}
+
+body.acal-front-management .acal-quick-actions{
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+body.acal-front-management .acal-quick-actions .button{
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+body.acal-front-management .acal-quick-actions .button.is-active,
+body.acal-front-management .acal-quick-actions .button:hover{
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+body.acal-front-management .acal-topbar label{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #334155;
+}
+
+body.acal-front-management .acal-topbar input[type="search"],
+body.acal-front-management .acal-topbar input[type="date"],
+body.acal-front-management .acal-topbar select{
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  min-height: 36px;
+  box-shadow: none;
+}
+
+body.acal-front-management .acal-grid{
+  border: 1px solid #dbe3ee;
+  border-radius: 14px;
+  overflow: auto;
+  background: #fff;
+  box-shadow: 0 20px 35px rgba(15,23,42,.10);
+}
+
+body.acal-front-management .acal-grid .acal-head{
+  min-height: 44px;
+  font-size: 13px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+body.acal-front-management .acal-grid .acal-cell{
+  min-height: 112px;
+  padding: 10px;
+}
+
+body.acal-front-management .acal-grid .acal-tech-col .acal-techname{
+  margin: calc(10px + var(--acal-worker-card-offset, 0px)) 10px 10px;
+  min-height: 58px;
+  border-radius: 14px;
+  font-size: 13px;
+}
+
+body.acal-front-management .acal-task{
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 18px rgba(15,23,42,.07);
+  transition: transform .12s ease, box-shadow .12s ease;
+  position: relative;
+  padding: 10px 88px 10px 12px;
+  overflow: hidden;
+}
+
+body.acal-front-management .acal-task:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15,23,42,.12);
+}
+
+body.acal-front-management .acal-task .acal-task-title{
+  color: #0f172a;
+  font-size: 13px;
+}
+
+body.acal-front-management .acal-task .acal-task-meta{
+  color: #475569;
+  font-size: 12px;
+}
+
+body.acal-front-management .acal-task .acal-task-title,
+body.acal-front-management .acal-task .acal-task-meta{
+  margin-right: 0;
+}
+
+body.acal-front-management .acal-grid .acal-cell{
+  min-height: 128px;
+  padding: 12px 10px;
+}
+
+
+body.acal-front-management .acal-grid .acal-cell[tabindex="0"]:focus-visible{
+  outline: 3px solid #2563eb;
+  outline-offset: -3px;
+  background: #eff6ff;
+}
+
+body.acal-front-management .acal-grid .acal-cell[tabindex="0"]{
+  transition: background-color .12s ease;
+}
+
+body.acal-front-management .acal-task{
+  min-height: 86px;
+  display: grid;
+  gap: 4px;
+}
+
+body.acal-front-management .acal-task .acal-task-title{
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: .01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.acal-front-management .acal-task .acal-task-meta{
+  line-height: 1.35;
+}
+
+body.acal-front-management .acal-task .acal-task-meta:last-child{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+
+
+body.acal-front-management .acal-task[data-acal-tooltip]{
+  position: relative;
+  overflow: visible;
+  z-index: 4;
+}
+
+body.acal-front-management .acal-task[data-acal-tooltip]:hover,
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-visible,
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-within{
+  z-index: 32;
+}
+
+body.acal-front-management .acal-task[data-acal-tooltip]::after{
+  display: none;
+  content: attr(data-acal-tooltip);
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: calc(100% + 8px);
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+  box-shadow: 0 10px 24px rgba(15,23,42,.28);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity .12s ease, transform .12s ease;
+  white-space: normal;
+}
+
+body.acal-front-management .acal-task[data-acal-tooltip]:hover::after,
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-visible::after,
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-within::after{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.acal-front-management .acal-task[data-acal-tooltip]:focus-visible{
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+body.acal-front-management .acal-kebab-wrap{
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 6;
+}
+
+body.acal-front-management .acal-kebab,
+body.acal-front-management .acal-copy-inline{
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  border-radius: 10px;
+}
+
+body.acal-front-management .acal-copy-inline{
+  margin-left: 0 !important;
+}
+
+body.acal-front-management .acal-menu{
+  position: absolute;
+  top: 38px;
+  right: 0;
+  z-index: 9;
+}
+
+body.acal-front-management .acal-modal-content{
+  border-radius: 14px;
+  border: 1px solid #dbe3ee;
+  width: min(760px, calc(100vw - 40px));
+  max-width: min(760px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  box-sizing: border-box;
+  position: relative;
+}
+
+body.acal-front-management #acal-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, .48);
+}
+
+html.acal-modal-open,
+body.acal-front-management.acal-modal-open{
+  overflow: hidden;
+}
+
+body.acal-front-management #acal-form{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body.acal-front-management .acal-form-priority,
+body.acal-front-management .acal-form-details{
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+body.acal-front-management .acal-form-priority{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px,1fr));
+  gap: 10px 12px;
+}
+
+body.acal-front-management .acal-form-details{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px,1fr));
+  gap: 10px 12px;
+}
+
+body.acal-front-management .acal-form-block-title{
+  margin: 0;
+  font-size: 14px;
+  color: #0f172a;
+  grid-column: 1 / -1;
+}
+
+body.acal-front-management .acal-form-block-help{
+  margin: -2px 0 2px;
+  color: #475569;
+  font-size: 12px;
+  grid-column: 1 / -1;
+}
+
+body.acal-front-management #acal-turno-group,
+body.acal-front-management .acal-field-descripcion{
+  grid-column: 1 / -1;
+}
+
+body.acal-front-management .acal-help{
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+body.acal-front-management .acal-error{
+  display: block;
+  color: #b91c1c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+body.acal-front-management #acal-form .acal-invalid{
+  border-color: #b91c1c !important;
+  box-shadow: 0 0 0 1px rgba(185,28,28,.25) !important;
+}
+
+body.acal-front-management .acal-form-live{
+  min-height: 20px;
+  color: #334155;
+  font-size: 12px;
+}
+
+@media (max-width: 820px){
+  body.acal-front-management .acal-form-priority,
+  body.acal-front-management .acal-form-details{
+    grid-template-columns: 1fr;
+  }
+}
+
+body.acal-front-management #acal-form .acal-form-actions{
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 10px;
+  padding-bottom: 6px;
+  z-index: 2;
+}
+
+body.acal-front-management .acal-modal-close{
+  border: 0;
+  background: transparent;
+  color: #0f172a;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+body.acal-front-management .acal-modal-close:hover{
+  background: #e2e8f0;
+}
+
+body.acal-front-management #acal-form .acal-form-actions{
+  justify-content: space-between;
+}
+
+body.acal-front-management .acal-legacy-notice{
+  border-left-width: 5px;
+  border-left-color: #f59e0b;
+}
+
+/* ===== 1) GRID estable: 1 columna de técnicos + 5 días ===== */
+.acal-grid{
+  display: grid;
+  grid-template-columns: 220px repeat(5, minmax(240px, 1fr));
+  grid-auto-rows: minmax(84px, auto);
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* ===== 2) Celdas y encabezados ===== */
+.acal-cell{
+  padding: 8px;
+  border-right: 1px solid #eef1f5;
+  border-bottom: 1px solid #eef1f5;
+  position: relative; /* para posicionar +Agregar */
+}
+.acal-head{ background:#f9fafb; }
+
+/* ===== 3) Sticky encabezado y 1ª columna ===== */
+.acal-grid .acal-head{ position: sticky; top: 0; z-index: 5; }
+.acal-grid .acal-tech-col{
+  position: sticky; left: 0; z-index: 6;
+  background:#f5f7fa;
+  box-shadow: inset -1px 0 0 #eef1f5; /* separador vertical */
+}
+.acal-grid .acal-head.acal-tech-col{ z-index: 7; }
+
+/* ===== 4) 1ª columna: el bloque del técnico no invade la columna del lunes ===== */
+.acal-grid .acal-tech-col.acal-cell{
+  padding: 0 !important;
+  background: transparent; /* el fondo lo maneja el bloque interno */
+}
+
+.acal-grid .acal-tech-col .acal-techname{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Márgenes mantienen separación con el borde de la celda sticky */
+  margin: 8px 12px;            /* <-- evita que cruce a la columna de lunes */
+  padding: 12px 16px;
+
+  /* Tamaño automático (sin 100%): respeta márgenes y no desborda */
+  width: auto;
+  height: auto;
+  min-height: 52px;
+
+  border-radius: 16px;
+  font-weight: 800;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.06), inset 0 -1px 0 rgba(255,255,255,.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brillo sutil para dar profundidad sin perder el color del técnico */
+.acal-grid .acal-tech-col .acal-techname::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,.10), rgba(255,255,255,0) 45%),
+              linear-gradient(to top, rgba(0,0,0,.04), rgba(0,0,0,0) 60%);
+  pointer-events: none;
+}
+
+/* ===== 5) “+ Agregar” solo al pasar el cursor ===== */
+.acal-grid .acal-cell .acal-add{
+  position: absolute; top: 6px; right: 6px; z-index: 2;
+  opacity: 0; pointer-events: none; transition: opacity .12s ease-in-out;
+}
+.acal-grid .acal-cell:hover .acal-add{ opacity: 1; pointer-events: auto; }
+
+/* ===== 6) Tarjetas más legibles ===== */
+.acal-task{
+  position: relative; z-index: 1;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  background:#fff;
+}
+.acal-task .acal-task-title{ font-weight: 700; }
+.acal-task .acal-task-meta{ color:#6b7280; font-size:12px; }
+.acal-task .badge{ font-size:11px; }
+
+/* ===== 7) Ocultar leyenda arriba y “Estado” en UI ===== */
+.acal-legend{ display: none !important; }
+#acal-estado{ display: none !important; }
+label:has(#acal-estado){ display:none !important; } /* si el navegador lo soporta */
+
+/* ===== 8) Filtros compactos y responsivos ===== */
+.acal-topbar .acal-filters{ display:flex; flex-wrap:wrap; gap:8px; }
+.acal-topbar .acal-filters label{ white-space:nowrap; }
+.acal-topbar input[type="search"]{ min-width:260px; }
+
+/* ===== 9) Botones en header sin quiebre ===== */
+.acal-export.button, .acal-head .button { white-space: nowrap; }
+
+/* Ocultar estado/badges en tarjetas (admin y frontend) */
+.acal-wrap .acal-task .acal-task-badges,
+.acal-wrap .acal-task .badge{
+  display: none !important;
+}
+
+/* Ocultar "+ Agregar" específicamente en frontend */
+.acal-frontend .acal-add{ display:none !important; }
+
+/* Delinea celdas aunque tengan fondo suave */
+.acal-grid .acal-cell{
+  border-right: 1px solid rgba(238,241,245,.9);
+  border-bottom: 1px solid rgba(238,241,245,.9);
+}
+
+/* AM/PM pill en tarjetas */
+.acal-turno{
+  display:inline-block; margin-right:4px; padding:2px 6px;
+  border-radius:999px; font-size:11px; line-height:1.1;
+  border:1px solid currentColor; opacity:.85;
+}
+.acal-turno.am{ color:#0d9488; background:rgba(13,148,136,.08); border-color:rgba(13,148,136,.25); }
+.acal-turno.pm{ color:#7c3aed; background:rgba(124,58,237,.08); border-color:rgba(124,58,237,.25); }
+
+/* DnD visual (admin) */
+.acal-task{ cursor: grab; }
+.acal-task.is-dragging{ opacity:.6; cursor: grabbing; }
+.acal-cell.drop-ok{
+  outline: 2px dashed #3b82f6;
+  outline-offset: -2px;
+  background: rgba(59,130,246,.06);
+}
+
+
+/* Pastilla del técnico con flechas adentro */
+.acal-techname{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;      /* nombre al centro, flechas a los costados */
+  gap:8px;
+  border-radius:16px;
+  padding:12px 10px;
+}
+
+.acal-techlabel{
+  flex:1 1 auto;
+  text-align:center;
+  font-weight:700;
+  letter-spacing:.3px;
+}
+
+.acal-order-btn{
+  flex:0 0 auto;
+  width:28px; height:28px;
+  line-height:26px;
+  border:0;
+  border-radius:8px;
+  background: rgba(255,255,255,.22);  /* contraste sobre el color del técnico */
+  color: inherit;                     /* usa el color de texto calculado */
+  cursor:pointer;
+}
+.acal-order-btn:hover{ background: rgba(255,255,255,.30); }
+.acal-order-btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+/* limpia el estilo anterior de controles externos si quedó */
+.acal-order-controls{ display:none !important; }
+
+/* Acciones fijas arriba-izquierda en cada celda */
+body.acal-front-management .acal-actions-fixed,
+body.wp-admin .acal-actions-fixed{
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+/* Asegura anclaje y espacio para los botones (solo management/admin) */
+body.acal-front-management .acal-grid .acal-cell,
+body.wp-admin .acal-grid .acal-cell{
+  position: relative;      /* para posicionar .acal-actions-fixed */
+  padding-top: 28px;       /* deja espacio bajo los botones */
+}
+
+/* Botones con tamaño consistente */
+.acal-actions-fixed .button{
+  line-height: 1.2;
+  height: auto;
+  padding: 4px 8px;
+}
+
+/* Contenedor fijo para "Pegar" (sin tocar el "+ Agregar" del plugin) */
+body.acal-front-management .acal-actions-fixed,
+body.wp-admin .acal-actions-fixed{
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+/* Asegura anclaje y espacio en cada celda (solo management/admin) */
+body.acal-front-management .acal-grid .acal-cell,
+body.wp-admin .acal-grid .acal-cell{
+  position: relative;
+  padding-top: 28px; /* deja espacio bajo los botones */
+}
+
+/* Forzar "+ Agregar" a la izquierda cuando el plugin lo posiciona */
+.button.acal-add{
+  left: 6px !important;
+  right: auto !important;
+  top: 6px !important;
+  transform: none !important;
+  z-index: 4; /* por encima de tarjetas */
+}
+
+/* Estética de botones */
+.acal-actions-fixed .button{
+  line-height: 1.2;
+  height: auto;
+  padding: 4px 8px;
+}
+
+/* Oculta + Agregar mientras estás en modo copiar */
+body.acal-copy-mode .button.acal-add {
+  display: none !important;
+}
+
+/* Aviso flotante para salir del modo copiar (opcional) */
+.acal-copy-pill{
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  background: #1d4ed8;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  font-size: 12px;
+}
+.acal-copy-pill button{
+  margin-left: 8px;
+  background: #fff;
+  color: #1d4ed8;
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+/* Por defecto, ocultar "Pegar" */
+.acal-paste { display: none !important; }
+
+/* En modo copiar, mostrar "Pegar" */
+body.acal-copy-mode .acal-paste { display: inline-flex !important; }
+
+
+body.acal-front-management .acal-floating-tooltip{
+  position: absolute;
+  z-index: 100000;
+  display: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+  box-shadow: 0 10px 24px rgba(15,23,42,.28);
+  pointer-events: none;
+  white-space: normal;
+}
+
+
+/* v1.9.37: mantener acciones de celda visibles sobre tooltip */
+body.acal-front-management .acal-grid .acal-cell .acal-add,
+body.acal-front-management .acal-actions-fixed,
+body.acal-front-management .acal-actions-fixed .button,
+body.acal-front-management .acal-grid .acal-cell .acal-paste{
+  z-index: 100001;
+}
+
+body.acal-front-management .acal-floating-tooltip{
+  z-index: 100000;
+}
+
+
+body.acal-front-management .acal-floating-tooltip .acal-tooltip-title{
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+body.acal-front-management .acal-floating-tooltip .acal-tooltip-meta{
+  opacity: .95;
+}
+
+body.acal-front-management .acal-floating-tooltip .acal-tooltip-meta > div + div{
+  margin-top: 2px;
+}
+
+/* =========================================================
+   1.9.46 Weekly board UX polish (desktop front management)
+   - Balance densidad/aire visual
+   - Header y columna técnico sticky robustos
+   ========================================================= */
+@media (min-width: 1024px){
+  body.acal-front-management .acal-topbar{
+    padding: 10px 12px;
+    border-radius: 12px;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  body.acal-front-management .acal-topbar .acal-nav,
+  body.acal-front-management .acal-topbar .acal-filters,
+  body.acal-front-management .acal-quick-actions{
+    gap: 8px;
+  }
+
+  body.acal-front-management .acal-topbar label{
+    font-size: 12px;
+    color: #334155;
+  }
+
+  body.acal-front-management .acal-topbar input[type="search"],
+  body.acal-front-management .acal-topbar input[type="date"],
+  body.acal-front-management .acal-topbar select{
+    min-height: 32px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  body.acal-front-management .acal-grid{
+    grid-template-columns: 210px repeat(5, minmax(220px, 1fr));
+    grid-auto-rows: minmax(74px, auto);
+    border-radius: 12px;
+    box-shadow: 0 14px 28px rgba(15,23,42,.10);
+  }
+
+  body.acal-front-management .acal-grid .acal-head{
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    min-height: 36px;
+    padding: 6px 8px;
+    font-size: 12px;
+    letter-spacing: .01em;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    color: #0f172a;
+  }
+
+  body.acal-front-management .acal-grid .acal-head .button{
+    min-height: 24px;
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 7px;
+  }
+
+  body.acal-front-management .acal-grid .acal-tech-col{
+    position: sticky;
+    left: 0;
+    z-index: 34;
+    background: #f8fafc;
+    box-shadow: inset -1px 0 0 #e2e8f0;
+  }
+
+  body.acal-front-management .acal-grid .acal-head.acal-tech-col{
+    z-index: 36;
+    background: linear-gradient(180deg, #f1f5f9 0%, #e9eef5 100%);
+  }
+
+  body.acal-front-management .acal-grid .acal-cell{
+    min-height: 98px;
+    padding: 8px;
+    border-right: 1px solid #e9edf5;
+    border-bottom: 1px solid #e9edf5;
+  }
+
+  body.acal-front-management .acal-grid .acal-tech-col.acal-cell{
+    padding: 0 !important;
+    background: #f8fafc;
+  }
+
+  body.acal-front-management .acal-grid .acal-tech-col .acal-techname{
+    margin: calc(6px + var(--acal-worker-card-offset, 0px)) 8px 6px;
+    min-height: 44px;
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: .01em;
+  }
+
+  body.acal-front-management .acal-techlabel{
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.acal-front-management .acal-order-btn{
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    border-radius: 7px;
+    background: rgba(255,255,255,.26);
+  }
+
+  body.acal-front-management .acal-grid .acal-cell .acal-add,
+  body.acal-front-management .acal-grid .acal-cell .acal-paste{
+    top: 6px;
+  }
+
+  body.acal-front-management .button.acal-add,
+  body.acal-front-management .acal-paste{
+    min-height: 24px;
+    padding: 2px 8px;
+    border-radius: 7px;
+    font-size: 11px;
+  }
+
+  body.acal-front-management .acal-task{
+    margin: 6px 0;
+    min-height: 70px;
+    padding: 8px 64px 8px 10px;
+    border-radius: 10px;
+    border-color: #dbe3ef;
+    box-shadow: 0 4px 10px rgba(15,23,42,.07);
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+
+  body.acal-front-management .acal-task:hover,
+  body.acal-front-management .acal-task:focus-within{
+    transform: translateY(-1px);
+    border-color: #94a3b8;
+    box-shadow: 0 10px 16px rgba(15,23,42,.12);
+  }
+
+  body.acal-front-management .acal-task:focus-visible{
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+
+  body.acal-front-management .acal-task .acal-task-title{
+    font-size: 12.5px;
+    line-height: 1.35;
+    color: #0f172a;
+  }
+
+  body.acal-front-management .acal-task .acal-task-meta{
+    font-size: 11.5px;
+    line-height: 1.3;
+    color: #334155;
+  }
+
+  body.acal-front-management .acal-turno{
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+  }
+
+  body.acal-front-management .acal-kebab-wrap{
+    top: 6px;
+    right: 6px;
+    gap: 4px;
+  }
+
+  body.acal-front-management .acal-kebab,
+  body.acal-front-management .acal-copy-inline{
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    border-radius: 8px;
+  }
+
+  body.acal-front-management .acal-kebab:hover,
+  body.acal-front-management .acal-copy-inline:hover{
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+
+  body.acal-front-management .acal-grid .acal-cell[tabindex="0"]:hover{
+    background: #f8fbff;
+  }
+
+  body.acal-front-management .acal-grid .acal-cell[tabindex="0"]:focus-visible{
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+    background: #eff6ff;
+  }
+}
+
+
+/* =========================================================
+   1.9.47 Standalone weekly board UX polish (desktop)
+   NOTE: colocado al final para ganar cascada sobre reglas genéricas.
+   ========================================================= */
+@media (min-width: 1024px){
+  body.acal-standalone .acal-wrap.acal-frontend{
+    max-width: 1720px;
+    padding: 14px 18px;
+  }
+
+  body.acal-standalone .acal-week-context{
+    margin: 0 0 8px;
+    padding: 8px 12px;
+    min-height: 36px;
+    border-radius: 10px;
+    font-size: 11.5px;
+  }
+
+  body.acal-standalone .acal-topbar{
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    min-height: 52px;
+    border-radius: 10px;
+    gap: 8px;
+    box-shadow: 0 8px 18px rgba(15,23,42,.08);
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav{
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  body.acal-standalone .acal-topbar .button,
+  body.acal-standalone .acal-topbar button,
+  body.acal-standalone .acal-topbar input[type="date"]{
+    min-height: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 12px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  body.acal-standalone .acal-topbar label{
+    gap: 6px;
+    margin: 0;
+    font-size: 13px;
+    color: #1e293b;
+  }
+
+  body.acal-standalone .acal-grid{
+    grid-template-columns: 224px repeat(5, minmax(250px,1fr)) !important;
+    border-radius: 12px;
+    box-shadow: 0 12px 22px rgba(15,23,42,.10);
+    overflow: auto;
+  }
+
+  body.acal-standalone .acal-frontend.sticky-both .acal-head,
+  body.acal-standalone .acal-grid .acal-head{
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 4px 8px !important;
+    font-size: 12px;
+    background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
+    color: #0f172a;
+  }
+
+  body.acal-standalone .acal-frontend.sticky-both .acal-tech-col,
+  body.acal-standalone .acal-grid .acal-tech-col{
+    position: sticky;
+    left: 0;
+    z-index: 44;
+    background: #f8fafc !important;
+    box-shadow: inset -1px 0 0 #e2e8f0;
+  }
+
+  body.acal-standalone .acal-grid .acal-head.acal-tech-col{
+    z-index: 46;
+    background: linear-gradient(180deg,#f1f5f9 0%,#e9eef5 100%) !important;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell{
+    padding: 7px !important;
+    border-right: 1px solid #e8edf5;
+    border-bottom: 1px solid #e8edf5;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+    min-height: 94px !important;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    margin: 5px 7px;
+    min-height: 46px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .01em;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.acal-standalone .acal-task{
+    margin: 4px 0;
+    min-height: 62px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border-color: #d8e1ee;
+    box-shadow: 0 3px 8px rgba(15,23,42,.07);
+    transition: box-shadow .12s ease, border-color .12s ease, transform .12s ease;
+  }
+
+  body.acal-standalone .acal-task:hover,
+  body.acal-standalone .acal-task:focus-within{
+    transform: translateY(-1px);
+    border-color: #94a3b8;
+    box-shadow: 0 8px 14px rgba(15,23,42,.13);
+  }
+
+  body.acal-standalone .acal-task .acal-task-title{
+    margin-bottom: 3px;
+    font-size: 12.5px;
+    line-height: 1.3;
+    color: #0b1730;
+  }
+
+  body.acal-standalone .acal-task .acal-task-meta{
+    font-size: 11px;
+    line-height: 1.3;
+    color: #334155;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell:hover{
+    background: #fcfdff;
+  }
+
+  body.acal-standalone .acal-task:focus-visible,
+  body.acal-standalone .acal-grid .acal-cell:focus-visible{
+    outline: 2px solid #2563eb;
+    outline-offset: 1px;
+  }
+}
+
+
+/* 1.9.49 - Reconciliación UX: management trunca, standalone muestra título completo */
+body.acal-front-management .acal-task,
+body.acal-standalone .acal-task{
+  min-height: unset !important;
+  height: auto !important;
+}
+
+/* Frontend management: truncado operativo controlado */
+body.acal-front-management .acal-task .acal-task-title{
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35 !important;
+}
+
+/* Standalone: lectura completa sin truncado agresivo */
+body.acal-standalone .acal-task .acal-task-title{
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: initial !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35 !important;
+}
+
+body.acal-front-management .acal-grid .acal-cell:not(.acal-head),
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 88px !important;
+  height: auto;
+}
+
+@media (min-width: 1024px){
+  body.acal-front-management .acal-grid,
+  body.acal-standalone .acal-grid{
+    grid-template-columns: 200px repeat(5, minmax(240px,1fr)) !important;
+  }
+
+  body.acal-front-management .acal-task,
+  body.acal-standalone .acal-task{
+    padding: 9px 10px !important;
+  }
+
+  body.acal-front-management .acal-task .acal-task-title,
+  body.acal-standalone .acal-task .acal-task-title{
+    font-size: 13px !important;
+    line-height: 1.38 !important;
+    margin-bottom: 4px !important;
+  }
+}
+
+/* =========================================================
+   1.10.0 Standalone visual refresh (desktop-first, scoped)
+   ========================================================= */
+body.acal-standalone .acal-wrap.acal-frontend{
+  padding-top: 12px;
+  padding-bottom: 18px;
+}
+
+body.acal-standalone .acal-week-context{
+  margin: 0 0 10px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid #d5dee9;
+  background: linear-gradient(180deg, rgba(255,255,255,.97) 0%, rgba(248,250,252,.95) 100%);
+  box-shadow: 0 10px 24px rgba(15,23,42,.07);
+  color: #334155;
+  font-size: 12.5px;
+}
+
+body.acal-standalone .acal-week-context__range{
+  font-size: 14px;
+  color: #1e293b;
+}
+
+body.acal-standalone .acal-week-context__updated{
+  color: #64748b;
+  font-size: 12px;
+}
+
+body.acal-standalone .acal-topbar{
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #d5dee9;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 12px 26px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar .acal-nav{
+  width: 100%;
+  justify-content: center;
+  gap: 10px;
+}
+
+body.acal-standalone .acal-topbar .acal-nav-updated{
+  margin-left: auto;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button,
+body.acal-standalone .acal-topbar input[type="date"]{
+  min-height: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border-color: #cbd5e1;
+  font-size: 13px;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button{
+  color: #1e293b;
+  background: #f8fafc;
+  transition: background-color .12s ease, border-color .12s ease, box-shadow .12s ease;
+}
+
+body.acal-standalone .acal-topbar .button:hover,
+body.acal-standalone .acal-topbar button.button:hover{
+  background: #eef2f7;
+  border-color: #94a3b8;
+  box-shadow: 0 1px 0 rgba(15,23,42,.03), 0 6px 14px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar label{
+  margin: 0;
+  gap: 8px;
+  color: #334155;
+  font-weight: 700;
+}
+
+body.acal-standalone .acal-grid{
+  border-radius: 16px;
+  border-color: #dbe4ef;
+  box-shadow: 0 18px 34px rgba(15,23,42,.11);
+}
+
+body.acal-standalone .acal-grid .acal-head{
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 7px 10px !important;
+  background: linear-gradient(180deg, #f8fbff 0%, #edf3fa 100%);
+  border-bottom: 1px solid #d9e2ee;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label{
+  gap: 8px;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: .05em;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  margin: 7px 8px;
+  min-height: 54px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  letter-spacing: .01em;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding: 8px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 98px !important;
+}
+
+body.acal-standalone .acal-task{
+  margin: 4px 0;
+  padding: 10px 12px !important;
+  border-radius: 12px;
+  border: 1px solid #dce4ef;
+  border-left-width: 5px !important;
+  box-shadow: 0 4px 10px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-task:hover,
+body.acal-standalone .acal-task:focus-within{
+  transform: translateY(-1px);
+  border-color: #b3c0d3;
+  box-shadow: 0 10px 18px rgba(15,23,42,.14);
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+  margin-bottom: 5px !important;
+  color: #0b1730;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  font-size: 12px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-topbar,
+  body.acal-standalone .acal-week-context{
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav-updated{
+    width: 100%;
+    margin-left: 0;
+    text-align: right;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   1.10.6 Standalone spacing cleanup (no nth-child hacks)
+   ========================================================= */
+body.acal-standalone .acal-grid .acal-cell{
+  padding-top: 8px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 88px !important;
+}
+
+body.acal-standalone .acal-grid .acal-tech-col .acal-techname,
+body.acal-standalone .acal-grid .acal-cell .acal-task{
+  margin-top: 0 !important;
+}
+
+/* =========================================================
+   1.10.8 Standalone vertical density consistency
+   ========================================================= */
+body.acal-standalone .acal-topbar{
+  margin-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+body.acal-standalone .acal-grid .acal-head{
+  min-height: 42px !important;
+  height: 42px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 92px !important;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  min-height: 56px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+body.acal-standalone .acal-task{
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-grid .acal-head{
+    min-height: 40px !important;
+    height: 40px !important;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+    min-height: 84px !important;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    min-height: 50px;
+  }
+}
+
+/* =========================================================
+   1.10.9 Standalone typographic hierarchy tuning
+   ========================================================= */
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  line-height: 1.1;
+  color: #6b7280;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  font-weight: 700;
+  color: #0b1730;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  font-size: 12px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+    font-size: 12px;
+  }
+
+  body.acal-standalone .acal-task .acal-task-title{
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+
+  body.acal-standalone .acal-task .acal-task-meta{
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   1.10.10 Standalone interactive states tuning
+   ========================================================= */
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button,
+body.acal-standalone .acal-topbar input[type="date"],
+body.acal-standalone .acal-topbar a{
+  transition: background-color .12s ease, border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+}
+
+body.acal-standalone .acal-topbar .button:hover,
+body.acal-standalone .acal-topbar button.button:hover,
+body.acal-standalone .acal-topbar a:hover,
+body.acal-standalone .acal-topbar input[type="date"]:hover{
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 1px rgba(148,163,184,.2), 0 6px 14px rgba(15,23,42,.08);
+}
+
+body.acal-standalone .acal-topbar .button:focus-visible,
+body.acal-standalone .acal-topbar button.button:focus-visible,
+body.acal-standalone .acal-topbar input[type="date"]:focus-visible,
+body.acal-standalone .acal-topbar a:focus-visible,
+body.acal-standalone .acal-task:focus-visible,
+body.acal-standalone .acal-task:focus-within{
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18);
+}
+
+body.acal-standalone .acal-task:hover,
+body.acal-standalone .acal-task:focus-within{
+  border-color: #94a3b8;
+  box-shadow: 0 10px 18px rgba(15,23,42,.14), 0 0 0 1px rgba(148,163,184,.22);
+}
+
+/* =========================================================
+   1.10.11 Standalone responsive hardening (breakpoints)
+   ========================================================= */
+@media (max-width: 1200px){
+  body.acal-standalone .acal-topbar .acal-nav{
+    gap: 8px;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+    min-height: 82px !important;
+  }
+}
+
+@media (max-width: 900px){
+  body.acal-standalone .acal-topbar .acal-nav{
+    justify-content: flex-start;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav-updated{
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  body.acal-standalone .acal-grid .acal-head{
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+}
+
+@media (max-width: 640px){
+  body.acal-standalone .acal-wrap.acal-frontend{
+    padding: 8px;
+  }
+
+  body.acal-standalone .acal-topbar{
+    padding: 8px 10px;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav .button,
+  body.acal-standalone .acal-topbar .acal-nav button.button,
+  body.acal-standalone .acal-topbar .acal-nav label,
+  body.acal-standalone .acal-topbar .acal-nav input[type="date"]{
+    width: 100%;
+    justify-content: center;
+  }
+
+  body.acal-standalone .acal-grid .acal-head{
+    min-height: 38px !important;
+    height: 38px !important;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+    min-height: 76px !important;
+  }
+
+  body.acal-standalone .acal-task{
+    padding: 8px 10px !important;
+  }
+}
+
+/* =========================================================
+   1.10.13 Fase 2 UX: agrupación visual de topbar (management)
+   ========================================================= */
+body.acal-front-management .acal-topbar .acal-nav,
+body.acal-front-management .acal-topbar .acal-quick-actions,
+body.acal-front-management .acal-topbar .acal-filters{
+  background: rgba(248,250,252,.92);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+body.acal-front-management .acal-topbar .acal-nav::before,
+body.acal-front-management .acal-topbar .acal-quick-actions::before,
+body.acal-front-management .acal-topbar .acal-filters::before{
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: #64748b;
+}
+
+body.acal-front-management .acal-topbar .acal-nav::before{ content: 'Navegación semanal'; }
+body.acal-front-management .acal-topbar .acal-quick-actions::before{ content: 'Acciones rápidas'; }
+body.acal-front-management .acal-topbar .acal-filters::before{ content: 'Filtros'; }
+
+body.acal-front-management .acal-topbar .acal-filters label{
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+@media (max-width: 1023px){
+  body.acal-front-management .acal-topbar .acal-nav,
+  body.acal-front-management .acal-topbar .acal-quick-actions,
+  body.acal-front-management .acal-topbar .acal-filters{
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   1.10.14 Fase 2.1 UX: ajuste fino responsive topbar (management)
+   ========================================================= */
+@media (max-width: 1023px){
+  body.acal-front-management .acal-topbar .acal-nav::before,
+  body.acal-front-management .acal-topbar .acal-quick-actions::before,
+  body.acal-front-management .acal-topbar .acal-filters::before{
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  body.acal-front-management .acal-topbar .acal-nav,
+  body.acal-front-management .acal-topbar .acal-quick-actions,
+  body.acal-front-management .acal-topbar .acal-filters{
+    padding: 6px;
+    gap: 6px;
+  }
+
+  body.acal-front-management .acal-topbar input[type="search"]{
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.acal-front-management .acal-topbar .acal-filters label{
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* =========================================================
+   1.10.15 Fase 3 UX: mobile-first legibility (management)
+   ========================================================= */
+@media (max-width: 900px){
+  body.acal-front-management .acal-grid{
+    grid-template-columns: 156px repeat(5, minmax(210px, 1fr)) !important;
+  }
+
+  body.acal-front-management .acal-grid .acal-tech-col{
+    position: static;
+    left: auto;
+    box-shadow: none;
+  }
+
+  body.acal-front-management .acal-grid .acal-head{
+    min-height: 34px;
+    padding: 6px;
+  }
+
+  body.acal-front-management .acal-grid .acal-cell{
+    min-height: 84px;
+    padding: 8px;
+  }
+
+  body.acal-front-management .acal-task{
+    padding: 8px 58px 8px 10px !important;
+  }
+}
+
+@media (max-width: 640px){
+  body.acal-front-management .acal-grid{
+    grid-template-columns: 140px repeat(5, minmax(190px, 1fr)) !important;
+  }
+
+  body.acal-front-management .acal-tech-col .acal-techname{
+    margin: calc(4px + var(--acal-worker-card-offset, 0px)) 6px 4px;
+    min-height: 40px;
+    padding: 6px 8px;
+  }
+
+  body.acal-front-management .acal-order-btn{
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+  }
+
+  body.acal-front-management .button.acal-add,
+  body.acal-front-management .acal-paste{
+    min-height: 22px;
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   1.10.16 UX: compact day header + lower top spacing + standalone header
+   ========================================================= */
+body.acal-front-management .acal-grid .acal-head{
+  min-height: 32px;
+  padding: 4px 8px;
+}
+
+body.acal-front-management .acal-day-head{
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 2px;
+  min-height: 100%;
+}
+
+body.acal-front-management .acal-day-head__label{
+  justify-self: start;
+  font-weight: 700;
+}
+
+body.acal-front-management .acal-export-link{
+  justify-self: end;
+  font-size: 11px;
+  color: #64748b;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(100,116,139,.35);
+  line-height: 1.1;
+}
+
+body.acal-front-management .acal-export-link:hover,
+body.acal-front-management .acal-export-link:focus-visible{
+  color: #334155;
+  border-bottom-color: rgba(51,65,85,.55);
+}
+
+body.acal-front-management .acal-kebab,
+body.acal-front-management .acal-copy-inline{
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  border-radius: 8px;
+  background: rgba(15,23,42,.04);
+  border: 1px solid rgba(148,163,184,.35);
+  color: #64748b;
+}
+
+body.acal-front-management .acal-kebab:hover,
+body.acal-front-management .acal-copy-inline:hover,
+body.acal-front-management .acal-kebab:focus-visible,
+body.acal-front-management .acal-copy-inline:focus-visible{
+  background: rgba(15,23,42,.08);
+  border-color: rgba(148,163,184,.5);
+  color: #475569;
+}
+
+body.acal-standalone .acal-standalone-header{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #c1121f;
+  border-radius: 10px;
+}
+
+body.acal-standalone .acal-standalone-header__title{
+  grid-column: 2;
+  justify-self: center;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #0f172a;
+}
+
+body.acal-standalone .acal-standalone-header__logo{
+  grid-column: 3;
+  justify-self: end;
+}
+
+body.acal-standalone .acal-standalone-header__logo img{
+  display: block;
+  max-height: 84px;
+  width: auto;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding-top: 4px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 82px !important;
+}
+
+/* =========================================================
+   1.10.17 Hotfix spacing: primera tarjeta más cerca del header
+   ========================================================= */
+body.acal-front-management .acal-grid .acal-cell,
+body.wp-admin .acal-grid .acal-cell{
+  padding-top: 22px;
+}
+
+body.acal-front-management .acal-grid .acal-cell .acal-task:first-of-type,
+body.wp-admin .acal-grid .acal-cell .acal-task:first-of-type{
+  margin-top: 0 !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding-top: 0 !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 74px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell .acal-task:first-of-type{
+  margin-top: 0 !important;
+}
+
+/* =========================================================
+   1.10.18 Hotfix UI: frontend header ordenado + columnas más compactas
+   ========================================================= */
+body.acal-front-management .acal-topbar .acal-nav,
+body.acal-front-management .acal-topbar .acal-quick-actions,
+body.acal-front-management .acal-topbar .acal-filters{
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+body.acal-front-management .acal-topbar .acal-nav::before,
+body.acal-front-management .acal-topbar .acal-quick-actions::before,
+body.acal-front-management .acal-topbar .acal-filters::before{
+  display: none;
+  content: none;
+}
+
+body.acal-front-management .acal-grid .acal-cell:not(.acal-tech-col),
+body.wp-admin .acal-grid .acal-cell:not(.acal-tech-col){
+  padding-top: 0 !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding-top: 0 !important;
+}
+
+body.acal-front-management .acal-grid .acal-cell:not(.acal-head),
+body.wp-admin .acal-grid .acal-cell:not(.acal-head){
+  min-height: 66px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 52px !important;
+}
+
+body.acal-front-management .acal-task,
+body.acal-standalone .acal-task{
+  padding-top: 2px !important;
+  padding-bottom: 6px !important;
+}
+
+body.acal-front-management .acal-task .acal-task-title,
+body.acal-standalone .acal-task .acal-task-title{
+  margin-top: 0 !important;
+}
+
+/* =========================================================
+   1.10.22 Hotfix urgente: cards completas + botones visibles + cuerpo standalone
+   ========================================================= */
+body.acal-front-management .acal-task{
+  padding: 8px 64px 8px 12px !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+body.acal-front-management .acal-kebab-wrap{
+  top: 6px !important;
+  right: 6px !important;
+  gap: 4px !important;
+}
+
+body.acal-front-management .acal-kebab,
+body.acal-front-management .acal-copy-inline{
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+}
+
+body.acal-front-management .acal-grid .acal-cell .acal-task:first-of-type,
+body.acal-standalone .acal-grid .acal-cell .acal-task:first-of-type{
+  margin-top: 6px !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding-top: 0 !important;
+  padding-bottom: 4px !important;
+}
+
+body.acal-standalone .acal-task{
+  margin-top: 0 !important;
+}
+
+/* =========================================================
+   1.10.24 Hotfix raíz: quitar reserva vertical antes de primera tarjeta
+   ========================================================= */
+body.acal-front-management .acal-grid,
+body.acal-standalone .acal-grid{
+  grid-auto-rows: auto !important;
+}
+
+body.acal-front-management .acal-grid .acal-cell:not(.acal-head),
+body.wp-admin .acal-grid .acal-cell:not(.acal-head),
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 0 !important;
+}
+
+body.acal-front-management .acal-grid .acal-cell:not(.acal-head):not(.acal-tech-col),
+body.wp-admin .acal-grid .acal-cell:not(.acal-head):not(.acal-tech-col),
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head):not(.acal-tech-col){
+  padding-top: 0 !important;
+}
+
+/* =========================================================
+   1.10.29 Header días: centrado visual de fecha por columna
+   ========================================================= */
+body.acal-front-management .acal-day-head__label{
+  justify-self: center;
+  text-align: center;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* =========================================================
+   1.10.30 Header días: equilibrio tipográfico día/fecha
+   ========================================================= */
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  color: #475569;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   1.10.33 Standalone header compact unification
+   ========================================================= */
+body.acal-standalone{
+  background: #f3f5f7;
+  color: #0f172a;
+}
+
+body.acal-standalone .acal-wrap.acal-frontend{
+  max-width: min(1680px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: clamp(14px, 2vw, 24px);
+  --acal-standalone-day-gap: 6px;
+}
+
+body.acal-standalone .acal-standalone-header{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 8px;
+  padding: 7px 10px;
+  background: #fbfcfd;
+  border: 1px solid #d8e0e8;
+  border-left: 4px solid #b91c1c;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, .05);
+}
+
+body.acal-standalone .acal-standalone-header__row{
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+  align-items: center;
+  gap: 6px;
+}
+
+body.acal-standalone .acal-standalone-header__spacer{
+  min-height: 1px;
+}
+
+body.acal-standalone .acal-standalone-header__title{
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  line-height: 1.05;
+  white-space: nowrap;
+  text-align: center;
+}
+
+body.acal-standalone .acal-standalone-header__logo{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+body.acal-standalone .acal-standalone-header__logo img{
+  max-height: 46px;
+}
+
+body.acal-standalone .acal-week-context,
+body.acal-standalone .acal-topbar{
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+body.acal-standalone .acal-week-context{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+body.acal-standalone .acal-week-context__range{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body.acal-standalone .acal-week-context__eyebrow{
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+body.acal-standalone .acal-week-context__range strong{
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+body.acal-standalone .acal-week-context__badge{
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e7f3eb;
+  color: #166534;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+body.acal-standalone .acal-week-context__updated{
+  color: #64748b;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  justify-self: end;
+}
+
+body.acal-standalone .acal-topbar{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+body.acal-standalone .acal-topbar .acal-nav{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+body.acal-standalone .acal-topbar .acal-nav .acal-nav-next{
+  margin-left: auto;
+}
+
+body.acal-standalone .acal-topbar .acal-nav .acal-nav-prev,
+body.acal-standalone .acal-topbar .acal-nav .acal-nav-go,
+body.acal-standalone .acal-topbar .acal-nav .acal-nav-today,
+body.acal-standalone .acal-topbar .acal-nav .acal-nav-next{
+  white-space: nowrap;
+}
+
+body.acal-standalone .acal-topbar .acal-nav .acal-nav-jump-label{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button,
+body.acal-standalone .acal-topbar input[type="date"]{
+  min-height: 30px;
+  border-radius: 7px;
+}
+
+body.acal-standalone .acal-topbar .button,
+body.acal-standalone .acal-topbar button.button{
+  border-color: #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+body.acal-standalone .acal-topbar .button:hover,
+body.acal-standalone .acal-topbar button.button:hover,
+body.acal-standalone .acal-topbar input[type="date"]:hover{
+  border-color: #94a3b8;
+  background: #fff;
+}
+
+body.acal-standalone .acal-grid{
+  position: relative;
+  overflow: auto;
+  border: 1px solid #d8e0e8;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, .06);
+}
+
+body.acal-standalone .acal-grid::after{
+  content: "";
+  position: sticky;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+}
+
+body.acal-standalone .acal-grid .acal-head,
+body.acal-standalone .acal-frontend.sticky-both .acal-head{
+  top: 0;
+  z-index: 12;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: #f6f8fb;
+  border-bottom: 1px solid #dbe3ec;
+  box-shadow: inset 0 -1px 0 rgba(216, 224, 232, .9);
+}
+
+body.acal-standalone .acal-grid .acal-head.acal-tech-col,
+body.acal-standalone .acal-frontend.sticky-both .acal-tech-col,
+body.acal-standalone .acal-grid .acal-tech-col{
+  left: 0;
+  box-shadow: 1px 0 0 rgba(216, 224, 232, .95);
+}
+
+body.acal-standalone .acal-grid .acal-head.acal-tech-col,
+body.acal-standalone .acal-grid .acal-head-corner{
+  z-index: 13 !important;
+  background: #eef2f6 !important;
+  box-shadow: inset -1px 0 0 rgba(203, 213, 225, .95), inset 0 -1px 0 rgba(216, 224, 232, .95);
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__dow{
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+body.acal-standalone .acal-grid .acal-head .acal-day-label__date{
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+body.acal-standalone .acal-grid .acal-head.is-today{
+  background: #eef6ff;
+}
+
+body.acal-standalone .acal-grid .acal-head.is-today .acal-day-label__date{
+  color: #0b5ed7;
+}
+
+body.acal-standalone .acal-day-badge{
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+body.acal-standalone .acal-grid .acal-cell{
+  padding: 0 8px 8px !important;
+  background-clip: padding-box;
+}
+
+body.acal-standalone .acal-grid .acal-cell:not(.acal-head){
+  min-height: 0 !important;
+}
+
+body.acal-standalone .acal-grid .acal-cell.is-today{
+  background-color: rgba(219, 234, 254, .34) !important;
+}
+
+body.acal-standalone .acal-tech-col{
+  background: #f8fafc !important;
+}
+
+body.acal-standalone .acal-tech-col .acal-techname{
+  display: flex;
+  align-items: center;
+  margin: calc(10px + var(--acal-worker-card-offset, 0px)) 8px 8px;
+  min-height: 56px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
+}
+
+body.acal-standalone .acal-tech-col .acal-techlabel{
+  display: block;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+body.acal-standalone .acal-task{
+  margin-top: 8px !important;
+  border-radius: 14px;
+  border: 1px solid #dbe3ec;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, .05);
+  padding: 10px 12px !important;
+  transition: box-shadow .14s ease, border-color .14s ease, transform .14s ease;
+}
+
+body.acal-standalone .acal-grid .acal-cell .acal-task:first-of-type{
+  margin-top: var(--acal-standalone-day-gap, 6px) !important;
+}
+
+body.acal-standalone .acal-task:hover,
+body.acal-standalone .acal-task:focus-within{
+  transform: translateY(-1px);
+  border-color: #c3d0de;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, .08);
+}
+
+body.acal-standalone .acal-task .acal-task-title{
+  margin: 0;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+body.acal-standalone .acal-task .acal-task-meta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: 0;
+  -webkit-line-clamp: unset;
+}
+
+body.acal-standalone .acal-meta-chip{
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  max-width: 100%;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+
+body.acal-front-management .acal-grid .acal-tech-col .acal-techname,
+body.acal-standalone .acal-grid .acal-tech-col .acal-techname{
+  width: min(100%, var(--acal-worker-card-width, 1200px));
+  min-height: var(--acal-worker-card-height, 56px);
+  transform: translateY(var(--acal-worker-card-offset, 0px));
+}
+
+body.acal-standalone a:focus-visible,
+body.acal-standalone button:focus-visible,
+body.acal-standalone input:focus-visible,
+body.acal-standalone .acal-task:focus-visible,
+body.acal-standalone .acal-task:focus-within{
+  outline: 3px solid rgba(37, 99, 235, .9);
+  outline-offset: 2px;
+}
+
+@media (max-width: 980px){
+  body.acal-standalone .acal-standalone-header__row{
+    grid-template-columns: 1fr;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav{
+    flex-wrap: wrap;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-next{
+    margin-left: 0;
+  }
+
+  body.acal-standalone .acal-standalone-header__title,
+  body.acal-standalone .acal-week-context,
+  body.acal-standalone .acal-week-context__updated{
+    justify-self: stretch;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  body.acal-standalone .acal-standalone-header__spacer{
+    display: none;
+  }
+
+  body.acal-standalone .acal-frontend.sticky-both .acal-tech-col{
+    position: static;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 782px){
+  body.acal-standalone .acal-wrap.acal-frontend{
+    max-width: none;
+    padding: 10px;
+  }
+
+  body.acal-standalone .acal-standalone-header{
+    border-radius: 12px;
+  }
+
+  body.acal-standalone .acal-week-context,
+  body.acal-standalone .acal-week-context__range,
+  body.acal-standalone .acal-topbar .acal-nav,
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-jump-label{
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  body.acal-standalone .acal-topbar{
+    width: 100%;
+  }
+
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-prev,
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-jump-label,
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-jump-label input[type="date"],
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-go,
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-today,
+  body.acal-standalone .acal-topbar .acal-nav .acal-nav-next{
+    width: 100%;
+  }
+
+  body.acal-standalone .acal-grid .acal-head{
+    min-height: 56px;
+    padding: 8px 6px;
+  }
+
+  body.acal-standalone .acal-grid .acal-head .acal-day-label{
+    gap: 4px;
+  }
+
+  body.acal-standalone .acal-grid .acal-head .acal-day-label__dow,
+  body.acal-standalone .acal-day-badge{
+    width: 100%;
+    justify-content: center;
+  }
+
+  body.acal-standalone .acal-tech-col .acal-techname{
+    margin: calc(6px + var(--acal-worker-card-offset, 0px)) 6px 6px;
+    min-height: 48px;
+    padding: 8px 10px;
+  }
+
+  body.acal-standalone .acal-grid .acal-cell{
+    padding: 0 6px 6px !important;
+  }
+
+  body.acal-standalone .acal-task{
+    padding: 9px 10px !important;
+  }
+}
+
+
+/* =========================================================
+   1.10.42 Standalone header: una línea desktop + ajustes admin
+   ========================================================= */
+body.acal-standalone .acal-wrap.acal-frontend{
+  --acal-standalone-header-radius: 20px;
+  --acal-standalone-header-padding: 18px;
+  --acal-standalone-header-gap: 14px;
+}
+
+body.acal-standalone .acal-standalone-header{
+  margin-bottom: var(--acal-standalone-header-gap, 14px);
+  padding: var(--acal-standalone-header-padding, 18px);
+  border-radius: var(--acal-standalone-header-radius, 20px);
+  border: 1px solid #d8e0e8;
+  border-left-width: 1px;
+  background: rgba(248,250,252,.92);
+  box-shadow: 0 14px 28px rgba(15,23,42,.07);
+}
+
+body.acal-standalone .acal-standalone-header.is-no-border{
+  border-color: transparent;
+}
+
+body.acal-standalone .acal-standalone-header.is-no-shadow{
+  box-shadow: none;
+}
+
+body.acal-standalone .acal-standalone-header__line{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+body.acal-standalone .acal-standalone-header__title{
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: clamp(22px, 2vw, 34px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone{
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  width: 100%;
+  min-width: 0;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .button,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav button.button{
+  min-height: 34px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border-color: #e2e8f0;
+  background: rgba(255,255,255,.88);
+  color: #1e3a5f;
+  box-shadow: none;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #1e3a5f;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label input[type="date"]{
+  width: 180px;
+  min-width: 180px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 16px;
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 15px;
+  box-shadow: none;
+}
+
+body.acal-standalone .acal-standalone-header__meta{
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+body.acal-standalone .acal-standalone-header__logo{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+}
+
+body.acal-standalone .acal-standalone-header__logo img{
+  max-height: 34px;
+  width: auto;
+  display: block;
+}
+
+body.acal-standalone .acal-standalone-header__updated{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: rgba(255,255,255,.8);
+  color: #47627f;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+body.acal-standalone .acal-standalone-header__updated-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34,197,94,.14);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-standalone-header__line{
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  body.acal-standalone .acal-topbar.acal-topbar--standalone,
+  body.acal-standalone .acal-standalone-header__meta{
+    width: 100%;
+  }
+
+  body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav{
+    flex-wrap: wrap;
+  }
+
+  body.acal-standalone .acal-standalone-header__meta{
+    margin-left: 0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px){
+  body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label{
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label input[type="date"]{
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* =========================================================
+   1.10.43 Standalone header: frontend = preview (desktop)
+   ========================================================= */
+body.acal-standalone .acal-wrap.acal-frontend{
+  max-width: min(1640px, calc(100vw - 56px));
+  margin: 0 auto;
+  padding: 18px 18px 22px;
+}
+
+.acal-settings-preview .acal-standalone-header,
+body.acal-standalone .acal-standalone-header{
+  margin-bottom: var(--acal-standalone-header-gap, 14px);
+  padding: var(--acal-standalone-header-padding, 18px);
+  border: 1px solid #d8e0e8;
+  border-radius: var(--acal-standalone-header-radius, 20px);
+  background: #f8fafc;
+  box-shadow: 0 10px 24px rgba(15,23,42,.08);
+}
+
+.acal-settings-preview .acal-standalone-header.is-no-border,
+body.acal-standalone .acal-standalone-header.is-no-border{
+  border-color: transparent;
+}
+
+.acal-settings-preview .acal-standalone-header.is-no-shadow,
+body.acal-standalone .acal-standalone-header.is-no-shadow{
+  box-shadow: none;
+}
+
+.acal-settings-preview .acal-standalone-header__line,
+body.acal-standalone .acal-standalone-header__line{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.acal-settings-preview .acal-standalone-header__title,
+body.acal-standalone .acal-standalone-header__title{
+  flex: 0 0 auto;
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-topbar--standalone,
+body.acal-standalone .acal-topbar.acal-topbar--standalone{
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.acal-settings-preview .acal-topbar--standalone .button,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .button,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav button.button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: rgba(255,255,255,.88);
+  color: #1e3a5f;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav-jump-label,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #1e3a5f;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav-fake-date,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label input[type="date"]{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+.acal-settings-preview .acal-topbar--standalone .acal-nav-fake-date{
+  font-family: monospace;
+  font-size: 16px;
+  letter-spacing: .04em;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label input[type="date"]{
+  width: 206px;
+  min-width: 206px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.acal-settings-preview .acal-standalone-header__meta,
+body.acal-standalone .acal-standalone-header__meta{
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.acal-settings-preview .acal-standalone-header__logo,
+body.acal-standalone .acal-standalone-header__logo{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+}
+
+.acal-settings-preview .acal-standalone-header__logo img,
+body.acal-standalone .acal-standalone-header__logo img{
+  max-height: 32px;
+  width: auto;
+  display: block;
+}
+
+.acal-settings-preview .acal-standalone-header__updated,
+body.acal-standalone .acal-standalone-header__updated{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: rgba(255,255,255,.8);
+  color: #47627f;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.acal-settings-preview .acal-standalone-header__updated-dot,
+body.acal-standalone .acal-standalone-header__updated-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34,197,94,.14);
+  flex: 0 0 auto;
+}
+
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .button:hover,
+body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav button.button:hover{
+  border-color: #d8e0e8;
+  background: #ffffff;
+  color: #1e3a5f;
+}
+
+@media (max-width: 1023px){
+  body.acal-standalone .acal-wrap.acal-frontend{
+    max-width: none;
+    padding: 12px;
+  }
+
+  body.acal-standalone .acal-standalone-header__line{
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  body.acal-standalone .acal-topbar.acal-topbar--standalone,
+  body.acal-standalone .acal-standalone-header__meta{
+    width: 100%;
+  }
+
+  body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav,
+  body.acal-standalone .acal-standalone-header__meta{
+    flex-wrap: wrap;
+  }
+
+  body.acal-standalone .acal-standalone-header__meta{
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px){
+  body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label{
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  body.acal-standalone .acal-topbar.acal-topbar--standalone .acal-nav .acal-nav-jump-label input[type="date"]{
+    width: 100%;
+    min-width: 0;
+  }
+}
