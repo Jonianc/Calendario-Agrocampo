@@ -1,3 +1,6 @@
+## [1.10.45] - 2026-04-30
+- Mejora UI/UX del indicador Informe entregado, filtro por informe y resumen semanal.
+
 ## [1.10.44] - 2026-04-30
 - Calendario Taller: nuevo campo `Informe entregado` en modal de crear/editar tarea, persistido en meta `_acal_informe_entregado` (`1`/`0`).
 - Se incluye `informe_entregado` en `get_tasks_for_week()` y en payload de edición (`data-task`) para cargar estado al editar.

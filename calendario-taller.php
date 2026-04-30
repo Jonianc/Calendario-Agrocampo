@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.10.44
+ * Version: 1.10.45
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class ACAL_Calendario_Taller {
-    const VERSION   = '1.10.44';
+    const VERSION   = '1.10.45';
     const OPT_TECHS = 'acal_tecnicos';
     const OPT_FRONT_SLUG = 'acal_front_slug';
     const OPT_STANDALONE_LOGO = 'acal_standalone_logo_url';
@@ -612,6 +612,7 @@ private function order_tecnicos_array(array $tecs): array{
             'tecnico' => isset($_GET['f_tecnico']) ? sanitize_text_field($_GET['f_tecnico']) : '',
             'sucursal'=> isset($_GET['f_sucursal'])? sanitize_text_field($_GET['f_sucursal']) : '',
             'estado'  => isset($_GET['f_estado'])  ? sanitize_text_field($_GET['f_estado'])   : '',
+            'informe' => isset($_GET['f_informe']) ? sanitize_text_field($_GET['f_informe'])  : '',
             'search'  => isset($_GET['s'])         ? sanitize_text_field($_GET['s'])          : '',
         ];
     }
@@ -619,6 +620,8 @@ private function order_tecnicos_array(array $tecs): array{
         if ($filters['tecnico'] && ($meta['_acal_tecnico_id'][0] ?? '') !== $filters['tecnico']) return false;
         if ($filters['sucursal'] && strtolower($meta['_acal_sucursal'][0] ?? '') !== strtolower($filters['sucursal'])) return false;
         if ($filters['estado'] && strtolower($meta['_acal_estado'][0] ?? '') !== strtolower($filters['estado'])) return false;
+        $informe = (($meta['_acal_informe_entregado'][0] ?? '0') === '1') ? 'entregado' : 'pendiente';
+        if ($filters['informe'] && $informe !== $filters['informe']) return false;
         if ($filters['search']) {
             $blob = strtolower(($meta['_acal_cliente'][0] ?? '').' '.($meta['_acal_equipo'][0] ?? '').' '.($meta['_acal_descripcion'][0] ?? ''));
             if (strpos($blob, strtolower($filters['search'])) === false) return false;
@@ -630,6 +633,8 @@ private function order_tecnicos_array(array $tecs): array{
         if ($filters['tecnico'] && (($task['tecnico_id'] ?? '') !== $filters['tecnico'])) return false;
         if ($filters['sucursal'] && strtolower((string)($task['sucursal'] ?? '')) !== strtolower((string)$filters['sucursal'])) return false;
         if ($filters['estado'] && strtolower((string)($task['estado'] ?? '')) !== strtolower((string)$filters['estado'])) return false;
+        $informe = (((string)($task['informe_entregado'] ?? '0')) === '1') ? 'entregado' : 'pendiente';
+        if ($filters['informe'] && $informe !== $filters['informe']) return false;
 
         if ($filters['search']) {
             $blob = strtolower(trim(((string)($task['cliente'] ?? '')).' '.((string)($task['equipo'] ?? '')).' '.((string)($task['descripcion'] ?? ''))));
@@ -783,6 +788,7 @@ public function render_calendar_page(){
         'f_tecnico' => false,
         'f_sucursal' => false,
         'f_estado' => false,
+        'f_informe' => false,
         's' => false,
     ]);
 
@@ -850,10 +856,30 @@ public function render_calendar_page(){
         echo '<option value="'.esc_attr($k).'" '.$sel.'>'.esc_html($v).'</option>';
     }
     echo '</select></label> ';
+    echo '<label>Informe: <select name="f_informe"><option value="">Todos</option><option value="pendiente" '.selected($filters['informe'],'pendiente',false).'>Pendientes</option><option value="entregado" '.selected($filters['informe'],'entregado',false).'>Entregados</option></select></label> ';
     echo '<label>Buscar: <input type="search" name="s" value="'.esc_attr($filters['search']).'" placeholder="Cliente, equipo, texto..." /></label> ';
     echo '<button class="button button-primary">Filtrar</button>';
     echo '</div>';
     echo '</form>';
+
+    $informe_entregados = 0;
+    $informe_pendientes = 0;
+    foreach ($tecnicos as $t_count){
+        $tec_count_id = $t_count['id'] ?? '';
+        foreach ($renderDays as $d_count){
+            $countTasks = $tasks[$tec_count_id][$d_count] ?? [];
+            if (!empty($filters['sucursal']) || !empty($filters['estado']) || !empty($filters['informe']) || !empty($filters['search']) || !empty($filters['tecnico'])) {
+                $countTasks = array_values(array_filter($countTasks, function($task) use ($filters){
+                    return $this->task_array_matches_filters($task, $filters);
+                }));
+            }
+            foreach ($countTasks as $countTask){
+                if (($countTask['informe_entregado'] ?? '0') === '1') $informe_entregados++;
+                else $informe_pendientes++;
+            }
+        }
+    }
+    echo '<div class="acal-informe-summary" aria-live="polite">Informes: <strong>'.intval($informe_entregados).'</strong> entregados · <strong>'.intval($informe_pendientes).'</strong> pendientes</div>';
 
     echo '<div class="acal-legend">';
     foreach ($tecnicos as $t){
@@ -910,7 +936,7 @@ echo '</div>';   // .acal-tech-item
             echo '<div class="acal-cell" style="background:'.esc_attr($bg).'">';
 
             $cellTasks = $tasks[$tecId][$d] ?? [];
-            if (!empty($filters['sucursal']) || !empty($filters['estado']) || !empty($filters['search']) || !empty($filters['tecnico'])) {
+            if (!empty($filters['sucursal']) || !empty($filters['estado']) || !empty($filters['informe']) || !empty($filters['search']) || !empty($filters['tecnico'])) {
                 $cellTasks = array_values(array_filter($cellTasks, function($task) use ($filters){
                     return $this->task_array_matches_filters($task, $filters);
                 }));
@@ -939,7 +965,7 @@ echo '</div>';   // .acal-tech-item
                     }
 
                     if ($body) echo '<div class="acal-task-meta">'.esc_html($body).'</div>';
-                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="acal-task-informe"><span class="acal-informe-badge">Informe entregado</span></div>';
+                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="acal-task-informe"><span class="acal-informe-badge" title="Informe entregado" aria-label="Informe entregado">✓ Informe</span></div>';
 
                     // (ELIMINADO) Badge de estado en tarjeta (se pidió no mostrar)
                     // echo '<div class="acal-task-badges"><span class="badge">'.esc_html($this->estados_list()[$estado] ?? $estado).'</span></div>';
@@ -994,7 +1020,7 @@ echo '</div>';   // .acal-tech-item
     echo '<label>Equipo/Modelo<br><input type="text" name="equipo" id="acal-equipo" /></label>';
     // SIN placeholder en Descripción
     echo '<label>Descripción<br><textarea name="descripcion" id="acal-descripcion"></textarea></label>';
-    echo '<label><input type="checkbox" name="informe_entregado" id="acal-informe-entregado" value="1" /> Informe entregado</label>';
+    echo '<label class="acal-informe-toggle" for="acal-informe-entregado"><input type="checkbox" name="informe_entregado" id="acal-informe-entregado" value="1" /><span class="acal-informe-toggle-box"><span class="acal-informe-toggle-title">Informe entregado</span><span class="acal-informe-toggle-help">Marca esta opción cuando el informe técnico ya fue entregado.</span></span></label>';
     echo '<div class="acal-form-actions"><button class="button button-primary">Guardar</button></div>';
     echo '</form></div></div>';
 
@@ -2374,7 +2400,7 @@ ACALJS;
                         echo '</div>';
                     }
                     if (($task['informe_entregado'] ?? '0') === '1') {
-                        echo '<div class="acal-task-informe"><span class="acal-informe-badge">Informe entregado</span></div>';
+                        echo '<div class="acal-task-informe"><span class="acal-informe-badge" title="Informe entregado" aria-label="Informe entregado">✓ Informe</span></div>';
                     }
                     echo '</div>';
                 }
