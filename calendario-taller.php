@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calendario Taller
  * Description: Calendario semanal (L–V) para planificación de técnicos — admin + shortcode frontend + exportar día (PNG).
- * Version: 1.10.43
+ * Version: 1.10.44
  * Author: Rocket Solutions
  * Author URI: https://www.rocketsolutions.cl
  */
@@ -939,7 +939,7 @@ echo '</div>';   // .acal-tech-item
                     }
 
                     if ($body) echo '<div class="acal-task-meta">'.esc_html($body).'</div>';
-                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="acal-task-badges"><span class="badge">Informe entregado</span></div>';
+                    if (($task['informe_entregado'] ?? '0') === '1') echo '<div class="acal-task-informe"><span class="acal-informe-badge">Informe entregado</span></div>';
 
                     // (ELIMINADO) Badge de estado en tarjeta (se pidió no mostrar)
                     // echo '<div class="acal-task-badges"><span class="badge">'.esc_html($this->estados_list()[$estado] ?? $estado).'</span></div>';
@@ -2374,7 +2374,7 @@ ACALJS;
                         echo '</div>';
                     }
                     if (($task['informe_entregado'] ?? '0') === '1') {
-                        echo '<div class="acal-task-badges"><span class="badge">Informe entregado</span></div>';
+                        echo '<div class="acal-task-informe"><span class="acal-informe-badge">Informe entregado</span></div>';
                     }
                     echo '</div>';
                 }
